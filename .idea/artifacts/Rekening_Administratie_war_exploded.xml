@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Rekening-Administratie:war exploded">
+    <output-path>$PROJECT_DIR$/target/rekening-administratie</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="Rekening-Administratie" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="file-copy" path="$MAVEN_REPOSITORY$/com/pts6/common/1.0-SNAPSHOT/common-1.0-20180314.110356-2.jar" output-file-name="common-1.0-SNAPSHOT.jar" />
+          <element id="library" level="project" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:1.2.30" />
+          <element id="library" level="project" name="Maven: org.jetbrains:annotations:13.0" />
+          <element id="library" level="project" name="Maven: javax.persistence:persistence-api:1.0.2" />
+          <element id="library" level="project" name="Maven: javax.ws.rs:javax.ws.rs-api:2.1" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/target/rekening-administratie/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="Rekening-Administratie/web/Web" />
+    </root>
+  </artifact>
+</component>
