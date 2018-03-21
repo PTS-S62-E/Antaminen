@@ -23,4 +23,10 @@ public interface IInvoiceDetail {
 
     BigDecimal price();
 
+    void setLocationPoints(ArrayList<ITransLocation> locationPoints);
+
+    void setDescription(String description);
+
+    void setPrice(BigDecimal price);
+
 }

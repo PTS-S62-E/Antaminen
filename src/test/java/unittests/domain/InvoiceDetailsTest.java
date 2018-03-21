@@ -4,6 +4,7 @@ import com.pts62.common.europe.ITransLocation;
 import domain.InvoiceDetails;
 import domain.TransLocation;
 import exceptions.InvoiceException;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -69,13 +70,28 @@ public class InvoiceDetailsTest {
 
     @Test
     public void locationPoints() {
+        Assert.assertEquals(locationPoints.size(), invoiceDetails.locationPoints().size());
+        Assert.assertEquals(true, invoiceDetails.locationPoints().contains(locationPoints.get(0)));
+        Assert.assertEquals(true, invoiceDetails.locationPoints().contains(locationPoints.get(1)));
     }
 
     @Test
     public void description() {
+        Assert.assertEquals(defaultDescription, invoiceDetails.description());
+
+        String newDescription = "Sample description 2";
+        invoiceDetails.setDescription(newDescription);
+
+        Assert.assertEquals(newDescription, invoiceDetails.description());
     }
 
     @Test
     public void price() {
+        Assert.assertEquals(defaultPrice, invoiceDetails.price());
+
+        BigDecimal newPrice = new BigDecimal(20.0);
+        invoiceDetails.setPrice(newPrice);
+
+        Assert.assertEquals(newPrice, invoiceDetails.price());
     }
 }

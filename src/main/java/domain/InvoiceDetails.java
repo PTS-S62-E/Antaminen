@@ -49,4 +49,19 @@ public class InvoiceDetails implements IInvoiceDetail {
     public BigDecimal price() {
         return this.price;
     }
+
+    @Override
+    public void setLocationPoints(ArrayList<ITransLocation> locationPoints) {
+        this.locationPoints = locationPoints;
+    }
+
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 }
