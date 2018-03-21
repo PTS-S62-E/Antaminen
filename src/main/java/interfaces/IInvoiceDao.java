@@ -3,6 +3,7 @@ package interfaces;
 import domain.Invoice;
 import exceptions.InvoiceException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
@@ -30,6 +31,10 @@ public interface IInvoiceDao {
      * @return Whether the creation of the invoice was successful
      */
     boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails) throws InvoiceException;
+
+    boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, String countryCode) throws InvoiceException;
+
+    boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, String countryCode, LocalDateTime invoiceDate) throws InvoiceException;
 
     /**
      * Find an invoice based on the invoice number

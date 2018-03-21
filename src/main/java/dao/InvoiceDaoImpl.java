@@ -7,6 +7,8 @@ import interfaces.IInvoiceDao;
 import interfaces.IInvoiceDetail;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
@@ -21,19 +23,73 @@ import java.util.ArrayList;
  */
 public class InvoiceDaoImpl implements IInvoiceDao {
 
+    private final String countryCode = "FI";
+
 
     @Override
     public boolean createInvoice(Invoice invoice) throws InvoiceException {
+        if(invoice == null) { throw new InvoiceException("Please provide an invoice"); }
+        if(invoice.invoiceDetails() == null || invoice.invoiceDetails().size() < 1) { throw new InvoiceException("No Invoice details found."); }
+        if(invoice.getCountry() == null || invoice.getCountry().isEmpty()) { throw new InvoiceException("No country code provided in Invoice."); }
+        if(invoice.getInvoiceDate() == null) { throw new InvoiceException("No InvoiceDate provided in Invoice."); }
+        if(invoice.getPrice() < 0) { throw new InvoiceException("No positive price provided in Invoice."); }
+
         throw new NotImplementedException();
     }
 
     @Override
     public boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails) throws InvoiceException {
-        return false;
+        if(invoiceDetails == null || invoiceDetails.size() < 1) { throw new InvoiceException("Please provide invoiceDetails to generate the invoice."); }
+
+        BigDecimal price = this.calculateTotalInvoicePrice(invoiceDetails);
+        LocalDateTime currentDate = LocalDateTime.now();
+
+        Invoice invoice = new Invoice(invoiceDetails, this.countryCode, currentDate.toString(), price);
+
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, String countryCode) throws InvoiceException {
+        if(invoiceDetails == null || invoiceDetails.size() < 1) { throw new InvoiceException("Please provide invoiceDetails to generate the invoice."); }
+        if(countryCode == null || countryCode.isEmpty()) { throw new InvoiceException("Please provide the country for this invoice."); }
+
+        BigDecimal price = this.calculateTotalInvoicePrice(invoiceDetails);
+        LocalDateTime currentDate = LocalDateTime.now();
+
+        Invoice invoice = new Invoice(invoiceDetails, countryCode, currentDate.toString(), price);
+
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, String countryCode, LocalDateTime invoiceDate) throws InvoiceException {
+        if(invoiceDetails == null || invoiceDetails.size() < 1) { throw new InvoiceException("Please provide invoiceDetails to generate the invoice."); }
+        if(countryCode == null || countryCode.isEmpty()) { throw new InvoiceException("Please provide the country for this invoice."); }
+        if(invoiceDate == null) { throw new InvoiceException("Please provide an Invoice date."); }
+
+        BigDecimal price = this.calculateTotalInvoicePrice(invoiceDetails);
+        Invoice invoice = new Invoice(invoiceDetails, countryCode, invoiceDate.toString(), price);
+
+        throw new NotImplementedException();
     }
 
     @Override
     public IInvoice findInvoiceByInvoiceNumer(String invoiceNumber) throws InvoiceException {
+        if(invoiceNumber.isEmpty()) { throw new InvoiceException("Please provide an Invoice number."); }
+
         return null;
+    }
+
+    private BigDecimal calculateTotalInvoicePrice(ArrayList<IInvoiceDetail> invoiceDetails) throws InvoiceException {
+        if(invoiceDetails == null || invoiceDetails.size() < 1) { throw new InvoiceException("Please provide Invoice details to calculate the total price."); }
+
+        BigDecimal totalPrice = new BigDecimal(0.0);
+
+        for(IInvoiceDetail detail : invoiceDetails) {
+            totalPrice.add(detail.price());
+        }
+
+        return totalPrice;
     }
 }
