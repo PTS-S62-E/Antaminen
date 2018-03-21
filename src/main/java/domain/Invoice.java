@@ -104,6 +104,6 @@ public class Invoice implements IInvoice {
 
     @Override
     public void setInvoiceDate(String date) {
-        this.invoiceDate = invoiceDate;
+        this.invoiceDate = date;
     }
 }

@@ -52,7 +52,6 @@ public class InvoiceTest {
         Assert.assertEquals(invoiceDetails.size(), invoice.invoiceDetails().size());
 
         Assert.assertEquals(true, invoice.invoiceDetails().contains(invoiceDetails.get(0)));
-        Assert.assertEquals(true, invoice.invoiceDetails().contains(invoiceDetails.get(1)));
     }
 
     @Test
