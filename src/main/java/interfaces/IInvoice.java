@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -22,4 +23,19 @@ public interface IInvoice extends com.pts62.common.europe.ISubInvoice {
     ArrayList<IInvoiceDetail> invoiceDetails();
 
     String paymentDetails();
+
+    void setInvoiceDetails(ArrayList<IInvoiceDetail> invoiceDetails);
+
+    void setPaymentDetails(String paymentDetails);
+
+    void setInvoiceNumber(String invoiceNumber);
+
+    void setCountry(String country);
+
+    void setPaymentStatus(boolean paymentStatus);
+
+    void setPrice(BigDecimal price);
+
+    void setInvoiceDate(String date);
+
 }

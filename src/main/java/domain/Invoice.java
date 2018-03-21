@@ -2,6 +2,7 @@ package domain;
 
 import interfaces.IInvoice;
 import interfaces.IInvoiceDetail;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,21 +28,12 @@ public class Invoice implements IInvoice {
     private BigDecimal price;
 
     public Invoice() { }
+
     public Invoice(ArrayList<IInvoiceDetail> invoiceDetails, String country, String invoiceDate, BigDecimal price) {
         this.invoiceDetails = invoiceDetails;
         this.country = country;
         this.invoiceDate = invoiceDate;
         this.price = price;
-    }
-
-    @Override
-    public ArrayList<IInvoiceDetail> invoiceDetails() {
-        return this.invoiceDetails;
-    }
-
-    @Override
-    public String paymentDetails() {
-        return this.paymentDetails;
     }
 
     @Override
@@ -66,12 +58,52 @@ public class Invoice implements IInvoice {
 
     @Override
     public double getPrice() {
-        try {
-            throw new Exception("This method should return a BigDecimal instead of double");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        throw new NotImplementedException();
+    }
 
-        return 0;
+    @Override
+    public ArrayList<IInvoiceDetail> invoiceDetails() {
+        return this.invoiceDetails;
+    }
+
+    @Override
+    public String paymentDetails() {
+        return this.paymentDetails;
+    }
+
+    @Override
+    public void setInvoiceDetails(ArrayList<IInvoiceDetail> invoiceDetails) {
+        this.invoiceDetails = invoiceDetails;
+    }
+
+    @Override
+    public void setPaymentDetails(String paymentDetails) {
+        this.paymentDetails = paymentDetails;
+    }
+
+    @Override
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+    @Override
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    @Override
+    public void setPaymentStatus(boolean paymentStatus) {
+        this.paymentStatus = paymentStatus;
+
+    }
+
+    @Override
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    @Override
+    public void setInvoiceDate(String date) {
+        this.invoiceDate = invoiceDate;
     }
 }
