@@ -58,7 +58,7 @@ public class Invoice implements IInvoice {
 
     @Override
     public BigDecimal getPrice() {
-        throw new NotImplementedException();
+        return this.price;
     }
 
     @Override
