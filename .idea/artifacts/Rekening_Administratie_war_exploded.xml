@@ -7,8 +7,8 @@
           <element id="module-output" name="Rekening-Administratie" />
         </element>
         <element id="directory" name="lib">
-          <element id="file-copy" path="$MAVEN_REPOSITORY$/com/pts6/common/1.0-SNAPSHOT/common-1.0-20180314.110356-2.jar" output-file-name="common-1.0-SNAPSHOT.jar" />
-          <element id="library" level="project" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:1.2.30" />
+          <element id="library" level="project" name="Maven: com.pts6:common:2.0.0" />
+          <element id="library" level="project" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:1.2.31" />
           <element id="library" level="project" name="Maven: org.jetbrains:annotations:13.0" />
           <element id="library" level="project" name="Maven: javax.persistence:persistence-api:1.0.2" />
           <element id="library" level="project" name="Maven: javax.ws.rs:javax.ws.rs-api:2.1" />

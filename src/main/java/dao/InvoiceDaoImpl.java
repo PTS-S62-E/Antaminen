@@ -32,7 +32,7 @@ public class InvoiceDaoImpl implements IInvoiceDao {
         if(invoice.invoiceDetails() == null || invoice.invoiceDetails().size() < 1) { throw new InvoiceException("No Invoice details found."); }
         if(invoice.getCountry() == null || invoice.getCountry().isEmpty()) { throw new InvoiceException("No country code provided in Invoice."); }
         if(invoice.getInvoiceDate() == null) { throw new InvoiceException("No InvoiceDate provided in Invoice."); }
-        if(invoice.getPrice() < 0) { throw new InvoiceException("No positive price provided in Invoice."); }
+        if(invoice.getPrice().compareTo(BigDecimal.ZERO) < 0) { throw new InvoiceException("No positive price provided in Invoice."); }
 
         throw new NotImplementedException();
     }

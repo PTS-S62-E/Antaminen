@@ -1,6 +1,7 @@
 package domain;
 
 import com.pts62.common.europe.ITransLocation;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -12,7 +13,7 @@ import com.pts62.common.europe.ITransLocation;
  * | Project Package Name: domain
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-public class TransLocation implements ITransLocation {
+public class TransLocation implements ITransLocation  {
 
     private Double lat;
     private Double lon;
@@ -56,18 +57,21 @@ public class TransLocation implements ITransLocation {
         return this.lon;
     }
 
+    @NotNull
     @Override
-    public String getDateTime() {
+    public String getTime() {
         return this.dateTime;
     }
 
+    @NotNull
     @Override
-    public String getSerialNumber() {
+    public String getSerialnumber() {
         return this.serialNumber;
     }
 
+    @NotNull
     @Override
-    public String getCountryCode() {
+    public String getCountrycode() {
         return this.countryCode;
     }
 }
