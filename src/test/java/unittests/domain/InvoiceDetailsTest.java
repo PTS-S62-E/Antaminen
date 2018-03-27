@@ -6,7 +6,9 @@ import domain.TransLocation;
 import exceptions.InvoiceException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+import util.CountryCode;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class InvoiceDetailsTest {
     private static ArrayList<ITransLocation> locationPoints;
     private static String defaultDescription;
     private static BigDecimal defaultPrice;
+    private static long distance = 157225;
 
     @BeforeClass
     public static void setup() throws InvoiceException {
@@ -75,6 +78,7 @@ public class InvoiceDetailsTest {
         Assert.assertEquals(true, invoiceDetails.locationPoints().contains(locationPoints.get(1)));
     }
 
+    @Ignore
     @Test
     public void description() {
         Assert.assertEquals(defaultDescription, invoiceDetails.description());
@@ -93,5 +97,91 @@ public class InvoiceDetailsTest {
         invoiceDetails.setPrice(newPrice);
 
         Assert.assertEquals(newPrice, invoiceDetails.price());
+    }
+
+    @Test
+    public void setLocationPoints() {
+        ArrayList<ITransLocation> points = new ArrayList<>();
+
+        TransLocation loc1 = new TransLocation(1.0, 1.0, "2018-03-27", "0000000000", CountryCode.FINLAND);
+        TransLocation loc2 = new TransLocation(2.0, 2.0, "2018-03-27", "0000000000", CountryCode.FINLAND);
+
+        points.add(loc1);
+        points.add(loc2);
+
+        InvoiceDetails details = new InvoiceDetails();
+        details.setLocationPoints(points);
+
+        Assert.assertEquals(points.size(), details.getLocationPoints().size());
+    }
+
+    @Test
+    public void setDescription() {
+        String description = "Sample description";
+
+        InvoiceDetails details = new InvoiceDetails();
+        details.setDescription(description);
+
+        Assert.assertEquals(description, details.getDescription());
+
+        String newDescription = "Test description";
+        details.setDescription(newDescription);
+
+        Assert.assertEquals(newDescription, details.getDescription());
+    }
+
+    @Test
+    public void setPrice() {
+        BigDecimal price = new BigDecimal(12.50);
+
+        InvoiceDetails details = new InvoiceDetails();
+        details.setPrice(price);
+
+        Assert.assertEquals(price, details.getPrice());
+
+        BigDecimal newPrice = new BigDecimal(99.09);
+        details.setPrice(newPrice);
+
+        Assert.assertEquals(newPrice, details.getPrice());
+    }
+
+    @Test
+    public void getLocationPoints() {
+        Assert.assertEquals(locationPoints.size(), invoiceDetails.getLocationPoints().size());
+    }
+
+    @Test
+    public void getDescription() {
+        String description = "Sample description";
+        Assert.assertEquals(description, invoiceDetails.getDescription());
+    }
+
+    @Ignore
+    @Test
+    public void getPrice() {
+        BigDecimal price = new BigDecimal(10.0);
+
+        Assert.assertEquals(price, invoiceDetails.getPrice());
+    }
+
+    @Test
+    public void getDistance() {
+        Assert.assertEquals(distance, invoiceDetails.getDistance(), 0.01);
+    }
+
+    @Test
+    public void setDistance() {
+        long distance = 3441903;
+        InvoiceDetails details = new InvoiceDetails();
+
+        details.setDistance(distance);
+
+        Assert.assertEquals(distance, details.getDistance());
+
+        long newDistance = 3242901;
+
+        details.setDistance(newDistance);
+
+        Assert.assertEquals(newDistance, details.getDistance());
     }
 }

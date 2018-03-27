@@ -1,10 +1,5 @@
 package interfaces;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import domain.Invoice;
-import domain.InvoiceDetails;
-import util.Deserializers.InvoiceDeserializer;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -18,7 +13,6 @@ import java.util.ArrayList;
  * | Project Package Name: interfaces
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-@JsonDeserialize(as = Invoice.class)
 public interface IInvoice extends com.pts62.common.europe.ISubInvoice {
 
     /**
@@ -47,5 +41,9 @@ public interface IInvoice extends com.pts62.common.europe.ISubInvoice {
     ArrayList<IInvoiceDetail> getInvoiceDetails();
 
     String getPaymentDetails();
+
+    long getTotalDistance();
+
+    void setTotalDistance(long totalDistance);
 
 }
