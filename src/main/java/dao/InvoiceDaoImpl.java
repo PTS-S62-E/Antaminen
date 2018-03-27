@@ -6,6 +6,7 @@ import interfaces.IInvoice;
 import interfaces.IInvoiceDao;
 import interfaces.IInvoiceDetail;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import temp.InvoiceMock;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
@@ -96,11 +97,7 @@ public class InvoiceDaoImpl implements IInvoiceDao {
     public IInvoice findInvoiceByInvoiceNumer(String invoiceNumber) throws InvoiceException {
         if(invoiceNumber.isEmpty()) { throw new InvoiceException("Please provide an Invoice number."); }
 
-        if(invoices.size() > 1) {
-            return invoices.get(0);
-        } else {
-            return null;
-        }
+        return InvoiceMock.getInstance().findInvoice(invoiceNumber);
     }
 
     private BigDecimal calculateTotalInvoicePrice(ArrayList<IInvoiceDetail> invoiceDetails) throws InvoiceException {

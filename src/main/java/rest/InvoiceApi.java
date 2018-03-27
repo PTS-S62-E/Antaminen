@@ -1,25 +1,12 @@
 package rest;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pts62.common.europe.ITransLocation;
-import domain.Invoice;
-import domain.InvoiceDetails;
-import domain.TransLocation;
 import exceptions.InvoiceException;
 import interfaces.IInvoice;
-import interfaces.IInvoiceDetail;
 import service.InvoiceService;
-import util.InvoiceBootstrapper;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 import static javax.ws.rs.core.MediaType.*;
 
