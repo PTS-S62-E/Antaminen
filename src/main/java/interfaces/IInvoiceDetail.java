@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pts62.common.europe.ITransLocation;
 import domain.InvoiceDetails;
 import domain.TransLocation;
-import util.Deserializers.InvoiceDetailDeserializer;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,15 +20,9 @@ import java.util.ArrayList;
  * | Project Package Name: interfaces
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = InvoiceDetails.class, name = "invoicedetails") })
+
 public interface IInvoiceDetail {
 
-    @JsonDeserialize(as = TransLocation.class)
     ArrayList<ITransLocation> locationPoints();
 
     String description();
@@ -47,5 +40,9 @@ public interface IInvoiceDetail {
     String getDescription();
 
     BigDecimal getPrice();
+
+    long getDistance();
+
+    void setDistance(long distance);
 
 }

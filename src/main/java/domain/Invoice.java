@@ -19,10 +19,8 @@ import java.util.ArrayList;
  * | Project Package Name: domain
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-@JsonDeserialize(as = Invoice.class)
 public class Invoice implements IInvoice, Serializable {
 
-    @JsonDeserialize(as = InvoiceDetails.class)
     private ArrayList<IInvoiceDetail> invoiceDetails;
     private String paymentDetails;
     private String invoiceNumber;
@@ -30,6 +28,7 @@ public class Invoice implements IInvoice, Serializable {
     private boolean paymentStatus;
     private String invoiceDate;
     private BigDecimal price;
+    private long totalDistance;
 
     public Invoice() { }
 
@@ -38,6 +37,10 @@ public class Invoice implements IInvoice, Serializable {
         this.country = country;
         this.invoiceDate = invoiceDate;
         this.price = price;
+
+        for(IInvoiceDetail detail : invoiceDetails) {
+            this.totalDistance += detail.getDistance();
+        }
     }
 
     @Override
@@ -119,6 +122,16 @@ public class Invoice implements IInvoice, Serializable {
     @Override
     public String getPaymentDetails() {
         return this.paymentDetails;
+    }
+
+    @Override
+    public long getTotalDistance() {
+        return this.totalDistance;
+    }
+
+    @Override
+    public void setTotalDistance(long totalDistance) {
+        this.totalDistance = totalDistance;
     }
 
     public boolean isPaymentStatus() {

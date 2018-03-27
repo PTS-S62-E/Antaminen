@@ -116,4 +116,52 @@ public class InvoiceTest {
 
         Assert.assertEquals(newPrice, invoice.getPrice());
     }
+
+    @Test
+    public void setInvoiceDetails() {
+    }
+
+    @Test
+    public void setPaymentDetails() {
+    }
+
+    @Test
+    public void setInvoiceNumber() {
+    }
+
+    @Test
+    public void setCountry() {
+    }
+
+    @Test
+    public void setPaymentStatus() {
+    }
+
+    @Test
+    public void setPrice() {
+    }
+
+    @Test
+    public void setInvoiceDate() {
+    }
+
+    @Test
+    public void getInvoiceDetails() {
+    }
+
+    @Test
+    public void getPaymentDetails() {
+    }
+
+    @Test
+    public void getTotalDistance() {
+    }
+
+    @Test
+    public void setTotalDistance() {
+    }
+
+    @Test
+    public void isPaymentStatus() {
+    }
 }

@@ -9,9 +9,5 @@ import java.util.ArrayList;
 
 public interface IInvoiceService {
 
-    boolean createInvoice(Invoice invoice) throws InvoiceException;
-
-    boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, @Nullable String countryCode, @Nullable LocalDateTime invoiceDate) throws InvoiceException;
-
     IInvoice findInvoiceByInvoiceNumber(String invoiceNumber) throws InvoiceException;
 }

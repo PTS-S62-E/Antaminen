@@ -1,23 +1,12 @@
 package rest;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import domain.Invoice;
-import domain.InvoiceDetails;
 import exceptions.InvoiceException;
 import interfaces.IInvoice;
-import interfaces.IInvoiceDetail;
 import service.InvoiceService;
-import util.InvoiceBootstrapper;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 import static javax.ws.rs.core.MediaType.*;
 
@@ -52,68 +41,10 @@ public class InvoiceApi {
 
     }
 
+    @GET
     @Path("/")
-    @POST
     @Produces(APPLICATION_JSON)
-    @Consumes(APPLICATION_JSON)
-    public boolean createInvoice(Invoice invoice) {
-        System.out.println("Check invoice null");
-        if(invoice == null) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
-        System.out.println("Check invoice date");
-        if(invoice.getInvoiceDate().isEmpty()) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
-        System.out.println("Check invoice country");
-        if(invoice.getCountry().isEmpty()) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
-        System.out.println("Check invoice price");
-        if(invoice.getPrice().compareTo(BigDecimal.ZERO) <= 0) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
-        System.out.println("Check invoice details");
-        if(invoice.invoiceDetails().size() < 1) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
-
-        boolean result = false;
-
-        try {
-            result = service.createInvoice(invoice);
-
-            if(!result) {
-                throw new WebApplicationException("Returned false when creating invoice.", Response.Status.INTERNAL_SERVER_ERROR);
-            } else { return result; }
-        } catch (InvoiceException e) {
-            throw new WebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Path("/advanced")
-    @POST
-    @Produces(APPLICATION_JSON)
-    @Consumes(APPLICATION_JSON)
-    public boolean createInvoiceWithParams(String body) {
-        ObjectMapper mapper = new ObjectMapper();
-        InvoiceBootstrapper bootstrapper = null;
-        try {
-            bootstrapper = mapper.readValue(body, InvoiceBootstrapper.class);
-        } catch (IOException e) {
-            throw new WebApplicationException("Something went wrong with parsing the JSON data.", Response.Status.INTERNAL_SERVER_ERROR);
-        }
-        if(bootstrapper == null) { throw new WebApplicationException(Response.Status.BAD_REQUEST); }
-        if(bootstrapper.getInvoiceDetails().size() < 1) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
-
-        // No checks for params countryCode and invoiceDate. See below
-
-        boolean result = false;
-
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDateTime date = LocalDateTime.parse(bootstrapper.getInvoiceDate(), formatter);
-            // param countryCode and invoiceDate are nullable, service layer will provide correct information for creating invoice
-            result = service.createInvoice(bootstrapper.getInvoiceDetails(), bootstrapper.getCountryCode(), date);
-
-            if(!result) {
-                throw new WebApplicationException("Returned false when creating invoice.", Response.Status.INTERNAL_SERVER_ERROR);
-            } else { return result; }
-        } catch (InvoiceException ie) {
-            throw new WebApplicationException(ie.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
-        } catch (Exception ex) {
-            throw new WebApplicationException(ex.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
-        }
-
+    public String getAllInvoices() {
+        return "{\"error\": \"Use another endpoint to get information.\"}";
     }
 }
