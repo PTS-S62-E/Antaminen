@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pts62.common.europe.ITransLocation;
 import exceptions.InvoiceException;
 import interfaces.IInvoiceDetail;
+import util.DistanceCalculator;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -25,13 +26,22 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
     private ArrayList<ITransLocation> locationPoints;
     private String description;
     private BigDecimal price;
+    private long distance;
 
     public InvoiceDetails() { }
 
     public InvoiceDetails(ArrayList<ITransLocation> locationPoints, String description, BigDecimal price) throws InvoiceException {
-        if(locationPoints == null || locationPoints.size() < 1) { throw new InvoiceException("No Locationpoints provded for InvoiceDetails."); }
+        if(locationPoints == null || locationPoints.size() < 2) { throw new InvoiceException("No locationPoints provided for InvoiceDetails or only 1 provided."); }
         if(description.isEmpty()) { throw new InvoiceException("Please provide a description for this InvoiceDetail."); }
         if(price == null || price.compareTo(BigDecimal.ZERO) < 0) { throw new InvoiceException("Please provide a positive price for this InvoiceDetail."); }
+
+        for(int i = 0; i < locationPoints.size() -1; i++) {
+            // Change the 0.0 params if you also want to take elevation into account
+            int j = i + 1;
+            this.distance += DistanceCalculator.distance(locationPoints.get(i).getLat(), locationPoints.get(j).getLat(),
+                                                        locationPoints.get(i).getLon(), locationPoints.get(j).getLon(),
+                                                        0.0, 0.0);
+        }
 
         this.locationPoints = locationPoints;
         this.description = description;
@@ -81,5 +91,15 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
     @Override
     public BigDecimal getPrice() {
         return this.price;
+    }
+
+    @Override
+    public long getDistance() {
+        return this.distance;
+    }
+
+    @Override
+    public void setDistance(long distance) {
+        this.distance = distance;
     }
 }

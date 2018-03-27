@@ -42,4 +42,8 @@ public interface IInvoice extends com.pts62.common.europe.ISubInvoice {
 
     String getPaymentDetails();
 
+    long getTotalDistance();
+
+    void setTotalDistance(long totalDistance);
+
 }

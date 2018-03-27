@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pts62.common.europe.ITransLocation;
 import domain.InvoiceDetails;
 import domain.TransLocation;
-import util.Deserializers.InvoiceDetailDeserializer;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -41,5 +40,9 @@ public interface IInvoiceDetail {
     String getDescription();
 
     BigDecimal getPrice();
+
+    long getDistance();
+
+    void setDistance(long distance);
 
 }
