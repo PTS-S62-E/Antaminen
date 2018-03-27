@@ -1,5 +1,6 @@
 package rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import domain.Invoice;
 import domain.InvoiceDetails;
 import exceptions.InvoiceException;
@@ -12,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -82,7 +84,15 @@ public class InvoiceApi {
     @Path("/advanced")
     @POST
     @Produces(APPLICATION_JSON)
-    public boolean createInvoiceWithParams(InvoiceBootstrapper bootstrapper) {
+    @Consumes(APPLICATION_JSON)
+    public boolean createInvoiceWithParams(String body) {
+        ObjectMapper mapper = new ObjectMapper();
+        InvoiceBootstrapper bootstrapper = null;
+        try {
+            bootstrapper = mapper.readValue(body, InvoiceBootstrapper.class);
+        } catch (IOException e) {
+            throw new WebApplicationException("Something went wrong with parsing the JSON data.", Response.Status.INTERNAL_SERVER_ERROR);
+        }
         if(bootstrapper == null) { throw new WebApplicationException(Response.Status.BAD_REQUEST); }
         if(bootstrapper.getInvoiceDetails().size() < 1) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
 

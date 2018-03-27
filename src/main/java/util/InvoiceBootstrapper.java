@@ -1,5 +1,7 @@
 package util;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import domain.InvoiceDetails;
 import interfaces.IInvoiceDetail;
 
 import java.time.LocalDateTime;
@@ -7,6 +9,7 @@ import java.util.ArrayList;
 
 public class InvoiceBootstrapper {
 
+    @JsonDeserialize(as = InvoiceDetails.class)
     private ArrayList<IInvoiceDetail> invoiceDetails;
     private String countryCode;
     private String invoiceDate;

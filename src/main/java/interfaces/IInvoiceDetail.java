@@ -1,8 +1,11 @@
 package interfaces;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pts62.common.europe.ITransLocation;
 import domain.InvoiceDetails;
+import domain.TransLocation;
 import util.Deserializers.InvoiceDetailDeserializer;
 
 import java.math.BigDecimal;
@@ -18,9 +21,15 @@ import java.util.ArrayList;
  * | Project Package Name: interfaces
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-@JsonDeserialize(as = InvoiceDetails.class)
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = InvoiceDetails.class, name = "invoicedetails") })
 public interface IInvoiceDetail {
 
+    @JsonDeserialize(as = TransLocation.class)
     ArrayList<ITransLocation> locationPoints();
 
     String description();
