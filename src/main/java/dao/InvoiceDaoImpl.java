@@ -7,6 +7,8 @@ import interfaces.IInvoiceDao;
 import interfaces.IInvoiceDetail;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,9 +23,12 @@ import java.util.ArrayList;
  * | Project Package Name: dao
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
+@ApplicationScoped
+@Named
 public class InvoiceDaoImpl implements IInvoiceDao {
 
     private final String countryCode = "FI";
+    private ArrayList<IInvoice> invoices = new ArrayList<>();
 
 
     @Override
@@ -34,7 +39,11 @@ public class InvoiceDaoImpl implements IInvoiceDao {
         if(invoice.getInvoiceDate() == null) { throw new InvoiceException("No InvoiceDate provided in Invoice."); }
         if(invoice.getPrice().compareTo(BigDecimal.ZERO) < 0) { throw new InvoiceException("No positive price provided in Invoice."); }
 
-        throw new NotImplementedException();
+        invoices.add(invoice);
+
+        //TODO: Persist to database
+
+        return true;
     }
 
     @Override
@@ -46,7 +55,11 @@ public class InvoiceDaoImpl implements IInvoiceDao {
 
         Invoice invoice = new Invoice(invoiceDetails, this.countryCode, currentDate.toString(), price);
 
-        throw new NotImplementedException();
+        invoices.add(invoice);
+        //TODO: Persist to database
+
+        return true;
+
     }
 
     @Override
@@ -59,8 +72,10 @@ public class InvoiceDaoImpl implements IInvoiceDao {
 
         Invoice invoice = new Invoice(invoiceDetails, countryCode, currentDate.toString(), price);
 
-        throw new NotImplementedException();
-    }
+        invoices.add(invoice);
+        //TODO: Persist to database
+
+        return true;    }
 
     @Override
     public boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, String countryCode, LocalDateTime invoiceDate) throws InvoiceException {
@@ -71,14 +86,21 @@ public class InvoiceDaoImpl implements IInvoiceDao {
         BigDecimal price = this.calculateTotalInvoicePrice(invoiceDetails);
         Invoice invoice = new Invoice(invoiceDetails, countryCode, invoiceDate.toString(), price);
 
-        throw new NotImplementedException();
+        invoices.add(invoice);
+        //TODO: Persist to database
+
+        return true;
     }
 
     @Override
     public IInvoice findInvoiceByInvoiceNumer(String invoiceNumber) throws InvoiceException {
         if(invoiceNumber.isEmpty()) { throw new InvoiceException("Please provide an Invoice number."); }
 
-        return null;
+        if(invoices.size() > 1) {
+            return invoices.get(0);
+        } else {
+            return null;
+        }
     }
 
     private BigDecimal calculateTotalInvoicePrice(ArrayList<IInvoiceDetail> invoiceDetails) throws InvoiceException {

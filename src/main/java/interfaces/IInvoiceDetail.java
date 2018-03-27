@@ -1,6 +1,9 @@
 package interfaces;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pts62.common.europe.ITransLocation;
+import domain.InvoiceDetails;
+import util.Deserializers.InvoiceDetailDeserializer;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -15,6 +18,7 @@ import java.util.ArrayList;
  * | Project Package Name: interfaces
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
+@JsonDeserialize(as = InvoiceDetails.class)
 public interface IInvoiceDetail {
 
     ArrayList<ITransLocation> locationPoints();
@@ -28,5 +32,11 @@ public interface IInvoiceDetail {
     void setDescription(String description);
 
     void setPrice(BigDecimal price);
+
+    ArrayList<ITransLocation> getLocationPoints();
+
+    String getDescription();
+
+    BigDecimal getPrice();
 
 }

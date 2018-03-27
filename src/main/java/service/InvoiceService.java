@@ -7,14 +7,20 @@ import interfaces.IInvoice;
 import interfaces.IInvoiceDetail;
 import interfaces.IInvoiceService;
 import org.jetbrains.annotations.Nullable;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import util.CountryCode;
 
+import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Model;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+@ApplicationScoped
+@Model
 public class InvoiceService implements IInvoiceService {
 
     @Inject

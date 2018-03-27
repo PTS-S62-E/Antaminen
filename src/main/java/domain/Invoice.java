@@ -1,9 +1,11 @@
 package domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import interfaces.IInvoice;
 import interfaces.IInvoiceDetail;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -17,8 +19,10 @@ import java.util.ArrayList;
  * | Project Package Name: domain
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-public class Invoice implements IInvoice {
+@JsonDeserialize(as = Invoice.class)
+public class Invoice implements IInvoice, Serializable {
 
+    @JsonDeserialize(as = InvoiceDetails.class)
     private ArrayList<IInvoiceDetail> invoiceDetails;
     private String paymentDetails;
     private String invoiceNumber;
@@ -105,5 +109,19 @@ public class Invoice implements IInvoice {
     @Override
     public void setInvoiceDate(String date) {
         this.invoiceDate = date;
+    }
+
+    @Override
+    public ArrayList<IInvoiceDetail> getInvoiceDetails() {
+        return this.invoiceDetails;
+    }
+
+    @Override
+    public String getPaymentDetails() {
+        return this.paymentDetails;
+    }
+
+    public boolean isPaymentStatus() {
+        return paymentStatus;
     }
 }

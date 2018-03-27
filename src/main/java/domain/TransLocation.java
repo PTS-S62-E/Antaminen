@@ -3,6 +3,8 @@ package domain;
 import com.pts62.common.europe.ITransLocation;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
+
 /**
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * | Created by juleskreutzer
@@ -13,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * | Project Package Name: domain
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-public class TransLocation implements ITransLocation  {
+public class TransLocation implements ITransLocation, Serializable {
 
     private Double lat;
     private Double lon;
@@ -73,5 +75,21 @@ public class TransLocation implements ITransLocation  {
     @Override
     public String getCountrycode() {
         return this.countryCode;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
     }
 }

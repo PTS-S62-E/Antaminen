@@ -1,9 +1,11 @@
 package domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pts62.common.europe.ITransLocation;
 import exceptions.InvoiceException;
 import interfaces.IInvoiceDetail;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -17,8 +19,11 @@ import java.util.ArrayList;
  * | Project Package Name: domain
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-public class InvoiceDetails implements IInvoiceDetail {
 
+@JsonDeserialize(as = InvoiceDetails.class)
+public class InvoiceDetails implements IInvoiceDetail, Serializable {
+
+    @JsonDeserialize(as = TransLocation.class)
     private ArrayList<ITransLocation> locationPoints;
     private String description;
     private BigDecimal price;
@@ -63,5 +68,20 @@ public class InvoiceDetails implements IInvoiceDetail {
     @Override
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    @Override
+    public ArrayList<ITransLocation> getLocationPoints() {
+        return this.locationPoints;
+    }
+
+    @Override
+    public String getDescription() {
+        return this.description;
+    }
+
+    @Override
+    public BigDecimal getPrice() {
+        return this.price;
     }
 }
