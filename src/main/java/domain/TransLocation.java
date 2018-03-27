@@ -84,12 +84,4 @@ public class TransLocation implements ITransLocation, Serializable {
     public String getDateTime() {
         return dateTime;
     }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
 }

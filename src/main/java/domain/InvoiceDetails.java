@@ -20,10 +20,8 @@ import java.util.ArrayList;
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
-@JsonDeserialize(as = InvoiceDetails.class)
 public class InvoiceDetails implements IInvoiceDetail, Serializable {
 
-    @JsonDeserialize(as = TransLocation.class)
     private ArrayList<ITransLocation> locationPoints;
     private String description;
     private BigDecimal price;

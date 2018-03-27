@@ -21,15 +21,9 @@ import java.util.ArrayList;
  * | Project Package Name: interfaces
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = InvoiceDetails.class, name = "invoicedetails") })
+
 public interface IInvoiceDetail {
 
-    @JsonDeserialize(as = TransLocation.class)
     ArrayList<ITransLocation> locationPoints();
 
     String description();

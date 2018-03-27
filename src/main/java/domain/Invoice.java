@@ -19,10 +19,8 @@ import java.util.ArrayList;
  * | Project Package Name: domain
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-@JsonDeserialize(as = Invoice.class)
 public class Invoice implements IInvoice, Serializable {
 
-    @JsonDeserialize(as = InvoiceDetails.class)
     private ArrayList<IInvoiceDetail> invoiceDetails;
     private String paymentDetails;
     private String invoiceNumber;
