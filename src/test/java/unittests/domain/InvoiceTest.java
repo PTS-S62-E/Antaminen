@@ -117,8 +117,6 @@ public class InvoiceTest {
         Assert.assertEquals(newPrice, invoice.getPrice());
     }
 
-    
-
     @Test
     public void setInvoiceDetails() {
     }

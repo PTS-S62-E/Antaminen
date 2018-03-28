@@ -103,10 +103,10 @@ public class InvoiceDaoImpl implements IInvoiceDao {
     private BigDecimal calculateTotalInvoicePrice(ArrayList<IInvoiceDetail> invoiceDetails) throws InvoiceException {
         if(invoiceDetails == null || invoiceDetails.size() < 1) { throw new InvoiceException("Please provide Invoice details to calculate the total price."); }
 
-        BigDecimal totalPrice = new BigDecimal(0.0);
+        BigDecimal totalPrice = BigDecimal.valueOf(0.0);
 
         for(IInvoiceDetail detail : invoiceDetails) {
-            totalPrice.add(detail.price());
+            totalPrice = totalPrice.add(detail.price());
         }
 
         return totalPrice;
