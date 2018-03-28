@@ -1,7 +1,6 @@
 package domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.pts62.common.europe.ITransLocation;
+import com.rekeningrijden.europe.interfaces.ITransLocation;
 import exceptions.InvoiceException;
 import interfaces.IInvoiceDetail;
 import util.DistanceCalculator;

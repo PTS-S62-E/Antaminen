@@ -1,9 +1,8 @@
 package domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.rekeningrijden.europe.interfaces.ISubInvoice;
 import interfaces.IInvoice;
 import interfaces.IInvoiceDetail;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
  * | Project Package Name: domain
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-public class Invoice implements IInvoice, Serializable {
+public class Invoice implements IInvoice, ISubInvoice, Serializable {
 
     private ArrayList<IInvoiceDetail> invoiceDetails;
     private String paymentDetails;
@@ -64,8 +63,8 @@ public class Invoice implements IInvoice, Serializable {
     }
 
     @Override
-    public BigDecimal getPrice() {
-        return this.price;
+    public double getPrice() {
+        return this.price.doubleValue();
     }
 
     @Override
@@ -101,7 +100,6 @@ public class Invoice implements IInvoice, Serializable {
     @Override
     public void setPaymentStatus(boolean paymentStatus) {
         this.paymentStatus = paymentStatus;
-
     }
 
     @Override

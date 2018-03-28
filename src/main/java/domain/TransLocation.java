@@ -1,6 +1,6 @@
 package domain;
 
-import com.pts62.common.europe.ITransLocation;
+import com.rekeningrijden.europe.interfaces.ITransLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -60,20 +60,19 @@ public class TransLocation implements ITransLocation, Serializable {
     }
 
     @NotNull
-    @Override
     public String getTime() {
         return this.dateTime;
     }
 
     @NotNull
     @Override
-    public String getSerialnumber() {
+    public String getSerialNumber() {
         return this.serialnumber;
     }
 
     @NotNull
     @Override
-    public String getCountrycode() {
+    public String getCountryCode() {
         return this.countryCode;
     }
 

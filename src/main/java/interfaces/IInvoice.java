@@ -1,5 +1,7 @@
 package interfaces;
 
+import com.rekeningrijden.europe.interfaces.ISubInvoice;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -13,7 +15,7 @@ import java.util.ArrayList;
  * | Project Package Name: interfaces
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-public interface IInvoice extends com.pts62.common.europe.ISubInvoice {
+public interface IInvoice extends ISubInvoice {
 
     /**
      * Get information about the rows on an invoice
