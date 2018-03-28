@@ -1,11 +1,6 @@
 package interfaces;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.pts62.common.europe.ITransLocation;
-import domain.InvoiceDetails;
-import domain.TransLocation;
+import com.rekeningrijden.europe.interfaces.ITransLocation;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package unittests.domain;
 
-import com.pts62.common.europe.ITransLocation;
+import com.rekeningrijden.europe.interfaces.ITransLocation;
 import domain.InvoiceDetails;
 import domain.TransLocation;
 import exceptions.InvoiceException;
