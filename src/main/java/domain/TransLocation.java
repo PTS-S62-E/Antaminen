@@ -20,7 +20,7 @@ public class TransLocation implements ITransLocation, Serializable {
     private Double lat;
     private Double lon;
     private String dateTime;
-    private String serialNumber;
+    private String serialnumber;
     private String countryCode;
 
     public TransLocation() { }
@@ -29,7 +29,7 @@ public class TransLocation implements ITransLocation, Serializable {
         this.lat = lat;
         this.lon = lon;
         this.dateTime = dateTime;
-        this.serialNumber = serialNumber;
+        this.serialnumber = serialNumber;
         this.countryCode = countryCode;
     }
 
@@ -41,8 +41,8 @@ public class TransLocation implements ITransLocation, Serializable {
         this.dateTime = dateTime;
     }
 
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
+    public void setSerialnumber(String serialNumber) {
+        this.serialnumber = serialNumber;
     }
 
     public void setCountryCode(String countryCode) {
@@ -68,7 +68,7 @@ public class TransLocation implements ITransLocation, Serializable {
     @NotNull
     @Override
     public String getSerialnumber() {
-        return this.serialNumber;
+        return this.serialnumber;
     }
 
     @NotNull
