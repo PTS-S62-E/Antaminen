@@ -1,6 +1,7 @@
 package rest;
 import exceptions.InvoiceException;
 import interfaces.IInvoice;
+import io.sentry.Sentry;
 import service.InvoiceService;
 
 import javax.ejb.Stateless;
@@ -36,6 +37,7 @@ public class InvoiceApi {
 
             return result;
         } catch (InvoiceException e) {
+            Sentry.capture(e);
             throw new WebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
 

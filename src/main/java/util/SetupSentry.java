@@ -16,7 +16,7 @@ public class SetupSentry {
 
     @PostConstruct
     public void startup() {
-        Sentry.init("http://8929efda9f724aa8976c86537437484a:8092ef1438554ba3925c8dc9a5342ea8@85.144.215.28:9002/6");
+        Sentry.init();
 
         sentry = SentryClientFactory.sentryClient();
 
