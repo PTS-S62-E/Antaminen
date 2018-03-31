@@ -47,4 +47,12 @@ public class InvoiceService implements IInvoiceService {
 
         return invoiceDao.findInvoiceByUser(userId);
     }
+
+    @Override
+    public boolean payInvoice(String invoiceNumber, String paymentDetails) throws InvoiceException {
+        if(invoiceNumber.isEmpty()) { throw new InvoiceException("Please provide an invoice number"); }
+        if(paymentDetails.isEmpty()) { throw new InvoiceException("Please provide payment details"); }
+
+        return invoiceDao.payInvoice(invoiceNumber, paymentDetails);
+    }
 }

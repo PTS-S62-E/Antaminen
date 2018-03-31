@@ -101,4 +101,17 @@ public class InvoiceMock {
         return new ArrayList<>(invoices);
     }
 
+    public boolean payInvoice(String invoiceNumber, String paymentDetails) throws InvoiceException {
+        for(Invoice invoice : invoices) {
+            if(invoice.getInvoiceNumber().toLowerCase().equals(invoiceNumber.toLowerCase())) {
+                invoice.setPaymentStatus(true);
+                invoice.setPaymentDetails(paymentDetails);
+
+                return true;
+            }
+        }
+
+        throw new InvoiceException("Invoice not found!");
+    }
+
 }

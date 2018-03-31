@@ -44,4 +44,6 @@ public interface IInvoiceDao {
     IInvoice findInvoiceByInvoiceNumer(String invoiceNumber) throws InvoiceException;
 
     ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException;
+
+    boolean payInvoice(String invoiceNumber, String paymentDetails) throws InvoiceException;
 }

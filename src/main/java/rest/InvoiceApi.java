@@ -1,15 +1,20 @@
 package rest;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
 import exceptions.InvoiceException;
 import interfaces.IInvoice;
 import io.sentry.Sentry;
+import org.jetbrains.annotations.Nullable;
 import service.InvoiceService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.json.Json;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import static javax.ws.rs.core.MediaType.*;
 
@@ -19,6 +24,28 @@ public class InvoiceApi {
 
     @Inject
     private InvoiceService service;
+
+    /**
+     * Get all invoices for a user based on the token
+     * @return
+     */
+    @GET
+    @Path("/")
+    @Produces(APPLICATION_JSON)
+    public ArrayList<IInvoice> getAllInvoices() {
+        try {
+            ArrayList<IInvoice> result = service.findInvoiceByUser(1);
+
+            if(result == null) {
+                throw new WebApplicationException(Response.Status.NO_CONTENT);
+            } else {
+                return result;
+            }
+        } catch (InvoiceException e) {
+            Sentry.capture(e);
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     /**
      * Find an invoice for the provided invoiceNumber
@@ -42,21 +69,26 @@ public class InvoiceApi {
             Sentry.capture(e);
             throw new WebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
-
     }
 
-    @GET
-    @Path("/")
-    @Produces(APPLICATION_JSON)
-    public ArrayList<IInvoice> getAllInvoices() {
+    @POST
+    @Path("/pay")
+    @Consumes(APPLICATION_JSON)
+    public boolean payInvoice(JsonNode data) {
+        if(data.get("invoiceNumber") == null || data.get("invoiceNumber").asText().isEmpty()) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
         try {
-            ArrayList<IInvoice> result = service.findInvoiceByUser(1);
+            String invoiceNumber = data.get("invoiceNumber").asText();
+            String paymentDetails = "No payment details provided.";
 
-            if(result == null) {
-                throw new WebApplicationException(Response.Status.NO_CONTENT);
-            } else {
-                return result;
-            }
+            if(data.get("paymentDetails") != null) { paymentDetails = data.get("paymentDetails").asText(); }
+
+            Logger logger = Logger.getLogger(getClass().getName());
+            logger.warning("Invoice number is: " + invoiceNumber);
+            logger.warning("Payment details are: " + paymentDetails);
+
+
+
+            return service.payInvoice(invoiceNumber, paymentDetails);
         } catch (InvoiceException e) {
             Sentry.capture(e);
             throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);

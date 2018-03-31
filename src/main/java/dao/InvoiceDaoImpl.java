@@ -108,6 +108,14 @@ public class InvoiceDaoImpl implements IInvoiceDao {
         return InvoiceMock.getInstance().getAllInvoices();
     }
 
+    @Override
+    public boolean payInvoice(String invoiceNumber, String paymentDetails) throws InvoiceException {
+        if(invoiceNumber.isEmpty()) { throw new InvoiceException("Please provide an invoice number"); }
+        if(paymentDetails.isEmpty()) { throw new InvoiceException("Please provide payment details"); }
+
+        return InvoiceMock.getInstance().payInvoice(invoiceNumber, paymentDetails);
+    }
+
     private BigDecimal calculateTotalInvoicePrice(ArrayList<IInvoiceDetail> invoiceDetails) throws InvoiceException {
         if(invoiceDetails == null || invoiceDetails.size() < 1) { throw new InvoiceException("Please provide Invoice details to calculate the total price."); }
 
