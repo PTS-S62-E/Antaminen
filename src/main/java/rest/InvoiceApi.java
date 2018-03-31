@@ -9,6 +9,8 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
+import java.util.ArrayList;
+
 import static javax.ws.rs.core.MediaType.*;
 
 @Stateless
@@ -46,7 +48,18 @@ public class InvoiceApi {
     @GET
     @Path("/")
     @Produces(APPLICATION_JSON)
-    public String getAllInvoices() {
-        return "{\"error\": \"Use another endpoint to get information.\"}";
+    public ArrayList<IInvoice> getAllInvoices() {
+        try {
+            ArrayList<IInvoice> result = service.findInvoiceByUser(1);
+
+            if(result == null) {
+                throw new WebApplicationException(Response.Status.NO_CONTENT);
+            } else {
+                return result;
+            }
+        } catch (InvoiceException e) {
+            Sentry.capture(e);
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
     }
 }

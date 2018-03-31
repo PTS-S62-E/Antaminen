@@ -40,4 +40,11 @@ public class InvoiceService implements IInvoiceService {
 
         return invoiceDao.findInvoiceByInvoiceNumer(invoiceNumber);
     }
+
+    @Override
+    public ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException {
+        if(userId < 0) { throw new InvoiceException("Please provide a valid userId"); }
+
+        return invoiceDao.findInvoiceByUser(userId);
+    }
 }

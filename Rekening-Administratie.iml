@@ -25,7 +25,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.pts6:common:3.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.PTS-S62-E:Osake:3.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.github.PTS-S62-E:Osake:3.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.github.luudvkeulen:EuropaInterfaces:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:1.2.31" level="project" />

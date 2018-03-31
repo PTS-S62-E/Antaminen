@@ -5,6 +5,7 @@ import domain.Invoice;
 import domain.InvoiceDetails;
 import domain.TransLocation;
 import exceptions.InvoiceException;
+import interfaces.IInvoice;
 import interfaces.IInvoiceDetail;
 import util.CountryCode;
 
@@ -93,6 +94,11 @@ public class InvoiceMock {
         }
 
         return null;
+    }
+
+    public ArrayList<IInvoice> getAllInvoices() {
+
+        return new ArrayList<>(invoices);
     }
 
 }

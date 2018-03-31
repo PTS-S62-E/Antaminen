@@ -101,6 +101,13 @@ public class InvoiceDaoImpl implements IInvoiceDao {
         return InvoiceMock.getInstance().findInvoice(invoiceNumber);
     }
 
+    @Override
+    public ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException {
+        if(userId < 0) { throw new InvoiceException("Please provide a valid userId"); }
+
+        return InvoiceMock.getInstance().getAllInvoices();
+    }
+
     private BigDecimal calculateTotalInvoicePrice(ArrayList<IInvoiceDetail> invoiceDetails) throws InvoiceException {
         if(invoiceDetails == null || invoiceDetails.size() < 1) { throw new InvoiceException("Please provide Invoice details to calculate the total price."); }
 

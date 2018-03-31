@@ -10,4 +10,6 @@ import java.util.ArrayList;
 public interface IInvoiceService {
 
     IInvoice findInvoiceByInvoiceNumber(String invoiceNumber) throws InvoiceException;
+
+    ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException;
 }
