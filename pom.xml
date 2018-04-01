@@ -126,6 +126,17 @@
                     <!--</excludes>-->
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <version>1.2.1.Final</version>
+                <configuration>
+                    <hostname>a8e11cd25d5d</hostname>
+                    <port>9990</port>
+                    <username>proftaak</username>
+                    <password>proftaak</password>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
