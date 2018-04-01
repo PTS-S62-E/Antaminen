@@ -42,4 +42,8 @@ public interface IInvoiceDao {
      * @return returns IInvoice object containing the invoice if found, null if not found
      */
     IInvoice findInvoiceByInvoiceNumer(String invoiceNumber) throws InvoiceException;
+
+    ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException;
+
+    boolean payInvoice(String invoiceNumber, String paymentDetails) throws InvoiceException;
 }

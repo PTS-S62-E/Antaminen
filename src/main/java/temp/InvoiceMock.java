@@ -5,6 +5,7 @@ import domain.Invoice;
 import domain.InvoiceDetails;
 import domain.TransLocation;
 import exceptions.InvoiceException;
+import interfaces.IInvoice;
 import interfaces.IInvoiceDetail;
 import util.CountryCode;
 
@@ -93,6 +94,24 @@ public class InvoiceMock {
         }
 
         return null;
+    }
+
+    public ArrayList<IInvoice> getAllInvoices() {
+
+        return new ArrayList<>(invoices);
+    }
+
+    public boolean payInvoice(String invoiceNumber, String paymentDetails) throws InvoiceException {
+        for(Invoice invoice : invoices) {
+            if(invoice.getInvoiceNumber().toLowerCase().equals(invoiceNumber.toLowerCase())) {
+                invoice.setPaymentStatus(true);
+                invoice.setPaymentDetails(paymentDetails);
+
+                return true;
+            }
+        }
+
+        throw new InvoiceException("Invoice not found!");
     }
 
 }
