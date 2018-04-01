@@ -132,6 +132,7 @@
                 <version>1.2.1.Final</version>
                 <configuration>
                     <address>a8e11cd25d5d</address>
+                    <hostname>a8e11cd25d5d</hostname>
                     <username>proftaak</username>
                     <password>proftaak</password>
                 </configuration>
