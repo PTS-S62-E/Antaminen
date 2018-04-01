@@ -78,6 +78,12 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.9.3</version>
         </dependency>
+        <!-- below dependency is used for deployement. Please do not remove! -->
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-cli</artifactId>
+            <version>8.2.1.Final</version>
+        </dependency>
     </dependencies>
 
     <build>
