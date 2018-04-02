@@ -7,19 +7,15 @@ import io.sentry.SentryClientFactory;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ws.rs.ext.Provider;
 
 @Startup
 @Singleton
 public class SetupSentry {
 
-    private static SentryClient sentry;
-
     @PostConstruct
-    public void startup() {
+    public void setupSentry() {
+        // Let sentry look for the properties file with the required information
         Sentry.init();
-
-        sentry = SentryClientFactory.sentryClient();
-
-        Sentry.capture("This is a test event");
     }
 }
