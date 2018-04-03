@@ -5,6 +5,7 @@ import interfaces.domain.IInvoice;
 import io.sentry.Sentry;
 import service.InvoiceService;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -19,8 +20,8 @@ import static javax.ws.rs.core.MediaType.*;
 @Path("invoices")
 public class InvoiceApi {
 
-    @Inject
-    private InvoiceService service;
+    @EJB
+    InvoiceService service;
 
     /**
      * Get all invoices for a user based on the token

@@ -3,6 +3,10 @@ package interfaces.dao;
 import domain.Owner;
 import exceptions.AccountException;
 
+import javax.ejb.Local;
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
+
 public interface IAccountDao {
 
     /**

@@ -5,17 +5,22 @@ import domain.Owner;
 import exceptions.AccountException;
 import interfaces.dao.IAccountDao;
 
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 @Stateless
+@LocalBean
 public class AccountDao implements IAccountDao {
 
     @PersistenceContext(unitName = "administratieUnit")
-    private EntityManager em;
+    EntityManager em;
+
+    public AccountDao() { }
 
     @Override
     public boolean create(String email, String password, Owner owner) throws AccountException {
@@ -50,6 +55,8 @@ public class AccountDao implements IAccountDao {
             } else {
                 a.setPassword(newPassword);
                 em.merge(a);
+
+                return true;
             }
         } catch (NoResultException nre) {
             throw new AccountException("Authentication failed");

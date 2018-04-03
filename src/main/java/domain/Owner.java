@@ -3,6 +3,7 @@ package domain;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Owner")
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 public class Owner implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "name")
@@ -28,7 +29,7 @@ public class Owner implements Serializable {
     private String postalCode;
 
     @OneToMany(mappedBy = "owner")
-    private ArrayList<Ownership> ownership;
+    private List<Ownership> ownership;
 
     public Owner() { }
 
@@ -73,7 +74,7 @@ public class Owner implements Serializable {
     }
 
     public ArrayList<Ownership> getOwnership() {
-        return ownership;
+        return (ArrayList<Ownership>)ownership;
     }
 
     public void setOwnership(ArrayList<Ownership> ownership) {

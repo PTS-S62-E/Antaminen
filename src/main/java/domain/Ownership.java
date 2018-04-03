@@ -7,12 +7,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "Ownership")
 @NamedQueries({
-        @NamedQuery(name = "Ownership.findByOwnerId", query = "SELECT os FROM Ownership os WHERE os.owner_id = :id")
+        @NamedQuery(name = "Ownership.findByOwnerId", query = "SELECT os FROM Ownership os WHERE os.owner = :id")
 })
 public class Ownership implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne

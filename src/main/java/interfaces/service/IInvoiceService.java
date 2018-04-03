@@ -3,6 +3,9 @@ package interfaces.service;
 import exceptions.InvoiceException;
 import interfaces.domain.IInvoice;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
 import java.util.ArrayList;
 
 public interface IInvoiceService {

@@ -1,21 +1,23 @@
 package service;
 
-import dao.InvoiceDaoImpl;
+import dao.InvoiceDao;
 import exceptions.InvoiceException;
 import interfaces.domain.IInvoice;
 import interfaces.service.IInvoiceService;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Model;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
 import java.util.ArrayList;
 
-@ApplicationScoped
-@Model
+@Stateless
+@LocalBean
 public class InvoiceService implements IInvoiceService {
 
-    @Inject
-    InvoiceDaoImpl invoiceDao;
+    @EJB
+    InvoiceDao invoiceDao;
 
     public InvoiceService() { }
 
