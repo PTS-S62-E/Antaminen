@@ -8,14 +8,12 @@ import service.AccountService;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -29,7 +27,10 @@ public class AccountApi {
     @POST
     @Path("/login")
     @Produces(APPLICATION_JSON)
-    public Map<String, Object> login(JsonNode data) {
+    @Consumes(APPLICATION_JSON)
+    public HashMap<String, Object> login(JsonNode data) {
+        Logger logger = Logger.getLogger(getClass().getName());
+        logger.warning(data.asText());
         if(data.get("email") == null || data.get("email").asText().isEmpty()) { throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE); }
         if(data.get("password") == null || data.get("password").asText().isEmpty()) { throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE); }
 

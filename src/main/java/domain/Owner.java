@@ -73,8 +73,8 @@ public class Owner implements Serializable {
         this.postalCode = postalCode;
     }
 
-    public ArrayList<Ownership> getOwnership() {
-        return (ArrayList<Ownership>)ownership;
+    public List<Ownership> getOwnership() {
+        return ownership;
     }
 
     public void setOwnership(ArrayList<Ownership> ownership) {
