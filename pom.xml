@@ -130,12 +130,13 @@
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
                 <version>1.2.1.Final</version>
-                <configuration>
-                    <address>192.168.1.26</address>
-                    <!--<hostname>a8e11cd25d5d</hostname>-->
-                    <username>proftaak</username>
-                    <password>proftaak</password>
-                </configuration>
+                <!-- Please use Jetbrains run configuration to run the application on your own machine -->
+                <!--<configuration>-->
+                    <!--<address>xxx.xxx.xxx.xxx</address>-->
+                    <!--<hostname>xxx.xxx.xxx.xxx</hostname>-->
+                    <!--<username>admin</username>-->
+                    <!--<password>proftaak</password>-->
+                <!--</configuration>-->
             </plugin>
         </plugins>
     </build>
@@ -159,6 +160,12 @@
                             <!--</excludes>-->
                         </configuration>
                     </plugin>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <version>1.2.1.Final</version>
+                        <!-- See readme for more information on how to deploy this application using wildfly:deploy -->
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -178,7 +185,12 @@
                             </includes>
                         </configuration>
                     </plugin>
-
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <version>1.2.1.Final</version>
+                        <!-- See readme for more information on how to deploy this application using wildfly:deploy -->
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -197,6 +209,12 @@
                                 <include>**/integrationtests/*</include>
                             </includes>
                         </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <version>1.2.1.Final</version>
+                        <!-- See readme for more information on how to deploy this application using wildfly:deploy -->
                     </plugin>
                 </plugins>
             </build>

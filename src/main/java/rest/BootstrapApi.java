@@ -1,7 +1,5 @@
 package rest;
 
-import util.CORSFilter;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
@@ -14,7 +12,7 @@ public class BootstrapApi extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> resources = new HashSet();
 
-//        resources.add(CORSFilter.class);
+        // Add custom resources, if needed
 
         return resources;
     }
