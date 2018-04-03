@@ -1,15 +1,12 @@
 package rest;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.gson.Gson;
 import exceptions.InvoiceException;
-import interfaces.IInvoice;
+import interfaces.domain.IInvoice;
 import io.sentry.Sentry;
-import org.jetbrains.annotations.Nullable;
 import service.InvoiceService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.json.Json;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 

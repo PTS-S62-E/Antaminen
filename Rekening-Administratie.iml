@@ -43,5 +43,25 @@
     <orderEntry type="library" name="Maven: javax.ws.rs:javax.ws.rs-api:2.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly:wildfly-cli:8.2.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.aesh:aesh:0.33.11" level="project" />
+    <orderEntry type="library" name="Maven: org.fusesource.jansi:jansi:1.9" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss:staxmapper:1.1.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly:wildfly-controller-client:8.2.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly:wildfly-protocol:8.2.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss:jboss-dmr:1.2.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.threads:jboss-threads:2.1.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.security:wildfly-security-manager:1.0.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.logging:jboss-logging:3.1.4.GA" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.sasl:jboss-sasl:1.0.4.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.remoting:jboss-remoting:4.0.7.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.xnio:xnio-api:3.2.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.remotingjmx:remoting-jmx:2.0.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.marshalling:jboss-marshalling:1.4.2.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.marshalling:jboss-marshalling-river:1.4.2.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.xnio:xnio-nio:3.2.0.Beta4" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss:jboss-vfs:3.2.5.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly:wildfly-build-config:8.2.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.jsonwebtoken:jjwt:0.9.0" level="project" />
   </component>
 </module>

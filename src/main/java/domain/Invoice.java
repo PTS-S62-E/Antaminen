@@ -1,8 +1,8 @@
 package domain;
 
 import com.rekeningrijden.europe.interfaces.ISubInvoice;
-import interfaces.IInvoice;
-import interfaces.IInvoiceDetail;
+import interfaces.domain.IInvoice;
+import interfaces.domain.IInvoiceDetail;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

@@ -2,7 +2,7 @@ package domain;
 
 import com.rekeningrijden.europe.interfaces.ITransLocation;
 import exceptions.InvoiceException;
-import interfaces.IInvoiceDetail;
+import interfaces.domain.IInvoiceDetail;
 import util.DistanceCalculator;
 
 import java.io.Serializable;

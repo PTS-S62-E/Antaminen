@@ -5,8 +5,8 @@ import domain.Invoice;
 import domain.InvoiceDetails;
 import domain.TransLocation;
 import exceptions.InvoiceException;
-import interfaces.IInvoice;
-import interfaces.IInvoiceDetail;
+import interfaces.domain.IInvoice;
+import interfaces.domain.IInvoiceDetail;
 import util.CountryCode;
 
 import java.math.BigDecimal;

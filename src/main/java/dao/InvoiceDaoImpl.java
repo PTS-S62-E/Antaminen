@@ -2,9 +2,9 @@ package dao;
 
 import domain.Invoice;
 import exceptions.InvoiceException;
-import interfaces.IInvoice;
-import interfaces.IInvoiceDao;
-import interfaces.IInvoiceDetail;
+import interfaces.domain.IInvoice;
+import interfaces.dao.IInvoiceDao;
+import interfaces.domain.IInvoiceDetail;
 import temp.InvoiceMock;
 
 import javax.enterprise.context.ApplicationScoped;
