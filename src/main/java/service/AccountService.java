@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 import org.apache.commons.lang3.time.DateUtils;
+import util.KeyGenerator;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -35,7 +36,7 @@ public class AccountService implements IAccountService {
 
     @Override
     public String generateJWT(String email) {
-        Key key = MacProvider.generateKey();
+        Key key = KeyGenerator.getInstance().getKey();
         Date date = new Date();
         String jwtToken = Jwts.builder()
                 .setSubject(email)

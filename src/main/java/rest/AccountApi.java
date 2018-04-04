@@ -29,8 +29,7 @@ public class AccountApi {
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
     public HashMap<String, Object> login(JsonNode data) {
-        Logger logger = Logger.getLogger(getClass().getName());
-        logger.warning(data.asText());
+        if(data == null) { throw new WebApplicationException(Response.Status.UNAUTHORIZED); }
         if(data.get("email") == null || data.get("email").asText().isEmpty()) { throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE); }
         if(data.get("password") == null || data.get("password").asText().isEmpty()) { throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE); }
 

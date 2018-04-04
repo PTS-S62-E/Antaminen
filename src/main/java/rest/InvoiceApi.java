@@ -4,6 +4,7 @@ import exceptions.InvoiceException;
 import interfaces.domain.IInvoice;
 import io.sentry.Sentry;
 import service.InvoiceService;
+import util.jwt.JWTRequired;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -30,6 +31,7 @@ public class InvoiceApi {
     @GET
     @Path("/")
     @Produces(APPLICATION_JSON)
+    @JWTRequired
     public ArrayList<IInvoice> getAllInvoices() {
         try {
             ArrayList<IInvoice> result = service.findInvoiceByUser(1);
@@ -53,6 +55,7 @@ public class InvoiceApi {
     @Path("/{invoiceNumber}")
     @GET
     @Produces(APPLICATION_JSON)
+    @JWTRequired
     public IInvoice findInvoiceByInvoiceNumber(@PathParam("invoiceNumber") String invoiceNumber) {
         if(invoiceNumber.isEmpty()) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
 
@@ -72,6 +75,7 @@ public class InvoiceApi {
     @POST
     @Path("/pay")
     @Consumes(APPLICATION_JSON)
+    @JWTRequired
     public boolean payInvoice(JsonNode data) {
         if(data.get("invoiceNumber") == null || data.get("invoiceNumber").asText().isEmpty()) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
         try {
