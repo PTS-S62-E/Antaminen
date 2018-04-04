@@ -1,7 +1,12 @@
 package domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.jetbrains.annotations.Nullable;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,22 +22,37 @@ public class Ownership implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
+    @JsonBackReference
     private Owner owner;
 
     @Column(name = "vehicle_id")
     private long vehicleId;
 
     @Column(name = "fromDate")
-    private LocalDateTime fromDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate fromDate;
 
-    @Column(name = "toDate")
-    private LocalDateTime toDate;
+    @Transient
+    private String readableFromDate;
 
-    public Ownership(Owner owner, long vehicleId, LocalDateTime fromDate, LocalDateTime toDate) {
+    @Column(name = "toDate", nullable = true)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate toDate;
+
+    @Transient
+    private String readableToDate;
+
+    public Ownership(Owner owner, long vehicleId, LocalDate fromDate, @Nullable LocalDate toDate) {
         this.owner = owner;
         this.vehicleId = vehicleId;
         this.fromDate = fromDate;
         this.toDate = toDate;
+
+        this.readableFromDate = this.fromDate.toString();
+
+        if(toDate != null) {
+            this.readableToDate = this.toDate.toString();
+        }
     }
 
     public Ownership() { }
@@ -61,19 +81,29 @@ public class Ownership implements Serializable {
         this.vehicleId = vehicleId;
     }
 
-    public LocalDateTime getFromDate() {
+    public LocalDate getFromDate() {
         return fromDate;
     }
 
-    public void setFromDate(LocalDateTime fromDate) {
+    public String getReadableFromDate() { return this.readableFromDate == null ? this.fromDate.toString() : this.readableFromDate; }
+
+    public void setFromDate(LocalDate fromDate) {
         this.fromDate = fromDate;
     }
 
-    public LocalDateTime getToDate() {
+    public LocalDate getToDate() {
         return toDate;
     }
 
-    public void setToDate(LocalDateTime toDate) {
+    public String getReadableToDate() {
+        if (this.toDate != null) {
+            return this.readableToDate == null ? this.toDate.toString() : this.readableToDate;
+        } else {
+            return null;
+        }
+    }
+
+    public void setToDate(LocalDate toDate) {
         this.toDate = toDate;
     }
 }

@@ -9,7 +9,6 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.inject.Named;
 import javax.persistence.*;
 
 @Stateless
