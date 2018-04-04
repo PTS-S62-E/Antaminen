@@ -5,7 +5,7 @@ import domain.Invoice;
 import domain.InvoiceDetails;
 import domain.TransLocation;
 import exceptions.InvoiceException;
-import interfaces.IInvoiceDetail;
+import interfaces.domain.IInvoiceDetail;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;

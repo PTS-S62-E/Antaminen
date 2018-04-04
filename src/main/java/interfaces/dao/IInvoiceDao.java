@@ -1,8 +1,13 @@
-package interfaces;
+package interfaces.dao;
 
 import domain.Invoice;
 import exceptions.InvoiceException;
+import interfaces.domain.IInvoice;
+import interfaces.domain.IInvoiceDetail;
 
+import javax.ejb.Local;
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -16,6 +21,7 @@ import java.util.ArrayList;
  * | Project Package Name: interfaces
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
+
 public interface IInvoiceDao {
 
     /**

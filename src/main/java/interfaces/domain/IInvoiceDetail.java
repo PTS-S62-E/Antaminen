@@ -1,4 +1,4 @@
-package interfaces;
+package interfaces.domain;
 
 import com.rekeningrijden.europe.interfaces.ITransLocation;
 

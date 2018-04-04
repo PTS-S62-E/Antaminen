@@ -2,11 +2,13 @@ package dao;
 
 import domain.Invoice;
 import exceptions.InvoiceException;
-import interfaces.IInvoice;
-import interfaces.IInvoiceDao;
-import interfaces.IInvoiceDetail;
+import interfaces.domain.IInvoice;
+import interfaces.dao.IInvoiceDao;
+import interfaces.domain.IInvoiceDetail;
 import temp.InvoiceMock;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import java.math.BigDecimal;
@@ -23,12 +25,15 @@ import java.util.ArrayList;
  * | Project Package Name: dao
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-@ApplicationScoped
-@Named
-public class InvoiceDaoImpl implements IInvoiceDao {
+
+@Stateless
+@LocalBean
+public class InvoiceDao implements IInvoiceDao {
 
     private final String countryCode = "FI";
     private ArrayList<IInvoice> invoices = new ArrayList<>();
+
+    public InvoiceDao() { }
 
 
     @Override

@@ -1,10 +1,11 @@
-package interfaces;
+package interfaces.service;
 
-import domain.Invoice;
 import exceptions.InvoiceException;
-import org.jetbrains.annotations.Nullable;
+import interfaces.domain.IInvoice;
 
-import java.time.LocalDateTime;
+import javax.ejb.LocalBean;
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
 import java.util.ArrayList;
 
 public interface IInvoiceService {
