@@ -4,6 +4,7 @@ import domain.Account;
 import domain.Owner;
 import exceptions.AccountException;
 import interfaces.dao.IAccountDao;
+import io.sentry.Sentry;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.ejb.LocalBean;
@@ -74,6 +75,9 @@ public class AccountDao implements IAccountDao {
             return true;
         } catch(RollbackException re) {
             throw new AccountException(re.getMessage());
+        } catch(Exception e) {
+            Sentry.capture(e);
+            throw new AccountException("Entity already exists. Check server log.");
         }
     }
 }

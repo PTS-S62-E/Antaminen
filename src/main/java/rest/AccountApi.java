@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import domain.Account;
 import domain.Owner;
 import exceptions.AccountException;
+import io.sentry.Sentry;
 import service.AccountService;
 
 import javax.ejb.EJB;
@@ -58,7 +59,7 @@ public class AccountApi {
     @POST
     @Path("/")
     @Consumes(APPLICATION_JSON)
-    public void createAccount(JsonNode data) {
+    public boolean createAccount(JsonNode data) {
         HashMap<String, Object> result = new HashMap<String, Object>();
         // Based on the provided JsonNode data, we should be able to create a new Owner and Account instance;
         if(data == null) { throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE); }
@@ -82,7 +83,9 @@ public class AccountApi {
 
         try {
             service.createAccount(account);
+            return true;
         } catch (AccountException e) {
+            Sentry.capture(e);
             throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
         }
     }
