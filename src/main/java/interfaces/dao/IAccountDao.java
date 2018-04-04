@@ -1,5 +1,6 @@
 package interfaces.dao;
 
+import domain.Account;
 import domain.Owner;
 import exceptions.AccountException;
 
@@ -37,4 +38,6 @@ public interface IAccountDao {
      * @throws AccountException thrown when account is not found, or email/password combo is incorrect
      */
     boolean updatePassword(String email, String oldPassword, String newPassword) throws AccountException;
+
+    boolean createAccount(Account account) throws AccountException;
 }

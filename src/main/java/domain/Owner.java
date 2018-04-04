@@ -33,6 +33,13 @@ public class Owner implements Serializable {
 
     public Owner() { }
 
+    public Owner(String name, String address, String city, String postalCode) {
+        this.name = name;
+        this.address = address;
+        this.city = city;
+        this.postalCode = postalCode;
+    }
+
     public long getId() {
         return id;
     }

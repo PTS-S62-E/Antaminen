@@ -4,14 +4,12 @@ import domain.Account;
 import domain.Owner;
 import exceptions.AccountException;
 import interfaces.dao.IAccountDao;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.*;
 
 @Stateless
 @LocalBean
@@ -26,7 +24,7 @@ public class AccountDao implements IAccountDao {
     public boolean create(String email, String password, Owner owner) throws AccountException {
         Account account = new Account(email, password, owner);
 
-        return false;
+        throw new NotImplementedException();
     }
 
     @Override
@@ -60,6 +58,22 @@ public class AccountDao implements IAccountDao {
             }
         } catch (NoResultException nre) {
             throw new AccountException("Authentication failed");
+        }
+    }
+
+    @Override
+    public boolean createAccount(Account account) throws AccountException {
+        if(account == null) { throw new AccountException("Please provide an account"); }
+        if(account.getEmail().isEmpty()) { throw new AccountException("Please provide an email address"); }
+        if(account.getPassword().isEmpty()) { throw new AccountException("Please provide a password"); }
+        if(account.getOwner() == null) { throw new AccountException("Please provide an owner object"); }
+
+        try {
+            em.persist(account.getOwner());
+            em.persist(account);
+            return true;
+        } catch(RollbackException re) {
+            throw new AccountException(re.getMessage());
         }
     }
 }

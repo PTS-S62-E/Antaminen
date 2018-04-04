@@ -1,5 +1,6 @@
 package interfaces.service;
 
+import domain.Account;
 import domain.Owner;
 import exceptions.AccountException;
 
@@ -12,4 +13,6 @@ public interface IAccountService {
     Owner login(String email, String password) throws AccountException;
 
     String generateJWT(String email);
+
+    void createAccount(Account account) throws AccountException;
 }

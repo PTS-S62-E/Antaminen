@@ -1,6 +1,7 @@
 package service;
 
 import dao.AccountDao;
+import domain.Account;
 import domain.Owner;
 import exceptions.AccountException;
 import interfaces.service.IAccountService;
@@ -45,5 +46,12 @@ public class AccountService implements IAccountService {
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
         return jwtToken;
+    }
+
+    @Override
+    public void createAccount(Account account) throws AccountException {
+        if(account == null) { throw new AccountException("Please provide an account"); }
+
+        accountDao.createAccount(account);
     }
 }

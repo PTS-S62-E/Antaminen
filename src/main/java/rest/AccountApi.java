@@ -1,6 +1,7 @@
 package rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import domain.Account;
 import domain.Owner;
 import exceptions.AccountException;
 import service.AccountService;
@@ -52,5 +53,37 @@ public class AccountApi {
             throw new WebApplicationException(e.getMessage(), Response.Status.UNAUTHORIZED);
         }
 
+    }
+
+    @POST
+    @Path("/")
+    @Consumes(APPLICATION_JSON)
+    public void createAccount(JsonNode data) {
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        // Based on the provided JsonNode data, we should be able to create a new Owner and Account instance;
+        if(data == null) { throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE); }
+        if(data.get("email") == null || data.get("email").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide an email address").build()); }
+        if(data.get("password") == null || data.get("password").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide a password").build()); }
+        if(data.get("name") == null || data.get("name").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide a name").build()); }
+        if(data.get("address") == null || data.get("address").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide an address").build()); }
+        if(data.get("city") == null || data.get("city").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide a city").build()); }
+        if(data.get("postalCode") == null || data.get("postalCode").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide a postal code").build()); }
+
+        // Store everything we need in a variable
+        String name = data.get("name").asText();
+        String address = data.get("address").asText();
+        String city = data.get("city").asText();
+        String postalCode = data.get("postalCode").asText();
+        String email = data.get("email").asText();
+        String password = data.get("password").asText();
+
+        Owner owner = new Owner(name, address, city, postalCode);
+        Account account = new Account(email, password, owner);
+
+        try {
+            service.createAccount(account);
+        } catch (AccountException e) {
+            throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
+        }
     }
 }
