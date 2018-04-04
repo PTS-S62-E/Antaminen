@@ -15,4 +15,6 @@ public interface IAccountService {
     String generateJWT(String email);
 
     void createAccount(Account account) throws AccountException;
+
+    Account findByEmailAddress(String email) throws AccountException;
 }

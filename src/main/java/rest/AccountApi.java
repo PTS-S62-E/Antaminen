@@ -3,9 +3,11 @@ package rest;
 import com.fasterxml.jackson.databind.JsonNode;
 import domain.Account;
 import domain.Owner;
+import domain.Ownership;
 import exceptions.AccountException;
 import io.sentry.Sentry;
 import service.AccountService;
+import util.jwt.JWTUtility;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -14,6 +16,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -88,5 +91,21 @@ public class AccountApi {
             Sentry.capture(e);
             throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
         }
+    }
+
+    @GET
+    @Path("/cars")
+    @Produces(APPLICATION_JSON)
+    public List<Ownership> getVehicleOwnerships(@HeaderParam("Authorization") String token) {
+        if(token == null || token.isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED).entity("No token provided").build()); }
+
+        try {
+            Account account = service.findByEmailAddress(JWTUtility.getSubject(token));
+
+            return account.getOwner().getOwnership();
+        } catch (AccountException e) {
+            throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity(e.getMessage()).build());
+        }
+
     }
 }
