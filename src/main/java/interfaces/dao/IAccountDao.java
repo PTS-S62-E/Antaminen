@@ -39,5 +39,19 @@ public interface IAccountDao {
      */
     boolean updatePassword(String email, String oldPassword, String newPassword) throws AccountException;
 
+    /**
+     * Create a new account
+     * @param account
+     * @return whether success or not
+     * @throws AccountException
+     */
     boolean createAccount(Account account) throws AccountException;
+
+    /**
+     * Find an account based on the email address
+     * @param email
+     * @return
+     * @throws AccountException
+     */
+    Account findAccountByEmailAddress(String email) throws AccountException;
 }

@@ -9,7 +9,6 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.inject.Named;
 import javax.persistence.*;
 
 @Stateless
@@ -79,5 +78,26 @@ public class AccountDao implements IAccountDao {
             Sentry.capture(e);
             throw new AccountException("Entity already exists. Check server log.");
         }
+    }
+
+    @Override
+    public Account findAccountByEmailAddress(String email) throws AccountException {
+        if(email.isEmpty()) { throw new AccountException("Please provide an email address"); }
+
+        Query q = em.createNamedQuery("Account.findAccountByEmail");
+        q.setParameter("email", email);
+
+        try {
+            Account account = (Account) q.getSingleResult();
+
+            return account;
+        } catch (NoResultException nre) {
+            throw new AccountException("Account not found");
+        } catch (Exception ex) {
+            Sentry.capture(ex);
+            ex.printStackTrace();
+        }
+
+        return null;
     }
 }

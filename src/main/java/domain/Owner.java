@@ -1,5 +1,7 @@
 package domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class Owner implements Serializable {
     private String postalCode;
 
     @OneToMany(mappedBy = "owner")
+    @JsonManagedReference
     private List<Ownership> ownership;
 
     public Owner() { }

@@ -54,4 +54,11 @@ public class AccountService implements IAccountService {
 
         accountDao.createAccount(account);
     }
+
+    @Override
+    public Account findByEmailAddress(String email) throws AccountException {
+        if(email.isEmpty()) { throw new AccountException("Please provide an email address"); }
+
+        return accountDao.findAccountByEmailAddress(email);
+    }
 }
