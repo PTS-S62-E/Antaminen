@@ -8,9 +8,8 @@ import io.sentry.Sentry;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.RollbackException;
+import javax.persistence.*;
+import java.util.ArrayList;
 
 @Stateless
 @LocalBean
@@ -32,5 +31,24 @@ public class OwnershipDao implements IOwnershipDao {
             throw new OwnershipException("Something went wrong");
         }
 
+    }
+
+    @Override
+    public ArrayList<Ownership> findOwnershipByVehicleId(long vehicleId) throws OwnershipException {
+        if(vehicleId < 1) { throw new OwnershipException("Please provide a vehicleId"); }
+
+
+        Query q = em.createNamedQuery("Ownership.findByVehicleId");
+        q.setParameter("id", vehicleId);
+
+        try {
+            ArrayList<Ownership> result =  (ArrayList<Ownership>) q.getResultList();
+            return result;
+        } catch (NoResultException nre) {
+            throw new OwnershipException("No data for vehicleId");
+        } catch (Exception e) {
+            Sentry.capture(e);
+            throw new OwnershipException("Something went wrong. See error log.");
+        }
     }
 }
