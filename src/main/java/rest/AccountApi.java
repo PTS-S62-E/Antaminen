@@ -163,7 +163,7 @@ public class AccountApi {
             throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
         } catch (Exception e) {
             Sentry.capture(e);
-            throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED).entity(e).build());
+            throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build());
         }
 
 

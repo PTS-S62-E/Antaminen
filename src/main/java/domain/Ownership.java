@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "Ownership")
 @NamedQueries({
-        @NamedQuery(name = "Ownership.findByOwnerId", query = "SELECT os FROM Ownership os WHERE os.owner = :id")
+        @NamedQuery(name = "Ownership.findByOwnerId", query = "SELECT os FROM Ownership os WHERE os.owner = :id"),
+        @NamedQuery(name = "Ownership.findByVehicleId", query = "SELECT os FROM Ownership os WHERE os.vehicleId = :id")
 })
 public class Ownership implements Serializable {
 
