@@ -10,6 +10,7 @@ import exceptions.OwnershipException;
 import io.sentry.Sentry;
 import service.AccountService;
 import service.OwnerService;
+import util.HashUtility;
 import util.jwt.JWTUtility;
 
 import javax.ejb.EJB;
@@ -50,8 +51,10 @@ public class AccountApi {
         String email = data.get("email").asText();
         String password = data.get("password").asText();
 
+        String hashedPassword = HashUtility.hash(password);
+
         try {
-            Owner owner = service.login(email, password);
+            Owner owner = service.login(email, hashedPassword);
             if(owner == null) { throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR); }
 
             String token = service.generateJWT(email);
@@ -90,8 +93,10 @@ public class AccountApi {
         String email = data.get("email").asText();
         String password = data.get("password").asText();
 
+        String hashedPassword = HashUtility.hash(password);
+
         Owner owner = new Owner(name, address, city, postalCode);
-        Account account = new Account(email, password, owner);
+        Account account = new Account(email, hashedPassword, owner);
 
         try {
             service.createAccount(account);
@@ -133,7 +138,13 @@ public class AccountApi {
         try {
             Account account = service.findByEmailAddress(JWTUtility.getSubject(token));
 
-            long vehicleId = Long.parseLong(data.get("vehicleId").asText());
+            long vehicleId = 0;
+            try {
+                vehicleId = Long.parseLong(data.get("vehicleId").asText());
+            } catch(NumberFormatException e) {
+                throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("vehicleId must be a parsable to a number").build());
+            }
+
             String fromDateString = data.get("fromDate").asText();
 
             LocalDate fromDate = LocalDate.parse(fromDateString, formatter);
@@ -148,11 +159,11 @@ public class AccountApi {
             ownerService.addOwnership(account.getOwner(), ownership);
 
 
-        } catch (AccountException | OwnerException e) {
+        } catch (AccountException | OwnerException | NumberFormatException e) {
             throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
         } catch (Exception e) {
             Sentry.capture(e);
-            throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
+            throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED).entity(e).build());
         }
 
 
