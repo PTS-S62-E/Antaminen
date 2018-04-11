@@ -30,3 +30,4 @@ mvn clean install wildfly:deploy -Dwildfly.username=admin -Dwildfly.password=pro
 - -Dwildfly.password (required): the password of the user that has access to the admin console
 - -Dwildfly.port (optional, default: 9990): the port where the admin console listens on
 - -Dwildfly.hostname (optional, default: localhost): the host where you want to deploy to.
+ Dit is voor sop
