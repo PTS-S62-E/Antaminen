@@ -62,6 +62,7 @@ public class AccountApi {
             HashMap<String, Object> result = new HashMap<String, Object>();
 
             result.put("token", token);
+            owner.setName(owner.getName() + " Hateseflast");
             result.put("owner", owner);
 
             return result;
