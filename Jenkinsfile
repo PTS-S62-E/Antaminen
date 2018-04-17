@@ -4,7 +4,7 @@ pipeline {
     stage('Build') {
         steps {
           withMaven(
-            maven: 'M3',
+            maven: 'Maven 3.5.3',
             mavenSettingsConfig: 'maven_artifactory'
           ) {
                 sh 'mvn clean install package -P development'
@@ -15,7 +15,7 @@ pipeline {
     stage ('Test') {
         steps {
             withMaven(
-                maven: 'M3',
+                maven: 'Maven 3.5.3',
                 mavenSettingsConfig: 'maven_artifactory'
             ) {
                 sh 'mvn test -P development'
@@ -26,7 +26,7 @@ pipeline {
     stage ('Analyze') {
         steps {
             withMaven(
-                maven: 'M3',
+                maven: 'Maven 3.5.3',
                 mavenSettingsConfig: 'maven_artifactory'
             ) {
                 sh 'mvn sonar:sonar -Dsonar.host.url=http://85.144.215.28:9001 -Dsonar.login=089ecbe71f30a12f9af77098b09921b83cf88786'
@@ -37,7 +37,7 @@ pipeline {
     stage ('Deploy') {
         steps {
             withMaven(
-                maven: 'M3',
+                maven: 'Maven 3.5.3',
                 mavenSettingsConfig: 'maven_artifactory'
             ) {
                 sh 'mvn wildfly:deploy -Dwildfly.address=192.168.24.100 -Dwildfly.hostname=192.168.24.100 -Dwildfly.port=9990 -Dwildfly.username=admin -Dwildfly.password=proftaak'
