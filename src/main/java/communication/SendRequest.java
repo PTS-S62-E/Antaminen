@@ -22,7 +22,7 @@ public class SendRequest {
 
         HttpResponse response = client.execute(request);
 
-        if(response.getStatusLine().getStatusCode() != 200 || response.getStatusLine().getStatusCode() != 204) {
+        if(response.getStatusLine().getStatusCode() != 200 && response.getStatusLine().getStatusCode() != 204) {
             Sentry.capture(response.getStatusLine().toString());
             throw new CommunicationException("Received unexpected status code from external API");
         } else {

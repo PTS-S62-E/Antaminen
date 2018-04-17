@@ -1,8 +1,10 @@
 package communication;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rekeningrijden.europe.interfaces.ITransLocation;
+import dto.JourneyDto;
 import exceptions.CommunicationException;
 import io.sentry.Sentry;
 
@@ -60,7 +62,7 @@ public class RegistrationMovement {
      * @throws CommunicationException Thrown when there's an exception in communicating with the external API
      * @throws IOException Thrown when there is an exception in processing the data received from the external API
      */
-    public List<ITransLocation> getTranslocationsForVehicleId(long id, String startDate, String endDate) throws CommunicationException, IOException {
+    public JourneyDto getTranslocationsForVehicleId(long id, String startDate, String endDate) throws CommunicationException, IOException {
         if(id < 1) { throw new CommunicationException("Please provide a vehicleId"); }
 
         String urlPart = properties.getProperty("TRANSLOCATION_FOR_VEHICLE_ID");
@@ -79,12 +81,10 @@ public class RegistrationMovement {
 
         String response = SendRequest.sendGet(url);
 
-        if(response.isEmpty()) { return new ArrayList<ITransLocation>(); }
+        if(response.isEmpty()) { return null; }
 
         ObjectMapper mapper = new ObjectMapper();
 
-        List<ITransLocation> result = mapper.readValue(response, new TypeReference<List<ITransLocation>>(){});
-
-        return result;
+        return mapper.readValue(response, JourneyDto.class);
     }
 }
