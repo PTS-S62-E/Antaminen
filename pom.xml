@@ -155,7 +155,7 @@
         <profile>
             <id>development</id>
             <build>
-                <finalName>rekening-administratie-development</finalName>
+                <finalName>rekening-administratie</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -190,7 +190,7 @@
         <profile>
             <id>staging</id>
             <build>
-                <finalName>rekening-administratie-staging</finalName>
+                <finalName>rekening-administratie</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
