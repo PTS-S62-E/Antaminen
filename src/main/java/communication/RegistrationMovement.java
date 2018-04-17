@@ -5,15 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rekeningrijden.europe.interfaces.ITransLocation;
 import exceptions.CommunicationException;
 import io.sentry.Sentry;
-import org.apache.http.HttpResponse;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class RegistrationMovement {
 
-    private final static String BASE_URL = "http://192.168.24.100:8082";
+    private final static String BASE_URL = "http://192.168.24.100:8082/registratie-verplaatsing-development";
     private Properties properties;
 
     private static RegistrationMovement _instance;
@@ -28,9 +29,10 @@ public class RegistrationMovement {
 
     private RegistrationMovement() {
         InputStream input = null;
+        properties = new Properties();
         try {
             _instance = this;
-            input = new FileInputStream("paths.properties");
+            input = getClass().getClassLoader().getResourceAsStream("paths.properties");
             properties.load(input);
         } catch (IOException e) {
             Sentry.capture(e);
@@ -61,12 +63,23 @@ public class RegistrationMovement {
     public List<ITransLocation> getTranslocationsForVehicleId(long id, String startDate, String endDate) throws CommunicationException, IOException {
         if(id < 1) { throw new CommunicationException("Please provide a vehicleId"); }
 
-        String url = BASE_URL + properties.getProperty("TRANSLOCATION_FOR_VEHICLE_ID");
-        url.replace(":id", String.valueOf(id));
-        url.replace(":startdate", startDate);
-        url.replace(":enddate", endDate);
+        String urlPart = properties.getProperty("TRANSLOCATION_FOR_VEHICLE_ID");
+
+        urlPart = urlPart.replace(":id", String.valueOf(id));
+        urlPart = urlPart.replace(":startdate", startDate);
+        urlPart = urlPart.replace(":enddate", endDate);
+        urlPart = urlPart.replace(" ", "%20");
+        urlPart = urlPart.replace(":", "%3A");
+
+
+        String url = BASE_URL + urlPart;
+
+        Logger logger = Logger.getLogger(getClass().getName());
+        logger.info("Request URL is: " + url);
 
         String response = SendRequest.sendGet(url);
+
+        if(response.isEmpty()) { return new ArrayList<ITransLocation>(); }
 
         ObjectMapper mapper = new ObjectMapper();
 
