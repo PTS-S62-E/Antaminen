@@ -15,7 +15,7 @@ public class BootstrapApi extends Application {
         Set<Class<?>> resources = new HashSet();
 
         // Add custom resources, if needed
-        resources.add(CORSFilter.class);
+    
 
         return resources;
     }
