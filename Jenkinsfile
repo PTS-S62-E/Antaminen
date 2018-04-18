@@ -34,7 +34,18 @@ pipeline {
             }
         }
     }
-    stage ('Deploy') {
+    stage ('Deploy to Artifactory') {
+        steps {
+            withMaven(
+                maven: 'Maven 3.5.3',
+                mavenSettingsConfig: 'maven_artifactory'
+            ) {
+                sh 'mvn deploy -Dusername=proftaak -Dpassword=proftaak -Dbuildnumber=$(($(date +%s) / 60 / 60 / 24))'
+                input message: 'Please check if the application has been deployed to Artifactory'
+            }
+        }
+    }
+    stage ('Deploy to Wildfly') {
         steps {
             withMaven(
                 maven: 'Maven 3.5.3',
