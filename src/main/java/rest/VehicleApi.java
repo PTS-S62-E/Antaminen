@@ -1,7 +1,11 @@
 package rest;
 
+import com.rekeningrijden.europe.interfaces.ITransLocation;
+import communication.RegistrationMovement;
 import domain.Owner;
 import domain.Ownership;
+import dto.JourneyDto;
+import exceptions.CommunicationException;
 import exceptions.OwnershipException;
 import io.sentry.Sentry;
 import service.OwnershipService;
@@ -12,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -24,7 +29,7 @@ public class VehicleApi {
     private OwnershipService ownershipService;
 
     @GET
-    @Path("/{id}/history")
+    @Path("/{id}/history/ownership")
     @JWTRequired
     @Produces(APPLICATION_JSON)
     public ArrayList<Owner> getVehicleOwnershipHistory(@PathParam("id") long vehicleId) {
@@ -45,5 +50,20 @@ public class VehicleApi {
             throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
         }
 
+    }
+
+    @GET
+    @Path("/test")
+    @Produces(APPLICATION_JSON)
+    public JourneyDto testComm() {
+        try {
+            return RegistrationMovement.getInstance().getTranslocationsForVehicleId(1, "2016-11-29 00:00", "2018-04-17 00:00");
+        } catch (CommunicationException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
