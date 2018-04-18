@@ -400,6 +400,7 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
+            <id>bintray-central</id>
             <name>bintray</name>
             <url>http://jcenter.bintray.com</url>
         </repository>
@@ -431,6 +432,7 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
+            <id>bintray-plugins</id>
             <name>bintray-plugins</name>
             <url>http://jcenter.bintray.com</url>
         </pluginRepository>
