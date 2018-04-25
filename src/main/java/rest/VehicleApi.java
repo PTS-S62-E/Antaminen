@@ -4,6 +4,7 @@ import com.rekeningrijden.europe.interfaces.ITransLocation;
 import communication.RegistrationMovement;
 import domain.Owner;
 import domain.Ownership;
+import dto.AdministrationDto;
 import dto.JourneyDto;
 import exceptions.CommunicationException;
 import exceptions.OwnershipException;
@@ -55,9 +56,9 @@ public class VehicleApi {
     @GET
     @Path("/test")
     @Produces(APPLICATION_JSON)
-    public JourneyDto testComm() {
+    public AdministrationDto testComm() {
         try {
-            return RegistrationMovement.getInstance().getTranslocationsForVehicleId(1, "2016-11-29 00:00", "2018-04-17 00:00");
+            return RegistrationMovement.getInstance().getTranslocationsForVehicleId(2, "2016-11-29 00:00", "2018-04-27 00:00");
         } catch (CommunicationException e) {
             e.printStackTrace();
         } catch (IOException e) {
