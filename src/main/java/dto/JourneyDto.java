@@ -1,27 +1,29 @@
 package dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.rekeningrijden.europe.interfaces.IJourney;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JourneyDto {
+public class JourneyDto implements Serializable {
 
-    private List<IJourney> journeys;
+    private List<TranslocationDto> translocations;
 
-    public JourneyDto(List<IJourney> journeys) {
-        this.journeys = journeys;
+    public JourneyDto(List<TranslocationDto> journeys) {
+        this.translocations = journeys;
     }
 
     public JourneyDto() {
-        this.journeys = new ArrayList<>();
+        this.translocations = new ArrayList<>();
     }
 
-    public List<IJourney> getJourneys() {
-        return journeys;
+    public List<TranslocationDto> getTranslocations() {
+        return translocations;
     }
 
-    public void setJourneys(List<IJourney> journeys) {
-        this.journeys = journeys;
+    public void setTranslocations(List<TranslocationDto> translocations) {
+        this.translocations = translocations;
     }
 }

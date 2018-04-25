@@ -17,6 +17,7 @@ import java.io.Serializable;
  */
 public class TransLocation implements ITransLocation, Serializable {
 
+    private long id;
     private Double lat;
     private Double lon;
     private String dateTime;
@@ -31,6 +32,14 @@ public class TransLocation implements ITransLocation, Serializable {
         this.dateTime = dateTime;
         this.serialnumber = serialNumber;
         this.countryCode = countryCode;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public void setLat(Double lat) {

@@ -5,6 +5,7 @@ import exceptions.InvoiceException;
 import interfaces.domain.IInvoiceDetail;
 import util.DistanceCalculator;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,9 +21,15 @@ import java.util.ArrayList;
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
+@Entity
+@Table(name= "InvoiceDetails")
 public class InvoiceDetails implements IInvoiceDetail, Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private ArrayList<ITransLocation> locationPoints;
+
     private String description;
     private BigDecimal price;
     private long distance;
@@ -45,6 +52,14 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
         this.locationPoints = locationPoints;
         this.description = description;
         this.price = price;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override

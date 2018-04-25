@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rekeningrijden.europe.interfaces.ITransLocation;
+import dto.AdministrationDto;
 import dto.JourneyDto;
 import exceptions.CommunicationException;
 import io.sentry.Sentry;
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
 
 public class RegistrationMovement {
 
-    private final static String BASE_URL = "http://192.168.24.100:8082/registratie-verplaatsing-development";
+    private final static String BASE_URL = "http://192.168.24.100:8082/Registratie-verplaatsing";
     private Properties properties;
 
     private static RegistrationMovement _instance;
@@ -62,7 +63,7 @@ public class RegistrationMovement {
      * @throws CommunicationException Thrown when there's an exception in communicating with the external API
      * @throws IOException Thrown when there is an exception in processing the data received from the external API
      */
-    public JourneyDto getTranslocationsForVehicleId(long id, String startDate, String endDate) throws CommunicationException, IOException {
+    public AdministrationDto getTranslocationsForVehicleId(long id, String startDate, String endDate) throws CommunicationException, IOException {
         if(id < 1) { throw new CommunicationException("Please provide a vehicleId"); }
 
         String urlPart = properties.getProperty("TRANSLOCATION_FOR_VEHICLE_ID");
@@ -77,7 +78,7 @@ public class RegistrationMovement {
         String url = BASE_URL + urlPart;
 
         Logger logger = Logger.getLogger(getClass().getName());
-        logger.info("Request URL is: " + url);
+        logger.warning("Request URL is: " + url);
 
         String response = SendRequest.sendGet(url);
 
@@ -85,6 +86,25 @@ public class RegistrationMovement {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        return mapper.readValue(response, JourneyDto.class);
+        return mapper.readValue(response, AdministrationDto.class);
+    }
+
+    public Object getTranslocationById(long id) throws CommunicationException, IOException {
+        if(id < 1) { throw new CommunicationException("Please provide a TranslocationId"); }
+
+        String urlPart = properties.getProperty("TRANSLOCATION_BY_ID");
+        urlPart.replace(":id", String.valueOf(id));
+
+        String url = BASE_URL + urlPart;
+
+        String response = SendRequest.sendGet(url);
+
+        if(response.isEmpty()) { return null; }
+
+        ObjectMapper mapper = new ObjectMapper();
+
+//        return mapper.readValue(response.)
+
+        return null;
     }
 }
