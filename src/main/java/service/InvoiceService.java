@@ -2,6 +2,7 @@ package service;
 
 import communication.RegistrationMovement;
 import dao.InvoiceDao;
+import domain.Invoice;
 import domain.InvoiceDetails;
 import domain.Owner;
 import domain.Ownership;
@@ -45,8 +46,8 @@ public class InvoiceService implements IInvoiceService {
      * @throws InvoiceException thrown when the invoice couldn't be found
      */
     @Override
-    public IInvoice findInvoiceByInvoiceNumber(String invoiceNumber) throws InvoiceException {
-        if(invoiceNumber.isEmpty()) { throw new InvoiceException("Please provide an invoice number"); }
+    public IInvoice findInvoiceByInvoiceNumber(long invoiceNumber) throws InvoiceException {
+        if(invoiceNumber < 1) { throw new InvoiceException("Please provide an invoice number"); }
 
         return invoiceDao.findInvoiceByInvoiceNumer(invoiceNumber);
     }
@@ -59,8 +60,8 @@ public class InvoiceService implements IInvoiceService {
     }
 
     @Override
-    public boolean payInvoice(String invoiceNumber, String paymentDetails) throws InvoiceException {
-        if(invoiceNumber.isEmpty()) { throw new InvoiceException("Please provide an invoice number"); }
+    public boolean payInvoice(long invoiceNumber, String paymentDetails) throws InvoiceException {
+        if(invoiceNumber < 1) { throw new InvoiceException("Please provide an invoice number"); }
         if(paymentDetails.isEmpty()) { throw new InvoiceException("Please provide payment details"); }
 
         return invoiceDao.payInvoice(invoiceNumber, paymentDetails);
@@ -68,7 +69,7 @@ public class InvoiceService implements IInvoiceService {
 
     @Override
     public void generateInvoices() throws InvoiceException {
-        //TODO: Check if the translocation allready belongs to an invoice
+        //TODO: Check if the translocation already belongs to an invoice
         try {
             ArrayList<Owner> owners = (ArrayList<Owner>) ownerService.getAllOwners();
 
@@ -80,7 +81,7 @@ public class InvoiceService implements IInvoiceService {
                         long vehicleId = ownership.getVehicleId();
                         AdministrationDto administrationDto = RegistrationMovement.getInstance().getTranslocationsForVehicleId(vehicleId, LocalDateUtil.getCurrentDate(), LocalDateUtil.getCurrentDateMinusOneMonth());
 
-                        ArrayList<IInvoiceDetail> invoiceDetails = new ArrayList<>();
+                        ArrayList<InvoiceDetails> invoiceDetails = new ArrayList<>();
                         for (JourneyDto journey : administrationDto.getJourneys()) {
                             InvoiceDetails details = new InvoiceDetails((ArrayList<TranslocationDto>) journey.getTranslocations(), "Complete Journey", new BigDecimal(10.0));
                             invoiceDetails.add(details);
@@ -97,5 +98,13 @@ public class InvoiceService implements IInvoiceService {
             throw new InvoiceException("couldn't generate invoice.");
         }
 
+    }
+
+    private boolean checkIfTranslocationIsProcessed(long translocationId, Invoice invoice) {
+        for(InvoiceDetails details : invoice.getInvoiceDetails()) {
+            if(details.getLocationPointsIds().contains(translocationId)) { return true; }
+        }
+
+        return false;
     }
 }

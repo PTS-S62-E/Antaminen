@@ -24,6 +24,11 @@ import java.util.List;
  */
 @Entity
 @Table(name = "Invoice")
+@NamedQueries({
+        @NamedQuery(name = "Invoice.findByInvoiceNumber", query = "SELECT i FROM Invoice i WHERE i.id = :id"),
+        @NamedQuery(name = "Invoice.findByUserId", query = "SELECT i FROM Invoice i WHERE i.owner.id = :id"),
+        @NamedQuery(name = "Invoice.findInvoiceByUserIdAndVehicleId", query = "SELECT i FROM Invoice i WHERE i.owner.id = :userId AND i.vehicleId = :vehicleId")
+})
 public class Invoice implements IInvoice, ISubInvoice, Serializable {
 
     @Id
