@@ -1,9 +1,11 @@
 package interfaces.domain;
 
 import com.rekeningrijden.europe.interfaces.ISubInvoice;
+import domain.InvoiceDetails;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,15 +24,14 @@ public interface IInvoice extends ISubInvoice {
      *
      * @return Arraylist containing IInvoiceDetails instances that describe different rows on an invoice
      */
-    ArrayList<IInvoiceDetail> invoiceDetails();
+    List<InvoiceDetails> invoiceDetails();
 
     String paymentDetails();
 
-    void setInvoiceDetails(ArrayList<IInvoiceDetail> invoiceDetails);
+    void setInvoiceDetails(ArrayList<InvoiceDetails> invoiceDetails);
 
     void setPaymentDetails(String paymentDetails);
 
-    void setInvoiceNumber(String invoiceNumber);
 
     void setCountry(String country);
 
@@ -40,7 +41,7 @@ public interface IInvoice extends ISubInvoice {
 
     void setInvoiceDate(String date);
 
-    ArrayList<IInvoiceDetail> getInvoiceDetails();
+    ArrayList<InvoiceDetails> getInvoiceDetails();
 
     String getPaymentDetails();
 

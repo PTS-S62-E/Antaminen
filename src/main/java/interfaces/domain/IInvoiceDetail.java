@@ -1,6 +1,7 @@
 package interfaces.domain;
 
 import com.rekeningrijden.europe.interfaces.ITransLocation;
+import dto.TranslocationDto;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -18,19 +19,19 @@ import java.util.ArrayList;
 
 public interface IInvoiceDetail {
 
-    ArrayList<ITransLocation> locationPoints();
+    ArrayList<TranslocationDto> locationPoints();
 
     String description();
 
     BigDecimal price();
 
-    void setLocationPoints(ArrayList<ITransLocation> locationPoints);
+    void setLocationPoints(ArrayList<TranslocationDto> locationPoints);
 
     void setDescription(String description);
 
     void setPrice(BigDecimal price);
 
-    ArrayList<ITransLocation> getLocationPoints();
+    ArrayList<TranslocationDto> getLocationPoints();
 
     String getDescription();
 
