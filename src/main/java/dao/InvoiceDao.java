@@ -1,6 +1,7 @@
 package dao;
 
 import domain.Invoice;
+import domain.Owner;
 import exceptions.InvoiceException;
 import interfaces.domain.IInvoice;
 import interfaces.dao.IInvoiceDao;
@@ -54,7 +55,7 @@ public class InvoiceDao implements IInvoiceDao {
     }
 
     @Override
-    public boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails) throws InvoiceException {
+    public boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, Owner owner, long vehicleId) throws InvoiceException {
         if(invoiceDetails == null || invoiceDetails.size() < 1) { throw new InvoiceException("Please provide invoiceDetails to generate the invoice."); }
 
         BigDecimal price = this.calculateTotalInvoicePrice(invoiceDetails);
@@ -70,7 +71,7 @@ public class InvoiceDao implements IInvoiceDao {
     }
 
     @Override
-    public boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, String countryCode) throws InvoiceException {
+    public boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, Owner owner, long vehicleId, String countryCode) throws InvoiceException {
         if(invoiceDetails == null || invoiceDetails.size() < 1) { throw new InvoiceException("Please provide invoiceDetails to generate the invoice."); }
         if(countryCode == null || countryCode.isEmpty()) { throw new InvoiceException("Please provide the country for this invoice."); }
 
@@ -85,7 +86,7 @@ public class InvoiceDao implements IInvoiceDao {
         return true;    }
 
     @Override
-    public boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, String countryCode, LocalDateTime invoiceDate) throws InvoiceException {
+    public boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, Owner owner, long vehicleId, String countryCode, LocalDateTime invoiceDate) throws InvoiceException {
         if(invoiceDetails == null || invoiceDetails.size() < 1) { throw new InvoiceException("Please provide invoiceDetails to generate the invoice."); }
         if(countryCode == null || countryCode.isEmpty()) { throw new InvoiceException("Please provide the country for this invoice."); }
         if(invoiceDate == null) { throw new InvoiceException("Please provide an Invoice date."); }
@@ -111,6 +112,11 @@ public class InvoiceDao implements IInvoiceDao {
         if(userId < 0) { throw new InvoiceException("Please provide a valid userId"); }
 
         return InvoiceMock.getInstance().getAllInvoices();
+    }
+
+    @Override
+    public ArrayList<IInvoice> findInvoicesByUserAndVehicleId(long userId, long vehicleId) throws InvoiceException {
+        return null;
     }
 
     @Override

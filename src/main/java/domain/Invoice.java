@@ -38,7 +38,7 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
     private String paymentDetails;
     private String country;
 
-    
+
     private boolean paymentStatus;
     private String invoiceDate;
     private BigDecimal price;
@@ -47,14 +47,17 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
     @ManyToOne(optional = false)
     private Owner owner;
 
+    private long vehicleId;
+
     public Invoice() { }
 
-    public Invoice(ArrayList<InvoiceDetails> invoiceDetails, String country, String invoiceDate, BigDecimal price, Owner owner) {
+    public Invoice(ArrayList<InvoiceDetails> invoiceDetails, String country, String invoiceDate, BigDecimal price, Owner owner, long vehicleId) {
         this.invoiceDetails.addAll(invoiceDetails);
         this.country = country;
         this.invoiceDate = invoiceDate;
         this.price = price;
         this.owner = owner;
+        this.vehicleId = vehicleId;
 
         for(IInvoiceDetail detail : invoiceDetails) {
             this.totalDistance += detail.getDistance();
@@ -154,5 +157,13 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
 
     public boolean isPaymentStatus() {
         return paymentStatus;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 }

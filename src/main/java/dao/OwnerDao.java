@@ -5,12 +5,16 @@ import domain.Ownership;
 import exceptions.OwnerException;
 import exceptions.OwnershipException;
 import interfaces.dao.IOwnerDao;
+import io.sentry.Sentry;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
 
 @Stateless
 @LocalBean
@@ -40,6 +44,18 @@ public class OwnerDao implements IOwnerDao {
 
             em.merge(owner);
         } catch (OwnershipException e) {
+            throw new OwnerException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Owner> getAllOwners() throws OwnerException {
+        try {
+            Query q = em.createNamedQuery("owner.findAllOwners");
+
+            return (List<Owner>) q.getResultList();
+        } catch(Exception e) {
+            Sentry.capture(e);
             throw new OwnerException(e.getMessage());
         }
     }

@@ -15,4 +15,6 @@ public interface IInvoiceService {
     ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException;
 
     boolean payInvoice(String invoiceNumber, String paymentDetails) throws InvoiceException;
+
+    void generateInvoices() throws InvoiceException;
 }

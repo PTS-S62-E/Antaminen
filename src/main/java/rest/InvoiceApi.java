@@ -3,6 +3,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import exceptions.InvoiceException;
 import interfaces.domain.IInvoice;
 import io.sentry.Sentry;
+import service.AccountService;
 import service.InvoiceService;
 import util.jwt.JWTRequired;
 
@@ -95,5 +96,12 @@ public class InvoiceApi {
             Sentry.capture(e);
             throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GET
+    @Path("/generate")
+    @JWTRequired
+    public void generatedInvoices() {
+
     }
 }

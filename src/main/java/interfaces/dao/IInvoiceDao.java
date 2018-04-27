@@ -1,6 +1,7 @@
 package interfaces.dao;
 
 import domain.Invoice;
+import domain.Owner;
 import exceptions.InvoiceException;
 import interfaces.domain.IInvoice;
 import interfaces.domain.IInvoiceDetail;
@@ -36,11 +37,11 @@ public interface IInvoiceDao {
      * @param invoiceDetails Arraylist containing the InvoiceDetails for creating the Invoice
      * @return Whether the creation of the invoice was successful
      */
-    boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails) throws InvoiceException;
+    boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, Owner owner, long vehicleId) throws InvoiceException;
 
-    boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, String countryCode) throws InvoiceException;
+    boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, Owner owner, long vehicleId, String countryCode) throws InvoiceException;
 
-    boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, String countryCode, LocalDateTime invoiceDate) throws InvoiceException;
+    boolean createInvoice(ArrayList<IInvoiceDetail> invoiceDetails, Owner owner, long vehicleId, String countryCode, LocalDateTime invoiceDate) throws InvoiceException;
 
     /**
      * Find an invoice based on the invoice number
@@ -50,6 +51,8 @@ public interface IInvoiceDao {
     IInvoice findInvoiceByInvoiceNumer(String invoiceNumber) throws InvoiceException;
 
     ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException;
+
+    ArrayList<IInvoice> findInvoicesByUserAndVehicleId(long userId, long vehicleId) throws InvoiceException;
 
     boolean payInvoice(String invoiceNumber, String paymentDetails) throws InvoiceException;
 }
