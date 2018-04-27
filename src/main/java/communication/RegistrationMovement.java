@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rekeningrijden.europe.interfaces.ITransLocation;
+import domain.TransLocation;
 import dto.AdministrationDto;
 import dto.JourneyDto;
+import dto.TranslocationDto;
 import exceptions.CommunicationException;
 import io.sentry.Sentry;
 
@@ -17,7 +19,7 @@ import java.util.logging.Logger;
 
 public class RegistrationMovement {
 
-    private final static String BASE_URL = "http://192.168.24.100:8082/Registratie-verplaatsing";
+    private final static String BASE_URL = "http://192.168.24.100:8082/registratie-verplaatsing";
     private Properties properties;
 
     private static RegistrationMovement _instance;
@@ -77,9 +79,6 @@ public class RegistrationMovement {
 
         String url = BASE_URL + urlPart;
 
-        Logger logger = Logger.getLogger(getClass().getName());
-        logger.warning("Request URL is: " + url);
-
         String response = SendRequest.sendGet(url);
 
         if(response.isEmpty()) { return null; }
@@ -89,22 +88,20 @@ public class RegistrationMovement {
         return mapper.readValue(response, AdministrationDto.class);
     }
 
-    public Object getTranslocationById(long id) throws CommunicationException, IOException {
+    public TranslocationDto getTranslocationById(long id) throws CommunicationException, IOException {
         if(id < 1) { throw new CommunicationException("Please provide a TranslocationId"); }
 
         String urlPart = properties.getProperty("TRANSLOCATION_BY_ID");
-        urlPart.replace(":id", String.valueOf(id));
+        urlPart = urlPart.replace(":id", String.valueOf(id));
 
         String url = BASE_URL + urlPart;
-
+        
         String response = SendRequest.sendGet(url);
 
         if(response.isEmpty()) { return null; }
 
         ObjectMapper mapper = new ObjectMapper();
 
-//        return mapper.readValue(response.)
-
-        return null;
+        return mapper.readValue(response, TranslocationDto.class);
     }
 }
