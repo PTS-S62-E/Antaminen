@@ -32,6 +32,12 @@ public class RegistrationMovement {
         return _instance;
     }
 
+    /**
+     * Create a new RegistrationMoment instance. We want to load the "paths.properties" file here and throw an exception
+     * is something goes wrong.
+     *
+     * The property file is used to get the endpoints that are needed for communication with the external api
+     */
     private RegistrationMovement() {
         InputStream input = null;
         properties = new Properties();
@@ -88,6 +94,13 @@ public class RegistrationMovement {
         return mapper.readValue(response, AdministrationDto.class);
     }
 
+    /**
+     * Get a single translocation from the movement registration api based on the ID of the translocations
+     * @param id ID of the translocation
+     * @return Returns a TranslocationDTO containing the Translocation that was fetched from the external api
+     * @throws CommunicationException Thrown when there's an exception in processing the data from the external api
+     * @throws IOException Thrown when there's an exception in communication with the external api
+     */
     public TranslocationDto getTranslocationById(long id) throws CommunicationException, IOException {
         if(id < 1) { throw new CommunicationException("Please provide a TranslocationId"); }
 
@@ -95,7 +108,7 @@ public class RegistrationMovement {
         urlPart = urlPart.replace(":id", String.valueOf(id));
 
         String url = BASE_URL + urlPart;
-        
+
         String response = SendRequest.sendGet(url);
 
         if(response.isEmpty()) { return null; }

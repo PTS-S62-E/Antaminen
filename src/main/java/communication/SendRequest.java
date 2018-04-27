@@ -14,6 +14,14 @@ import java.io.InputStreamReader;
 
 public class SendRequest {
 
+    /**
+     * Send a GET request to the provided url
+     * @param url The URL to send the GET request to
+     * @return Returns a JSON string containing the data that is retrieved from the request
+     * @throws IOException thrown when there's an exception in the communication with the external api
+     * @throws CommunicationException thrown when the connection with the external api was OK, but the returned status code is
+     *  different from the expected 200 (Status OK) or 204 (Status NO_CONTENT) status codes.
+     */
     public static String sendGet(String url) throws IOException, CommunicationException {
         if(url.isEmpty() || url == null) { throw new CommunicationException("Please provide an URL for the request"); }
 
