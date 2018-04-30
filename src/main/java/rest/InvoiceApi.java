@@ -101,7 +101,7 @@ public class InvoiceApi {
     @GET
     @Path("/generate")
     @JWTRequired
-    public void generatedInvoices() {
-
+    public Response generatedInvoices() {
+        throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Generation of invoices using REST api is not allowed. Please use MessageQueue instead.").build());
     }
 }
