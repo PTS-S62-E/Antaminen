@@ -7,10 +7,6 @@ node {
         git url: 'https://github.com/PTS-S62-E/Antaminen.git'
     }
 
-    stage ('Output') {
-        sh(returnStdout: true, script: 'ls')
-    }
-
     stage ('Artifactory configuration') {
         // Obtain an Artifactory server instance, defined in Jenkins --> Manage:
         server = Artifactory.server 'Artifactory'
@@ -25,7 +21,7 @@ node {
     }
 
     stage ('Test') {
-        rtMaven.run pom: 'pom.xml', goals: 'clean test -P development'
+        rtMaven.run pom: 'Antaminen/pom.xml', goals: 'clean test -P development'
         input(
                 id: 'testEnded', message: 'Did the tests pass?', parameters: [
                 [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you agree with this']
@@ -33,7 +29,7 @@ node {
     }
 
     stage ('Build') {
-        rtMaven.run pom: 'pom.xml', goals: 'install -P development', buildInfo: buildInfo
+        rtMaven.run pom: 'Antaminen/pom.xml', goals: 'install -P development', buildInfo: buildInfo
         input(
                 id: 'buildEnded', message: 'Did the build pass?', parameters: [
                 [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you agree with this']
@@ -41,7 +37,7 @@ node {
     }
 
     stage ('Analyze') {
-        rtMaven.run pom: 'pom.xml', goals: 'sonar:sonar -Dsonar.host.url=http://85.144.215.28:9001 -Dsonar.login=089ecbe71f30a12f9af77098b09921b83cf88786'
+        rtMaven.run pom: 'Antaminen/pom.xml', goals: 'sonar:sonar -Dsonar.host.url=http://85.144.215.28:9001 -Dsonar.login=089ecbe71f30a12f9af77098b09921b83cf88786'
         input(
                 id: 'analyzeEnded', message: 'The the analyze stage finish?', parameters: [
                 [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you agree with this']
@@ -61,7 +57,7 @@ node {
     }
 
     stage ('Deploy to Wildfly') {
-        rtMaven.run pom: 'pom.xml', goals: 'wildfly:deploy -Dwildfly.address=192.168.24.100 -Dwildfly.hostname=192.168.24.100 -Dwildfly.port=9990 -Dwildfly.username=admin -Dwildfly.password=proftaak'
+        rtMaven.run pom: 'Antaminen/pom.xml', goals: 'wildfly:deploy -Dwildfly.address=192.168.24.100 -Dwildfly.hostname=192.168.24.100 -Dwildfly.port=9990 -Dwildfly.username=admin -Dwildfly.password=proftaak'
         input(
                 id: 'wildflyDeployEnded', message: 'Is the application deployed to wildfly?', parameters: [
                 [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you agree with this']
