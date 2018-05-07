@@ -2,6 +2,7 @@ package communication;
 
 import exceptions.CommunicationException;
 import io.sentry.Sentry;
+import io.sentry.event.BreadcrumbBuilder;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -11,6 +12,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.logging.Logger;
 
 public class SendRequest {
 
@@ -31,6 +33,7 @@ public class SendRequest {
         HttpResponse response = client.execute(request);
 
         if(response.getStatusLine().getStatusCode() != 200 && response.getStatusLine().getStatusCode() != 204) {
+            Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Status Code: " + response.getStatusLine().getStatusCode() + "\n ReasonPhrase: " + response.getStatusLine().getReasonPhrase()).build());
             Sentry.capture(response.getStatusLine().toString());
             throw new CommunicationException("Received unexpected status code from external API");
         } else {

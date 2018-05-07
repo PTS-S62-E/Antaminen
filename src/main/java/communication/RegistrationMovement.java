@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 public class RegistrationMovement {
 
-    private final static String BASE_URL = "http://192.168.24.100:8082/registratie-verplaatsing";
+    private static String BASE_URL;
     private Properties properties;
 
     private static RegistrationMovement _instance;
@@ -45,6 +45,8 @@ public class RegistrationMovement {
             _instance = this;
             input = getClass().getClassLoader().getResourceAsStream("paths.properties");
             properties.load(input);
+
+            BASE_URL = properties.getProperty("BASE_URL");
         } catch (IOException e) {
             Sentry.capture(e);
             e.printStackTrace();
@@ -116,5 +118,21 @@ public class RegistrationMovement {
         ObjectMapper mapper = new ObjectMapper();
 
         return mapper.readValue(response, TranslocationDto.class);
+    }
+
+    public Object getVehicleById(long vehicleId) throws CommunicationException, IOException {
+        if(vehicleId < 1) { throw new CommunicationException("Please provide a valid vehicleId"); }
+
+        String urlPart = properties.getProperty("VEHICLE_BY_ID");
+        urlPart = urlPart.replace(":id", String.valueOf(vehicleId));
+
+        String url = BASE_URL + urlPart;
+
+        String response = SendRequest.sendGet(url);
+
+        Logger logger = Logger.getLogger(getClass().getName());
+        logger.warning(url);
+
+        return response;
     }
 }

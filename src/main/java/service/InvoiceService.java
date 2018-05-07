@@ -67,6 +67,20 @@ public class InvoiceService implements IInvoiceService {
         return invoiceDao.payInvoice(invoiceNumber, paymentDetails);
     }
 
+    /**
+     * Generate all the god damn invoices
+     *
+     * This method will fetch all owners from the database and will loop through them. Within the loop we get the ownerships for the user.
+     * If the user has a current ownership for a vehicle, we get all translocations for the vehicle from an external API and the process these
+     * translocations.
+     *
+     * When the translocations are processed, an array of new of InvoiceDetails will be created. All these object represent the routes that are visible
+     * on the invoice.
+     *
+     * This method is usually called using a message queue. With a small number of users, the invoice generation could be done fast, but with
+     * a growing number of users, it's a better alternative to use a message queue.
+     * @throws InvoiceException
+     */
     @Override
     public void generateInvoices() throws InvoiceException {
         //TODO: Check if the translocation already belongs to an invoice
