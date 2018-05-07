@@ -7,6 +7,10 @@ node {
         git url: 'https://github.com/PTS-S62-E/Antaminen.git'
     }
 
+    stage ('output') {
+        sh 'ls'
+    }
+
     stage ('Artifactory configuration') {
         // Obtain an Artifactory server instance, defined in Jenkins --> Manage:
         server = Artifactory.server 'Artifactory'
