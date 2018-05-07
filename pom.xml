@@ -161,9 +161,6 @@
                 <executions>
                     <execution>
                         <id>build-info</id>
-                        <goals>
-                            <goal>publish</goal>
-                        </goals>
                         <configuration>
                             <artifactory>
                                 <includeEnvVars>true</includeEnvVars>
