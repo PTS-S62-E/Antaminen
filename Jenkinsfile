@@ -8,7 +8,7 @@ node {
     }
 
     stage ('Output') {
-        sh "echo ls > result";
+        sh "ls > result";
         def output=readFile('result').trim()
         echo "output=$output";
     }
