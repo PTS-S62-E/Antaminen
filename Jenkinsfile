@@ -8,9 +8,7 @@ node {
     }
 
     stage ('Output') {
-        sh "ls > result";
-        def output=readFile('result').trim()
-        echo "output=$output";
+        sh(returnStdout: true, script: 'ls')
     }
 
     stage ('Artifactory configuration') {
