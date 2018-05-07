@@ -7,8 +7,10 @@ node {
         git url: 'https://github.com/PTS-S62-E/Antaminen.git'
     }
 
-    stage ('output') {
-        sh 'ls'
+    stage ('Output') {
+        sh "echo ls > result";
+        def output=readFile('result').trim()
+        echo "output=$output";
     }
 
     stage ('Artifactory configuration') {
