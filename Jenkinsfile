@@ -37,8 +37,6 @@ pipeline {
     stage ('Deploy to Artifactory') {
               steps {
                               script {
-                                  git url: 'https://github.com/PTS-S62-E/Antaminen.git'
-
                                   def server = Artifactory.server 'Artifactory'
                                   def buildInfo = Artifactory.newBuildInfo()
                                   def rtMaven = Artifactory.newMavenBuild()
@@ -50,7 +48,7 @@ pipeline {
                                   rtMaven.deployer.deployArtifacts = false
                                   buildInfo.env.capture = true
 
-                                  rtMaven.run pom: 'Antaminen/pom.xml', goals: 'clean install -DskipTests=true -P development', buildInfo: buildInfo
+                                  rtMaven.run pom: 'pom.xml', goals: 'clean install -DskipTests=true -P development', buildInfo: buildInfo
                                   rtMaven.deployer.deployArtifacts buildInfo
 
                                   server.publishBuildInfo buildInfo
