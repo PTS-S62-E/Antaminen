@@ -80,7 +80,7 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
 
     @Override
     public String getInvoiceNumber() {
-        throw new NotImplementedException("Can't retrieve invoice number");
+        return String.valueOf(this.id);
     }
 
     @Override
@@ -143,7 +143,7 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
 
     @Override
     public ArrayList<InvoiceDetails> getInvoiceDetails() {
-        return (ArrayList<InvoiceDetails>) this.invoiceDetails;
+        return new ArrayList<>(this.invoiceDetails);
     }
 
     @Override
