@@ -10,9 +10,11 @@ import java.util.ArrayList;
 
 public interface IInvoiceService {
 
-    IInvoice findInvoiceByInvoiceNumber(String invoiceNumber) throws InvoiceException;
+    IInvoice findInvoiceByInvoiceNumber(long invoiceNumber) throws InvoiceException;
 
     ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException;
 
-    boolean payInvoice(String invoiceNumber, String paymentDetails) throws InvoiceException;
+    boolean payInvoice(long invoiceNumber, String paymentDetails) throws InvoiceException;
+
+    void generateInvoices() throws InvoiceException;
 }

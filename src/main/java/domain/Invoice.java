@@ -3,10 +3,14 @@ package domain;
 import com.rekeningrijden.europe.interfaces.ISubInvoice;
 import interfaces.domain.IInvoice;
 import interfaces.domain.IInvoiceDetail;
+import org.apache.commons.lang3.NotImplementedException;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,33 +22,64 @@ import java.util.ArrayList;
  * | Project Package Name: domain
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
+@Entity
+@Table(name = "Invoice")
+@NamedQueries({
+        @NamedQuery(name = "Invoice.findByInvoiceNumber", query = "SELECT i FROM Invoice i WHERE i.id = :id"),
+        @NamedQuery(name = "Invoice.findByUserId", query = "SELECT i FROM Invoice i WHERE i.owner.id = :id"),
+        @NamedQuery(name = "Invoice.findInvoiceByUserIdAndVehicleId", query = "SELECT i FROM Invoice i WHERE i.owner.id = :userId AND i.vehicleId = :vehicleId")
+})
 public class Invoice implements IInvoice, ISubInvoice, Serializable {
 
-    private ArrayList<IInvoiceDetail> invoiceDetails;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @OneToMany
+    @JoinTable(name= "invoice_details_join",
+                joinColumns = @JoinColumn(name = "invoice_id", referencedColumnName = "id", nullable = false),
+                inverseJoinColumns = @JoinColumn(name = "invoice_detail_id", referencedColumnName = "id", nullable = false))
+    private List<InvoiceDetails> invoiceDetails;
     private String paymentDetails;
-    private String invoiceNumber;
     private String country;
+
+
     private boolean paymentStatus;
     private String invoiceDate;
     private BigDecimal price;
     private long totalDistance;
 
+    @ManyToOne(optional = false)
+    private Owner owner;
+
+    private long vehicleId;
+
     public Invoice() { }
 
-    public Invoice(ArrayList<IInvoiceDetail> invoiceDetails, String country, String invoiceDate, BigDecimal price) {
-        this.invoiceDetails = invoiceDetails;
+    public Invoice(ArrayList<InvoiceDetails> invoiceDetails, String country, String invoiceDate, BigDecimal price, Owner owner, long vehicleId) {
+        this.invoiceDetails.addAll(invoiceDetails);
         this.country = country;
         this.invoiceDate = invoiceDate;
         this.price = price;
+        this.owner = owner;
+        this.vehicleId = vehicleId;
 
         for(IInvoiceDetail detail : invoiceDetails) {
             this.totalDistance += detail.getDistance();
         }
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @Override
     public String getInvoiceNumber() {
-        return this.invoiceNumber;
+        throw new NotImplementedException("Can't retrieve invoice number");
     }
 
     @Override
@@ -68,7 +103,7 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
     }
 
     @Override
-    public ArrayList<IInvoiceDetail> invoiceDetails() {
+    public List<InvoiceDetails> invoiceDetails() {
         return this.invoiceDetails;
     }
 
@@ -78,18 +113,11 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
     }
 
     @Override
-    public void setInvoiceDetails(ArrayList<IInvoiceDetail> invoiceDetails) {
-        this.invoiceDetails = invoiceDetails;
-    }
+    public void setInvoiceDetails(ArrayList<InvoiceDetails> invoiceDetails) { this.invoiceDetails = invoiceDetails; }
 
     @Override
     public void setPaymentDetails(String paymentDetails) {
         this.paymentDetails = paymentDetails;
-    }
-
-    @Override
-    public void setInvoiceNumber(String invoiceNumber) {
-        this.invoiceNumber = invoiceNumber;
     }
 
     @Override
@@ -113,8 +141,8 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
     }
 
     @Override
-    public ArrayList<IInvoiceDetail> getInvoiceDetails() {
-        return this.invoiceDetails;
+    public ArrayList<InvoiceDetails> getInvoiceDetails() {
+        return (ArrayList<InvoiceDetails>) this.invoiceDetails;
     }
 
     @Override
@@ -134,5 +162,13 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
 
     public boolean isPaymentStatus() {
         return paymentStatus;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 }

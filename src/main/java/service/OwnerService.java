@@ -9,6 +9,7 @@ import interfaces.service.IOwnerService;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import java.util.List;
 
 @Stateless
 @LocalBean
@@ -25,5 +26,10 @@ public class OwnerService implements IOwnerService {
         if(newOwnership == null) { throw new OwnerException("Please provide a new ownership"); }
 
         ownerDao.addOwnership(owner, newOwnership);
+    }
+
+    @Override
+    public List<Owner> getAllOwners() throws OwnerException {
+        return ownerDao.getAllOwners();
     }
 }

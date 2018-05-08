@@ -1,14 +1,21 @@
 package domain;
 
 import com.rekeningrijden.europe.interfaces.ITransLocation;
+import communication.RegistrationMovement;
+import dto.TranslocationDto;
+import exceptions.CommunicationException;
 import exceptions.InvoiceException;
 import interfaces.domain.IInvoiceDetail;
+import io.sentry.Sentry;
 import util.DistanceCalculator;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,7 +35,12 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private ArrayList<ITransLocation> locationPoints;
+
+    @Transient
+    private List<TranslocationDto> locationPoints;
+
+    @ElementCollection
+    private List<Long> locationPointsIds;
 
     private String description;
     private BigDecimal price;
@@ -36,7 +48,7 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
 
     public InvoiceDetails() { }
 
-    public InvoiceDetails(ArrayList<ITransLocation> locationPoints, String description, BigDecimal price) throws InvoiceException {
+    public InvoiceDetails(ArrayList<TranslocationDto> locationPoints, String description, BigDecimal price) throws InvoiceException {
         if(locationPoints == null || locationPoints.size() < 2) { throw new InvoiceException("No locationPoints provided for InvoiceDetails or only 1 provided."); }
         if(description.isEmpty()) { throw new InvoiceException("Please provide a description for this InvoiceDetail."); }
         if(price == null || price.compareTo(BigDecimal.ZERO) < 0) { throw new InvoiceException("Please provide a positive price for this InvoiceDetail."); }
@@ -44,12 +56,15 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
         for(int i = 0; i < locationPoints.size() -1; i++) {
             // Change the 0.0 params if you also want to take elevation into account
             int j = i + 1;
-            this.distance += DistanceCalculator.distance(locationPoints.get(i).getLat(), locationPoints.get(j).getLat(),
-                                                        locationPoints.get(i).getLon(), locationPoints.get(j).getLon(),
+            this.distance += DistanceCalculator.distance(locationPoints.get(i).getLatitude(), locationPoints.get(j).getLatitude(),
+                                                        locationPoints.get(i).getLongitude(), locationPoints.get(j).getLongitude(),
                                                         0.0, 0.0);
         }
 
-        this.locationPoints = locationPoints;
+        for (TranslocationDto locationPoint : locationPoints) {
+            locationPointsIds.add(locationPoint.getTranslocationId());
+        }
+
         this.description = description;
         this.price = price;
     }
@@ -63,8 +78,8 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
     }
 
     @Override
-    public ArrayList<ITransLocation> locationPoints() {
-        return this.locationPoints;
+    public ArrayList<TranslocationDto> locationPoints() {
+        return (ArrayList<TranslocationDto>) this.locationPoints;
     }
 
     @Override
@@ -78,8 +93,12 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
     }
 
     @Override
-    public void setLocationPoints(ArrayList<ITransLocation> locationPoints) {
+    public void setLocationPoints(ArrayList<TranslocationDto> locationPoints) {
         this.locationPoints = locationPoints;
+
+        for(TranslocationDto dto : locationPoints) {
+            this.locationPointsIds.add(dto.getTranslocationId());
+        }
     }
 
     @Override
@@ -93,8 +112,18 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
     }
 
     @Override
-    public ArrayList<ITransLocation> getLocationPoints() {
-        return this.locationPoints;
+    public ArrayList<TranslocationDto> getLocationPoints() {
+        if(this.locationPoints == null || this.locationPoints.isEmpty()) {
+            try {
+                for (long id : this.locationPointsIds) {
+                        this.locationPoints.add(RegistrationMovement.getInstance().getTranslocationById(id));
+                }
+            } catch (CommunicationException | IOException e) {
+                Sentry.capture(e);
+                e.printStackTrace();
+            }
+        }
+        return (ArrayList<TranslocationDto>) this.locationPoints;
     }
 
     @Override
@@ -115,5 +144,13 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
     @Override
     public void setDistance(long distance) {
         this.distance = distance;
+    }
+
+    public List<Long> getLocationPointsIds() {
+        return locationPointsIds;
+    }
+
+    public void setLocationPointsIds(List<Long> locationPointsIds) {
+        this.locationPointsIds = locationPointsIds;
     }
 }

@@ -3,6 +3,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import exceptions.InvoiceException;
 import interfaces.domain.IInvoice;
 import io.sentry.Sentry;
+import service.AccountService;
 import service.InvoiceService;
 import util.jwt.JWTRequired;
 
@@ -56,8 +57,8 @@ public class InvoiceApi {
     @GET
     @Produces(APPLICATION_JSON)
     @JWTRequired
-    public IInvoice findInvoiceByInvoiceNumber(@PathParam("invoiceNumber") String invoiceNumber) {
-        if(invoiceNumber.isEmpty()) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
+    public IInvoice findInvoiceByInvoiceNumber(@PathParam("invoiceNumber") long invoiceNumber) {
+        if(invoiceNumber < 1) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
 
         try {
             IInvoice result = service.findInvoiceByInvoiceNumber(invoiceNumber);
@@ -79,7 +80,7 @@ public class InvoiceApi {
     public boolean payInvoice(JsonNode data) {
         if(data.get("invoiceNumber") == null || data.get("invoiceNumber").asText().isEmpty()) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
         try {
-            String invoiceNumber = data.get("invoiceNumber").asText();
+            long invoiceNumber = data.get("invoiceNumber").asLong();
             String paymentDetails = "No payment details provided.";
 
             if(data.get("paymentDetails") != null) { paymentDetails = data.get("paymentDetails").asText(); }
@@ -95,5 +96,12 @@ public class InvoiceApi {
             Sentry.capture(e);
             throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GET
+    @Path("/generate")
+    @JWTRequired
+    public Response generatedInvoices() {
+        throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Generation of invoices using REST api is not allowed. Please use MessageQueue instead.").build());
     }
 }

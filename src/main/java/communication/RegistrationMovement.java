@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rekeningrijden.europe.interfaces.ITransLocation;
+import domain.TransLocation;
 import dto.AdministrationDto;
 import dto.JourneyDto;
+import dto.TranslocationDto;
 import exceptions.CommunicationException;
 import io.sentry.Sentry;
 
@@ -17,7 +19,7 @@ import java.util.logging.Logger;
 
 public class RegistrationMovement {
 
-    private final static String BASE_URL = "http://192.168.24.100:8082/Registratie-verplaatsing";
+    private static String BASE_URL;
     private Properties properties;
 
     private static RegistrationMovement _instance;
@@ -30,6 +32,12 @@ public class RegistrationMovement {
         return _instance;
     }
 
+    /**
+     * Create a new RegistrationMoment instance. We want to load the "paths.properties" file here and throw an exception
+     * is something goes wrong.
+     *
+     * The property file is used to get the endpoints that are needed for communication with the external api
+     */
     private RegistrationMovement() {
         InputStream input = null;
         properties = new Properties();
@@ -37,6 +45,8 @@ public class RegistrationMovement {
             _instance = this;
             input = getClass().getClassLoader().getResourceAsStream("paths.properties");
             properties.load(input);
+
+            BASE_URL = properties.getProperty("BASE_URL");
         } catch (IOException e) {
             Sentry.capture(e);
             e.printStackTrace();
@@ -77,9 +87,6 @@ public class RegistrationMovement {
 
         String url = BASE_URL + urlPart;
 
-        Logger logger = Logger.getLogger(getClass().getName());
-        logger.warning("Request URL is: " + url);
-
         String response = SendRequest.sendGet(url);
 
         if(response.isEmpty()) { return null; }
@@ -89,11 +96,18 @@ public class RegistrationMovement {
         return mapper.readValue(response, AdministrationDto.class);
     }
 
-    public Object getTranslocationById(long id) throws CommunicationException, IOException {
+    /**
+     * Get a single translocation from the movement registration api based on the ID of the translocations
+     * @param id ID of the translocation
+     * @return Returns a TranslocationDTO containing the Translocation that was fetched from the external api
+     * @throws CommunicationException Thrown when there's an exception in processing the data from the external api
+     * @throws IOException Thrown when there's an exception in communication with the external api
+     */
+    public TranslocationDto getTranslocationById(long id) throws CommunicationException, IOException {
         if(id < 1) { throw new CommunicationException("Please provide a TranslocationId"); }
 
         String urlPart = properties.getProperty("TRANSLOCATION_BY_ID");
-        urlPart.replace(":id", String.valueOf(id));
+        urlPart = urlPart.replace(":id", String.valueOf(id));
 
         String url = BASE_URL + urlPart;
 
@@ -103,8 +117,22 @@ public class RegistrationMovement {
 
         ObjectMapper mapper = new ObjectMapper();
 
-//        return mapper.readValue(response.)
+        return mapper.readValue(response, TranslocationDto.class);
+    }
 
-        return null;
+    public Object getVehicleById(long vehicleId) throws CommunicationException, IOException {
+        if(vehicleId < 1) { throw new CommunicationException("Please provide a valid vehicleId"); }
+
+        String urlPart = properties.getProperty("VEHICLE_BY_ID");
+        urlPart = urlPart.replace(":id", String.valueOf(vehicleId));
+
+        String url = BASE_URL + urlPart;
+
+        String response = SendRequest.sendGet(url);
+
+        Logger logger = Logger.getLogger(getClass().getName());
+        logger.warning(url);
+
+        return response;
     }
 }
