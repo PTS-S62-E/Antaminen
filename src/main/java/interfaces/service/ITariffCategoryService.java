@@ -11,5 +11,5 @@ public interface ITariffCategoryService {
 	TariffCategory getTariffCategory(String name) throws TariffCategoryException;
 	List<TariffCategory> getTariffCategories();
 	void createTariffCategory(TariffCategory tariffCategory) throws TariffCategoryException;
-	TariffCategory getTariffCategoryByVehicleId(long vehicleId) throws CommunicationException, IOException;
+	TariffCategory getTariffCategoryByVehicleId(long vehicleId) throws CommunicationException, IOException, TariffCategoryException;
 }

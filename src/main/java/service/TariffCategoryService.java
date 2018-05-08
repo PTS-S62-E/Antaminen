@@ -1,12 +1,13 @@
 package service;
 
-import com.pts62.common.facade.VehicleFacade;
 import communication.RegistrationMovement;
 import domain.TariffCategory;
+import dto.VehicleDto;
 import exceptions.CommunicationException;
 import exceptions.TariffCategoryException;
 import interfaces.dao.ITariffCategoryDao;
 import interfaces.service.ITariffCategoryService;
+import io.sentry.Sentry;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
@@ -49,10 +50,22 @@ public class TariffCategoryService implements ITariffCategoryService {
 		tariffCategoryDao.createTariffCategory(tariffCategory);
 	}
 
-
-	public TariffCategory getTariffCategoryByVehicleId(long vehicleId) throws CommunicationException, IOException {
+	@Override
+	public TariffCategory getTariffCategoryByVehicleId(long vehicleId) throws CommunicationException, IOException, TariffCategoryException {
 		RegistrationMovement rm = RegistrationMovement.getInstance();
-		VehicleFacade vehicle = rm.getVehicleById(vehicleId);
+		VehicleDto vehicleDto = rm.getVehicleById(vehicleId);
+		String categoryName = vehicleDto.getCategory();
+		TariffCategory tariffCategory = tariffCategoryDao.getTariffCategory(categoryName);
 
+		if (tariffCategory == null){
+			StringBuilder builder = new StringBuilder();
+			builder.append("couldn't find a TariffCategory with name: ");
+			builder.append(categoryName);
+			builder.append(". There's a discrepancy between the registration and administration category tables. Please contact an administrator.");
+			Sentry.capture(builder.toString());
+			throw new TariffCategoryException(builder.toString());
+		}
+
+		return tariffCategory;
 	}
 }
