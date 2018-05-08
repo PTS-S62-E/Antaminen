@@ -118,6 +118,7 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
     public ArrayList<TranslocationDto> getLocationPoints() {
         if(this.locationPoints == null || this.locationPoints.isEmpty()) {
             try {
+                this.locationPoints = new ArrayList<>();
                 for (long id : this.locationPointsIds) {
                         this.locationPoints.add(RegistrationMovement.getInstance().getTranslocationById(id));
                 }
