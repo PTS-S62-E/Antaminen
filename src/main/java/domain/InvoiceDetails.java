@@ -33,9 +33,6 @@ import java.util.logging.Logger;
 @Table(name= "InvoiceDetails")
 public class InvoiceDetails implements IInvoiceDetail, Serializable {
 
-    @Transient
-    Logger logger = Logger.getLogger(getClass().getName());
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -65,11 +62,9 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
                                                         0.0, 0.0);
         }
 
-        logger.warning("Total Locationpoints: " + locationPoints.size());
-
         this.locationPointsIds = new ArrayList<>();
+
         for (TranslocationDto locationPoint : locationPoints) {
-            logger.warning("Locationpoint ID: " + locationPoint.getTranslocationId());
             locationPointsIds.add(locationPoint.getTranslocationId());
         }
 

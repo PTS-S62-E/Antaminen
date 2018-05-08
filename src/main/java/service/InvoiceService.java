@@ -96,12 +96,8 @@ public class InvoiceService implements IInvoiceService {
                 if(!ownerships.isEmpty()) {
                     for (Ownership ownership : ownerships) {
                         long vehicleId = ownership.getVehicleId();
-                        logger.warning("Vehicle ID: " + vehicleId);
-                        logger.warning(LocalDateUtil.getCurrentDate());
-                        logger.warning(LocalDateUtil.getCurrentDateMinusOneMonth());
                         AdministrationDto administrationDto = RegistrationMovement.getInstance().getTranslocationsForVehicleId(vehicleId, LocalDateUtil.getCurrentDateMinusOneMonth(), LocalDateUtil.getCurrentDate());
 
-                        logger.warning("The size of administrationDtos Journeys " + administrationDto.getJourneys().size());
                         ArrayList<InvoiceDetails> invoiceDetails = new ArrayList<>();
                         for (JourneyDto journey : administrationDto.getJourneys()) {
                             InvoiceDetails details = new InvoiceDetails((ArrayList<TranslocationDto>) journey.getTranslocations(), "Complete Journey", new BigDecimal(10.0));
@@ -111,7 +107,6 @@ public class InvoiceService implements IInvoiceService {
                         if(invoiceDetails.size() < 1) {
                             // No translocations to generate invoice...
                         } else {
-                            logger.warning("The size of invoice details is: " + invoiceDetails.size());
                             invoiceDao.createInvoice(invoiceDetails, owner, vehicleId);
                         }
                     }
