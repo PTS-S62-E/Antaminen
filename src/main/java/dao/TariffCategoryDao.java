@@ -2,14 +2,17 @@ package dao;
 
 import domain.TariffCategory;
 import interfaces.dao.ITariffCategoryDao;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+@Stateless
 public class TariffCategoryDao implements ITariffCategoryDao {
 
-	@Inject
+	@PersistenceContext(unitName = "administratieUnit")
 	EntityManager em;
 
 	@Override

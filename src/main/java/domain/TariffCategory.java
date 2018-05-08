@@ -1,6 +1,7 @@
 package domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 @NamedQueries({
@@ -9,6 +10,7 @@ import javax.persistence.*;
 public class TariffCategory {
 
 	@Id
+	@Size(min = 1)
 	String name;
 	@Column(nullable = false) //tariff in cents
 	int tariff;

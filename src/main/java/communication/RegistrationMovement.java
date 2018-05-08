@@ -1,11 +1,16 @@
 package communication;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dto.AdministrationDto;
+import dto.CategoryDto;
 import dto.TranslocationDto;
 import dto.VehicleDto;
+import exceptions.CategoryException;
 import exceptions.CommunicationException;
 import io.sentry.Sentry;
+import jdk.nashorn.internal.objects.NativeJSON;
+
 import javax.ejb.Singleton;
 import java.io.*;
 import java.util.Properties;
@@ -115,6 +120,12 @@ public class RegistrationMovement {
         return mapper.readValue(response, TranslocationDto.class);
     }
 
+    public void getCategory(String name) throws CategoryException {
+        if (name.isEmpty()){
+            throw new CategoryException("name cannot be empty");
+        }
+    }
+
     public VehicleDto getVehicleById(long vehicleId) throws CommunicationException, IOException {
         if(vehicleId < 1) { throw new CommunicationException("Please provide a valid vehicleId"); }
 
@@ -131,5 +142,23 @@ public class RegistrationMovement {
         ObjectMapper mapper = new ObjectMapper();
 
         return mapper.readValue(response, VehicleDto.class);
+    }
+
+    public void createCategory(CategoryDto categoryDto) throws CategoryException, IOException, CommunicationException {
+        if (categoryDto == null){
+            throw new CategoryException("CategoryDto cannot be null");
+        }
+
+        if (categoryDto.getName().equals("")){
+            throw new CategoryException("name cannot be empty");
+        }
+
+        String urlPart = properties.getProperty("CREATE_CATEGORY");
+        String url = BASE_URL + urlPart;
+
+        ObjectMapper mapper = new ObjectMapper();
+        String categoryDtoAsJson = mapper.writeValueAsString(categoryDto);
+
+        String response = SendRequest.sendPost(url, categoryDtoAsJson);
     }
 }

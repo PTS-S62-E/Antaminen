@@ -3,7 +3,6 @@ package interfaces.service;
 import domain.TariffCategory;
 import exceptions.CommunicationException;
 import exceptions.TariffCategoryException;
-
 import java.io.IOException;
 import java.util.List;
 

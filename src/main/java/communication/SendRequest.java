@@ -6,13 +6,14 @@ import io.sentry.event.BreadcrumbBuilder;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.logging.Logger;
 
 public class SendRequest {
 
@@ -32,6 +33,30 @@ public class SendRequest {
 
         HttpResponse response = client.execute(request);
 
+        return getResult(response);
+    }
+
+
+    public static String sendPost(String url, String StringifiedJson) throws IOException, CommunicationException {
+        if(url.isEmpty() || url == null) {
+            throw new CommunicationException("Please provide an URL for the request");
+        }
+
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpPost request = new HttpPost(url);
+
+        StringEntity requestEntity = new StringEntity(
+                StringifiedJson,
+                ContentType.APPLICATION_JSON);
+
+        request.setEntity(requestEntity);
+
+        HttpResponse response = client.execute(request);
+
+        return getResult(response);
+    }
+
+    private static String getResult(HttpResponse response) throws CommunicationException, IOException {
         if(response.getStatusLine().getStatusCode() != 200 && response.getStatusLine().getStatusCode() != 204) {
             Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Status Code: " + response.getStatusLine().getStatusCode() + "\n ReasonPhrase: " + response.getStatusLine().getReasonPhrase()).build());
             Sentry.capture(response.getStatusLine().toString());

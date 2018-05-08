@@ -31,8 +31,9 @@ public class TariffCategoryApi {
 	@GET
 	@Path("/{name}")
 	@Produces(APPLICATION_JSON)
-	public Response getVehicleOwnerships(@PathParam("name") String name) {
+	public Response getTariffCategory(@PathParam("name") String name) {
 		try {
+			System.out.println(name);
 			return Response.ok(tariffCategoryService.getTariffCategory(name)).build();
 		} catch (Exception e) {
 			throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity(e.getMessage()).build());
@@ -42,7 +43,7 @@ public class TariffCategoryApi {
 	@GET
 	@Path("/")
 	@Produces(APPLICATION_JSON)
-	public Response getVehicleOwnerships() {
+	public Response getTariffCategories() {
 		try {
 			return Response.ok(tariffCategoryService.getTariffCategories()).build();
 		} catch (Exception e) {
@@ -51,7 +52,7 @@ public class TariffCategoryApi {
 	}
 
 	@GET
-	@Path("/{id}")
+	@Path("/vehicleId/{id}")
 	@Produces(APPLICATION_JSON)
 	public Response getTariffCategoryByVehicleId(@PathParam("id") long id) {
 		try {
