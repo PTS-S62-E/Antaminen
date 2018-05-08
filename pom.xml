@@ -11,6 +11,11 @@
     <name>Rekening-Administratie</name>
 
     <distributionManagement>
+        <repository>
+            <id>central</id>
+            <name>Artifactory-releases</name>
+            <url>http://85.144.215.28:8082/artifactory/libs-release-local</url>
+        </repository>
         <snapshotRepository>
             <id>snapshots</id>
             <name>Artifactory-snapshots</name>
