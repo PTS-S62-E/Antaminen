@@ -1,11 +1,15 @@
 package rest;
 import com.fasterxml.jackson.databind.JsonNode;
+import domain.Owner;
+import exceptions.AccountException;
 import exceptions.InvoiceException;
 import interfaces.domain.IInvoice;
 import io.sentry.Sentry;
 import service.AccountService;
 import service.InvoiceService;
+import service.OwnerService;
 import util.jwt.JWTRequired;
+import util.jwt.JWTUtility;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -25,6 +29,10 @@ public class InvoiceApi {
     @EJB
     InvoiceService service;
 
+    @EJB
+    AccountService accountService;
+
+
     /**
      * Get all invoices for a user based on the token
      * @return
@@ -33,16 +41,20 @@ public class InvoiceApi {
     @Path("/")
     @Produces(APPLICATION_JSON)
     @JWTRequired
-    public ArrayList<IInvoice> getAllInvoices() {
+    public ArrayList<IInvoice> getAllInvoices(@HeaderParam("Authorization") String token) {
         try {
-            ArrayList<IInvoice> result = service.findInvoiceByUser(1);
+
+            String email = JWTUtility.getSubject(token);
+            Owner authenticatedOwner = accountService.findByEmailAddress(email).getOwner();
+
+            ArrayList<IInvoice> result = service.findInvoiceByUser(authenticatedOwner.getId());
 
             if(result == null) {
                 throw new WebApplicationException(Response.Status.NO_CONTENT);
             } else {
                 return result;
             }
-        } catch (InvoiceException e) {
+        } catch (InvoiceException | AccountException e) {
             Sentry.capture(e);
             throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
