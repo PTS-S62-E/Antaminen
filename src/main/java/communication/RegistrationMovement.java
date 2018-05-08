@@ -3,6 +3,7 @@ package communication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dto.AdministrationDto;
 import dto.TranslocationDto;
+import dto.VehicleDto;
 import exceptions.CommunicationException;
 import io.sentry.Sentry;
 import javax.ejb.Singleton;
@@ -114,7 +115,7 @@ public class RegistrationMovement {
         return mapper.readValue(response, TranslocationDto.class);
     }
 
-    public Object getVehicleById(long vehicleId) throws CommunicationException, IOException {
+    public VehicleDto getVehicleById(long vehicleId) throws CommunicationException, IOException {
         if(vehicleId < 1) { throw new CommunicationException("Please provide a valid vehicleId"); }
 
         String urlPart = properties.getProperty("VEHICLE_BY_ID");
@@ -127,10 +128,8 @@ public class RegistrationMovement {
         Logger logger = Logger.getLogger(getClass().getName());
         logger.warning(url);
 
-        return response;
-    }
+        ObjectMapper mapper = new ObjectMapper();
 
-    private mapToVehicleFacade(Object object){
-
+        return mapper.readValue(response, VehicleDto.class);
     }
 }
