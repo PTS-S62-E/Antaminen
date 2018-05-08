@@ -48,7 +48,7 @@ pipeline {
                                   rtMaven.deployer.deployArtifacts = false
                                   buildInfo.env.capture = true
 
-                                  rtMaven.run pom: 'pom.xml', goals: 'clean install -DskipTests=true -P development', buildInfo: buildInfo
+                                  rtMaven.run pom: 'pom.xml', goals: 'install -DskipTests=true -P development', buildInfo: buildInfo
                                   rtMaven.deployer.deployArtifacts buildInfo
 
                                   server.publishBuildInfo buildInfo
