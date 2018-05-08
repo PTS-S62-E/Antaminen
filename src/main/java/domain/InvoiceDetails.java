@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,6 +61,8 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
                                                         locationPoints.get(i).getLongitude(), locationPoints.get(j).getLongitude(),
                                                         0.0, 0.0);
         }
+
+        this.locationPointsIds = new ArrayList<>();
 
         for (TranslocationDto locationPoint : locationPoints) {
             locationPointsIds.add(locationPoint.getTranslocationId());

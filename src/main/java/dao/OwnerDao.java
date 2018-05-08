@@ -51,7 +51,7 @@ public class OwnerDao implements IOwnerDao {
     @Override
     public List<Owner> getAllOwners() throws OwnerException {
         try {
-            Query q = em.createNamedQuery("owner.findAllOwners");
+            Query q = em.createNamedQuery("Owner.findAllOwners");
 
             return (List<Owner>) q.getResultList();
         } catch(Exception e) {

@@ -2,9 +2,12 @@ package rest;
 
 import communication.RegistrationMovement;
 import exceptions.CommunicationException;
+import exceptions.InvoiceException;
+import service.InvoiceService;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import java.io.IOException;
@@ -13,8 +16,11 @@ import java.io.IOException;
 @Stateless
 public class TestApi {
 
+    @Inject
+    InvoiceService service;
+
     @GET
-    public Object test() throws CommunicationException, IOException {
-        return RegistrationMovement.getInstance().getVehicleById(103);
+    public void test() throws CommunicationException, IOException, InvoiceException {
+        service.generateInvoices();
     }
 }
