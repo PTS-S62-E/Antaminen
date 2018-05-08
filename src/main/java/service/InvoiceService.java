@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 @Stateless
 @LocalBean
@@ -36,6 +37,8 @@ public class InvoiceService implements IInvoiceService {
 
     @EJB
     OwnerService ownerService;
+
+    Logger logger = Logger.getLogger(getClass().getName());
 
     public InvoiceService() { }
 
@@ -88,20 +91,29 @@ public class InvoiceService implements IInvoiceService {
             ArrayList<Owner> owners = (ArrayList<Owner>) ownerService.getAllOwners();
 
             for(Owner owner : owners) {
-                ArrayList<Ownership> ownerships = (ArrayList<Ownership>) owner.getOwnership();
+                ArrayList<Ownership> ownerships = new ArrayList<>(owner.getOwnership());
 
                 if(!ownerships.isEmpty()) {
                     for (Ownership ownership : ownerships) {
                         long vehicleId = ownership.getVehicleId();
-                        AdministrationDto administrationDto = RegistrationMovement.getInstance().getTranslocationsForVehicleId(vehicleId, LocalDateUtil.getCurrentDate(), LocalDateUtil.getCurrentDateMinusOneMonth());
+                        logger.warning("Vehicle ID: " + vehicleId);
+                        logger.warning(LocalDateUtil.getCurrentDate());
+                        logger.warning(LocalDateUtil.getCurrentDateMinusOneMonth());
+                        AdministrationDto administrationDto = RegistrationMovement.getInstance().getTranslocationsForVehicleId(vehicleId, LocalDateUtil.getCurrentDateMinusOneMonth(), LocalDateUtil.getCurrentDate());
 
+                        logger.warning("The size of administrationDtos Journeys " + administrationDto.getJourneys().size());
                         ArrayList<InvoiceDetails> invoiceDetails = new ArrayList<>();
                         for (JourneyDto journey : administrationDto.getJourneys()) {
                             InvoiceDetails details = new InvoiceDetails((ArrayList<TranslocationDto>) journey.getTranslocations(), "Complete Journey", new BigDecimal(10.0));
                             invoiceDetails.add(details);
                         }
 
-                        invoiceDao.createInvoice(invoiceDetails, owner, vehicleId);
+                        if(invoiceDetails.size() < 1) {
+                            // No translocations to generate invoice...
+                        } else {
+                            logger.warning("The size of invoice details is: " + invoiceDetails.size());
+                            invoiceDao.createInvoice(invoiceDetails, owner, vehicleId);
+                        }
                     }
                 }
             }

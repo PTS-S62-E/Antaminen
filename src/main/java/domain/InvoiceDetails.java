@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,6 +32,9 @@ import java.util.List;
 @Entity
 @Table(name= "InvoiceDetails")
 public class InvoiceDetails implements IInvoiceDetail, Serializable {
+
+    @Transient
+    Logger logger = Logger.getLogger(getClass().getName());
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,7 +65,11 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
                                                         0.0, 0.0);
         }
 
+        logger.warning("Total Locationpoints: " + locationPoints.size());
+
+        this.locationPointsIds = new ArrayList<>();
         for (TranslocationDto locationPoint : locationPoints) {
+            logger.warning("Locationpoint ID: " + locationPoint.getTranslocationId());
             locationPointsIds.add(locationPoint.getTranslocationId());
         }
 
