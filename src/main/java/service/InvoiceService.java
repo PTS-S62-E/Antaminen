@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 @Stateless
 @LocalBean
@@ -36,6 +37,8 @@ public class InvoiceService implements IInvoiceService {
 
     @EJB
     OwnerService ownerService;
+
+    Logger logger = Logger.getLogger(getClass().getName());
 
     public InvoiceService() { }
 
@@ -88,12 +91,12 @@ public class InvoiceService implements IInvoiceService {
             ArrayList<Owner> owners = (ArrayList<Owner>) ownerService.getAllOwners();
 
             for(Owner owner : owners) {
-                ArrayList<Ownership> ownerships = (ArrayList<Ownership>) owner.getOwnership();
+                ArrayList<Ownership> ownerships = new ArrayList<>(owner.getOwnership());
 
                 if(!ownerships.isEmpty()) {
                     for (Ownership ownership : ownerships) {
                         long vehicleId = ownership.getVehicleId();
-                        AdministrationDto administrationDto = RegistrationMovement.getInstance().getTranslocationsForVehicleId(vehicleId, LocalDateUtil.getCurrentDate(), LocalDateUtil.getCurrentDateMinusOneMonth());
+                        AdministrationDto administrationDto = RegistrationMovement.getInstance().getTranslocationsForVehicleId(vehicleId, LocalDateUtil.getCurrentDateMinusOneMonth(), LocalDateUtil.getCurrentDate());
 
                         ArrayList<InvoiceDetails> invoiceDetails = new ArrayList<>();
                         for (JourneyDto journey : administrationDto.getJourneys()) {
@@ -101,7 +104,11 @@ public class InvoiceService implements IInvoiceService {
                             invoiceDetails.add(details);
                         }
 
-                        invoiceDao.createInvoice(invoiceDetails, owner, vehicleId);
+                        if(invoiceDetails.size() < 1) {
+                            // No translocations to generate invoice...
+                        } else {
+                            invoiceDao.createInvoice(invoiceDetails, owner, vehicleId);
+                        }
                     }
                 }
             }

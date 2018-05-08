@@ -56,6 +56,9 @@ public class InvoiceDao implements IInvoiceDao {
             throw new InvoiceException("No positive price provided in Invoice");
         }
         try {
+            for(InvoiceDetails detail : invoice.getInvoiceDetails()) {
+                em.persist(detail);
+            }
             em.persist(invoice);
         } catch(Exception e) {
             Sentry.capture(e);

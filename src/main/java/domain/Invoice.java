@@ -57,6 +57,7 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
     public Invoice() { }
 
     public Invoice(ArrayList<InvoiceDetails> invoiceDetails, String country, String invoiceDate, BigDecimal price, Owner owner, long vehicleId) {
+        this.invoiceDetails = new ArrayList<>();
         this.invoiceDetails.addAll(invoiceDetails);
         this.country = country;
         this.invoiceDate = invoiceDate;
