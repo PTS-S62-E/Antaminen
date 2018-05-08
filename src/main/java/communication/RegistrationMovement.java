@@ -1,22 +1,16 @@
 package communication;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rekeningrijden.europe.interfaces.ITransLocation;
-import domain.TransLocation;
 import dto.AdministrationDto;
-import dto.JourneyDto;
 import dto.TranslocationDto;
 import exceptions.CommunicationException;
 import io.sentry.Sentry;
-
+import javax.ejb.Singleton;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+@Singleton
 public class RegistrationMovement {
 
     private static String BASE_URL;
@@ -134,5 +128,9 @@ public class RegistrationMovement {
         logger.warning(url);
 
         return response;
+    }
+
+    private mapToVehicleFacade(Object object){
+
     }
 }
