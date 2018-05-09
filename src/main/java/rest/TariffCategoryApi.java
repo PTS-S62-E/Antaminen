@@ -21,7 +21,7 @@ public class TariffCategoryApi {
 	@Consumes(APPLICATION_JSON)
 	public Response createTariffCategory(TariffCategory tariffCategory) {
 		try {
-			tariffCategoryService.createTariffCategory(tariffCategory);
+			tariffCategoryService.checkAndCreateTariffCategory(tariffCategory);
 			return Response.ok().build();
 		} catch (Exception e) {
 			throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());

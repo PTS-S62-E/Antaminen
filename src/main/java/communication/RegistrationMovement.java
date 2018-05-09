@@ -120,10 +120,25 @@ public class RegistrationMovement {
         return mapper.readValue(response, TranslocationDto.class);
     }
 
-    public void getCategory(String name) throws CategoryException {
+    public CategoryDto getCategory(String name) throws CategoryException, IOException, CommunicationException {
         if (name.isEmpty()){
             throw new CategoryException("name cannot be empty");
         }
+
+        String urlPart = properties.getProperty("GET_CATEGORY");
+        urlPart = urlPart.replace(":name", name);
+        String url = BASE_URL + urlPart;
+
+        String response = SendRequest.sendGet(url);
+
+        System.out.println(response);
+
+        if (response.isEmpty()){
+            return null;
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(response, CategoryDto.class);
     }
 
     public VehicleDto getVehicleById(long vehicleId) throws CommunicationException, IOException {
@@ -138,6 +153,10 @@ public class RegistrationMovement {
 
         Logger logger = Logger.getLogger(getClass().getName());
         logger.warning(url);
+
+        if (response.isEmpty()){
+            return null;
+        }
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -159,6 +178,6 @@ public class RegistrationMovement {
         ObjectMapper mapper = new ObjectMapper();
         String categoryDtoAsJson = mapper.writeValueAsString(categoryDto);
 
-        String response = SendRequest.sendPost(url, categoryDtoAsJson);
+        SendRequest.sendPost(url, categoryDtoAsJson);
     }
 }

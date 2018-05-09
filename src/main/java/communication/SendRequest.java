@@ -10,10 +10,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-
-import java.io.BufferedReader;
+import org.apache.http.util.EntityUtils;
 import java.io.IOException;
-import java.io.InputStreamReader;
+
 
 public class SendRequest {
 
@@ -58,20 +57,15 @@ public class SendRequest {
 
     private static String getResult(HttpResponse response) throws CommunicationException, IOException {
         if(response.getStatusLine().getStatusCode() != 200 && response.getStatusLine().getStatusCode() != 204) {
-            Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Status Code: " + response.getStatusLine().getStatusCode() + "\n ReasonPhrase: " + response.getStatusLine().getReasonPhrase()).build());
+            Sentry.getContext().recordBreadcrumb(
+                    new BreadcrumbBuilder()
+                            .setMessage("Status Code: " + response.getStatusLine().getStatusCode()
+                                    + "\n ReasonPhrase: " + response.getStatusLine().getReasonPhrase()).build());
             Sentry.capture(response.getStatusLine().toString());
             throw new CommunicationException("Received unexpected status code from external API");
         } else {
 
-            BufferedReader rd = new BufferedReader(
-                    new InputStreamReader(response.getEntity().getContent()));
-
-            StringBuffer result = new StringBuffer();
-            String line = "";
-            while ((line = rd.readLine()) != null) {
-                result.append(line);
-            }
-
+            String result = EntityUtils.toString(response.getEntity());
             return result.toString();
         }
     }
