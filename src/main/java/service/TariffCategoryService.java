@@ -52,9 +52,6 @@ public class TariffCategoryService implements ITariffCategoryService {
 		boolean existsAtRegistration = (rm.getCategory(tariffCategory.getName()) != null);
 		boolean existsAtAdministration = (tariffCategoryDao.getTariffCategory(tariffCategory.getName()) != null);
 
-		System.out.println(String.valueOf(existsAtAdministration));
-		System.out.println(String.valueOf(existsAtRegistration));
-
 		//Create either a tariff category, category, or both.
 		createCategory(existsAtRegistration, existsAtAdministration, tariffCategory);
 	}
