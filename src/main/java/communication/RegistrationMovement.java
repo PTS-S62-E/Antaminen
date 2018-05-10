@@ -1,22 +1,22 @@
 package communication;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rekeningrijden.europe.interfaces.ITransLocation;
-import domain.TransLocation;
 import dto.AdministrationDto;
-import dto.JourneyDto;
+import dto.CategoryDto;
 import dto.TranslocationDto;
+import dto.VehicleDto;
+import exceptions.CategoryException;
 import exceptions.CommunicationException;
 import io.sentry.Sentry;
+import jdk.nashorn.internal.objects.NativeJSON;
 
+import javax.ejb.Singleton;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+@Singleton
 public class RegistrationMovement {
 
     private static String BASE_URL;
@@ -120,7 +120,28 @@ public class RegistrationMovement {
         return mapper.readValue(response, TranslocationDto.class);
     }
 
-    public Object getVehicleById(long vehicleId) throws CommunicationException, IOException {
+    public CategoryDto getCategory(String name) throws CategoryException, IOException, CommunicationException {
+        if (name.isEmpty()){
+            throw new CategoryException("name cannot be empty");
+        }
+
+        String urlPart = properties.getProperty("GET_CATEGORY");
+        urlPart = urlPart.replace(":name", name);
+        String url = BASE_URL + urlPart;
+
+        String response = SendRequest.sendGet(url);
+
+        System.out.println(response);
+
+        if (response.isEmpty()){
+            return null;
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(response, CategoryDto.class);
+    }
+
+    public VehicleDto getVehicleById(long vehicleId) throws CommunicationException, IOException {
         if(vehicleId < 1) { throw new CommunicationException("Please provide a valid vehicleId"); }
 
         String urlPart = properties.getProperty("VEHICLE_BY_ID");
@@ -133,6 +154,30 @@ public class RegistrationMovement {
         Logger logger = Logger.getLogger(getClass().getName());
         logger.warning(url);
 
-        return response;
+        if (response.isEmpty()){
+            return null;
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        return mapper.readValue(response, VehicleDto.class);
+    }
+
+    public void createCategory(CategoryDto categoryDto) throws CategoryException, IOException, CommunicationException {
+        if (categoryDto == null){
+            throw new CategoryException("CategoryDto cannot be null");
+        }
+
+        if (categoryDto.getName().equals("")){
+            throw new CategoryException("name cannot be empty");
+        }
+
+        String urlPart = properties.getProperty("CREATE_CATEGORY");
+        String url = BASE_URL + urlPart;
+
+        ObjectMapper mapper = new ObjectMapper();
+        String categoryDtoAsJson = mapper.writeValueAsString(categoryDto);
+
+        SendRequest.sendPost(url, categoryDtoAsJson);
     }
 }
