@@ -32,6 +32,8 @@ public class SendRequest {
 
         HttpResponse response = client.execute(request);
 
+        Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Request URL: " + url).build());
+
         return getResult(response);
     }
 
@@ -51,6 +53,8 @@ public class SendRequest {
         request.setEntity(requestEntity);
 
         HttpResponse response = client.execute(request);
+
+        Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Request URL: " + url).build());
 
         return getResult(response);
     }

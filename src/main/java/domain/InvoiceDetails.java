@@ -44,15 +44,15 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
     private List<Long> locationPointsIds;
 
     private String description;
-    private BigDecimal price;
+    private int price; // Price in cents
     private long distance;
 
     public InvoiceDetails() { }
 
-    public InvoiceDetails(ArrayList<TranslocationDto> locationPoints, String description, BigDecimal price) throws InvoiceException {
+    public InvoiceDetails(ArrayList<TranslocationDto> locationPoints, String description, int categoryPrice) throws InvoiceException {
         if(locationPoints == null || locationPoints.size() < 2) { throw new InvoiceException("No locationPoints provided for InvoiceDetails or only 1 provided."); }
         if(description.isEmpty()) { throw new InvoiceException("Please provide a description for this InvoiceDetail."); }
-        if(price == null || price.compareTo(BigDecimal.ZERO) < 0) { throw new InvoiceException("Please provide a positive price for this InvoiceDetail."); }
+        if(categoryPrice < 1) { throw new InvoiceException("Plesae provide a valid category price"); }
 
         for(int i = 0; i < locationPoints.size() -1; i++) {
             // Change the 0.0 params if you also want to take elevation into account
@@ -69,7 +69,7 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
         }
 
         this.description = description;
-        this.price = price;
+        this.price = (int) (this.distance * categoryPrice);
     }
 
     public long getId() {
@@ -91,7 +91,7 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
     }
 
     @Override
-    public BigDecimal price() {
+    public int price() {
         return this.price;
     }
 
@@ -110,7 +110,7 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
     }
 
     @Override
-    public void setPrice(BigDecimal price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -136,7 +136,7 @@ public class InvoiceDetails implements IInvoiceDetail, Serializable {
     }
 
     @Override
-    public BigDecimal getPrice() {
+    public int getPrice() {
         return this.price;
     }
 

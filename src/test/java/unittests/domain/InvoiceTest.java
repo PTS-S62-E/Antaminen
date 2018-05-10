@@ -117,7 +117,7 @@ public class InvoiceTest {
         Assert.assertEquals(new BigDecimal(10.0), invoice.getPrice());
 
         BigDecimal newPrice = new BigDecimal(20.0);
-        invoice.setPrice(newPrice);
+//        invoice.setPrice(newPrice);
 
         Assert.assertEquals(newPrice, invoice.getPrice());
     }

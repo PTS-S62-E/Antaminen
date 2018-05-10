@@ -2,6 +2,9 @@ package rest;
 
 import domain.TariffCategory;
 import interfaces.service.ITariffCategoryService;
+import service.TariffCategoryService;
+
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -13,8 +16,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Stateless
 public class TariffCategoryApi {
 
-	@Inject
-	ITariffCategoryService tariffCategoryService;
+	@EJB
+	TariffCategoryService tariffCategoryService;
 
 	@POST
 	@Path("/")

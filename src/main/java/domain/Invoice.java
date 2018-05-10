@@ -1,15 +1,11 @@
 package domain;
 
-import com.rekeningrijden.europe.interfaces.ISubInvoice;
 import interfaces.domain.IInvoice;
 import interfaces.domain.IInvoiceDetail;
-import org.apache.commons.lang3.NotImplementedException;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,7 +25,7 @@ import java.util.List;
         @NamedQuery(name = "Invoice.findByUserId", query = "SELECT i FROM Invoice i WHERE i.owner.id = :id"),
         @NamedQuery(name = "Invoice.findInvoiceByUserIdAndVehicleId", query = "SELECT i FROM Invoice i WHERE i.owner.id = :userId AND i.vehicleId = :vehicleId")
 })
-public class Invoice implements IInvoice, ISubInvoice, Serializable {
+public class Invoice implements IInvoice, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +42,7 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
 
     private boolean paymentStatus;
     private String invoiceDate;
-    private BigDecimal price;
+    private int price; // Price in cents
     private long totalDistance;
 
     @ManyToOne(optional = false)
@@ -56,17 +52,17 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
 
     public Invoice() { }
 
-    public Invoice(ArrayList<InvoiceDetails> invoiceDetails, String country, String invoiceDate, BigDecimal price, Owner owner, long vehicleId) {
+    public Invoice(ArrayList<InvoiceDetails> invoiceDetails, String country, String invoiceDate, Owner owner, long vehicleId) {
         this.invoiceDetails = new ArrayList<>();
         this.invoiceDetails.addAll(invoiceDetails);
         this.country = country;
         this.invoiceDate = invoiceDate;
-        this.price = price;
         this.owner = owner;
         this.vehicleId = vehicleId;
 
         for(IInvoiceDetail detail : invoiceDetails) {
             this.totalDistance += detail.getDistance();
+            this.price += detail.getPrice();
         }
     }
 
@@ -100,7 +96,7 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
 
     @Override
     public double getPrice() {
-        return this.price.doubleValue();
+        return (double) this.price;
     }
 
     @Override
@@ -132,7 +128,7 @@ public class Invoice implements IInvoice, ISubInvoice, Serializable {
     }
 
     @Override
-    public void setPrice(BigDecimal price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

@@ -72,9 +72,7 @@ public class InvoiceDao implements IInvoiceDao {
     public boolean createInvoice(ArrayList<InvoiceDetails> invoiceDetails, Owner owner, long vehicleId) throws InvoiceException {
         if(invoiceDetails == null || invoiceDetails.size() < 1) { throw new InvoiceException("Please provide invoiceDetails to generate the invoice."); }
 
-        BigDecimal price = this.calculateTotalInvoicePrice(invoiceDetails);
-
-        Invoice invoice = new Invoice(invoiceDetails, this.countryCode, LocalDateUtil.getCurrentDate(), price, owner, vehicleId);
+        Invoice invoice = new Invoice(invoiceDetails, this.countryCode, LocalDateUtil.getCurrentDate(), owner, vehicleId);
 
         this.createInvoice(invoice);
 
@@ -87,10 +85,9 @@ public class InvoiceDao implements IInvoiceDao {
         if(invoiceDetails == null || invoiceDetails.size() < 1) { throw new InvoiceException("Please provide invoiceDetails to generate the invoice."); }
         if(countryCode == null || countryCode.isEmpty()) { throw new InvoiceException("Please provide the country for this invoice."); }
 
-        BigDecimal price = this.calculateTotalInvoicePrice(invoiceDetails);
         LocalDateTime currentDate = LocalDateTime.now();
 
-        Invoice invoice = new Invoice(invoiceDetails, countryCode, currentDate.toString(), price, owner, vehicleId);
+        Invoice invoice = new Invoice(invoiceDetails, countryCode, currentDate.toString(), owner, vehicleId);
 
         this.createInvoice(invoice);
 
@@ -103,8 +100,7 @@ public class InvoiceDao implements IInvoiceDao {
         if(countryCode == null || countryCode.isEmpty()) { throw new InvoiceException("Please provide the country for this invoice."); }
         if(invoiceDate == null) { throw new InvoiceException("Please provide an Invoice date."); }
 
-        BigDecimal price = this.calculateTotalInvoicePrice(invoiceDetails);
-        Invoice invoice = new Invoice(invoiceDetails, countryCode, invoiceDate.toString(), price, owner, vehicleId);
+        Invoice invoice = new Invoice(invoiceDetails, countryCode, invoiceDate.toString(), owner, vehicleId);
 
         this.createInvoice(invoice);
 
@@ -167,17 +163,5 @@ public class InvoiceDao implements IInvoiceDao {
         em.merge(invoice);
 
         return true;
-    }
-
-    private BigDecimal calculateTotalInvoicePrice(ArrayList<InvoiceDetails> invoiceDetails) throws InvoiceException {
-        if(invoiceDetails == null || invoiceDetails.size() < 1) { throw new InvoiceException("Please provide Invoice details to calculate the total price."); }
-
-        BigDecimal totalPrice = BigDecimal.valueOf(0.0);
-
-        for(IInvoiceDetail detail : invoiceDetails) {
-            totalPrice = totalPrice.add(detail.price());
-        }
-
-        return totalPrice;
     }
 }
