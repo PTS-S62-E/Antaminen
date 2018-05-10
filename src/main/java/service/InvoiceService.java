@@ -115,8 +115,7 @@ public class InvoiceService implements IInvoiceService {
         } catch (OwnerException e) {
             throw new InvoiceException(e.getMessage());
         } catch (IOException | CommunicationException e) {
-            Sentry.capture(e);
-            throw new InvoiceException("couldn't generate invoice.");
+            throw new InvoiceException(e.getMessage());
         }
 
     }

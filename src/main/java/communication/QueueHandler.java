@@ -1,47 +1,69 @@
 package communication;
 
-import com.fasterxml.jackson.databind.JsonNode;
+
+
+import com.pts62.common.finland.communication.CommunicationBuilder;
 import com.pts62.common.finland.communication.IQueueSubscribeCallback;
+import com.pts62.common.finland.communication.QueueConnector;
+import com.pts62.common.finland.communication.QueueConstants;
+import exceptions.InvoiceException;
 import io.sentry.Sentry;
+import io.sentry.event.Breadcrumb;
+import io.sentry.event.BreadcrumbBuilder;
 import service.InvoiceService;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.jms.QueueConnectionFactory;
+import java.util.logging.Logger;
 
 @Startup
-public class QueueHandler  implements IQueueSubscribeCallback{
+@Singleton
+public class QueueHandler  {
 
     @EJB
     InvoiceService invoiceService;
 
+    private QueueConnector connector;
+
     @PostConstruct
-    public void setupCommunicationQueue() {
-        new QueueHandler(com.pts62.common.finland.communication.QueueConstants.getAntaMinenQueue());
+    private void setup() {
+        connector = new QueueConnector();
+
+        this.handleRead();
     }
 
-    public QueueHandler(String queue) {
-        new com.pts62.common.finland.communication.QueueConnector(queue);
-    }
+    private void handleRead() {
+        CommunicationBuilder invoiceBuilder = new CommunicationBuilder();
+        invoiceBuilder.setCountry("fi");
+        invoiceBuilder.setApplication("antaminen");
+        invoiceBuilder.setMessage("generate.invoices");
 
-    @Override
-    public void onMessageReceived(Object o) {
-        try {
-            JsonNode data = (JsonNode) o;
+        CommunicationBuilder comBuilder = new CommunicationBuilder();
+        comBuilder.setCountry("fi");
+        comBuilder.setApplication("antaminen");
+        comBuilder.setMessage("*");
 
-            if(data.has("message") && data.get("message").has("invoice") && data.get("message").get("invoice").has("generate")) {
-                boolean startInvoiceGeneration = data.get("message").get("invoice").get("generate").asBoolean();
-
-                if(startInvoiceGeneration) {
+        connector.readMessage(invoiceBuilder.build(), new IQueueSubscribeCallback() {
+            @Override
+            public void onMessageReceived(String s) {
+                try {
                     invoiceService.generateInvoices();
+                } catch (InvoiceException e) {
+                    Sentry.capture(e);
                 }
-            } else {
-                throw new Exception("Unable to parse received message");
             }
-        } catch (Exception e) {
-            Sentry.capture(e);
-            Sentry.getStoredClient().addExtra("MessageQueueMessage", o);
-        }
+        });
 
+        connector.readMessage(comBuilder.build(), new IQueueSubscribeCallback() {
+            @Override
+            public void onMessageReceived(String s) {
+                Exception e = new Exception("Unable to process MQ request for specific route with data " + s);
+                Sentry.getContext().recordBreadcrumb( new BreadcrumbBuilder().setMessage(s).build());
+                Sentry.capture(e);
+            }
+        });
     }
 }
