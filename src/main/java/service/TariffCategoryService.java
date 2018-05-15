@@ -10,15 +10,19 @@ import exceptions.TariffCategoryException;
 import interfaces.dao.ITariffCategoryDao;
 import interfaces.service.ITariffCategoryService;
 import io.sentry.Sentry;
+
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 
 @Stateless
+@LocalBean
 public class TariffCategoryService implements ITariffCategoryService {
 
-	@Inject
+	@EJB
 	ITariffCategoryDao tariffCategoryDao;
 
 	@Override

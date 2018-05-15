@@ -23,19 +23,19 @@ public interface IInvoiceDetail {
 
     String description();
 
-    BigDecimal price();
+    int price();
 
     void setLocationPoints(ArrayList<TranslocationDto> locationPoints);
 
     void setDescription(String description);
 
-    void setPrice(BigDecimal price);
+    void setPrice(int price);
 
     ArrayList<TranslocationDto> getLocationPoints();
 
     String getDescription();
 
-    BigDecimal getPrice();
+    int getPrice();
 
     long getDistance();
 

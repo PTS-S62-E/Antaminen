@@ -97,7 +97,7 @@ public class InvoiceDetailsTest {
         Assert.assertEquals(defaultPrice, invoiceDetails.price());
 
         BigDecimal newPrice = new BigDecimal(20.0);
-        invoiceDetails.setPrice(newPrice);
+//        invoiceDetails.setPrice(newPrice);
 
         Assert.assertEquals(newPrice, invoiceDetails.price());
     }
@@ -141,12 +141,12 @@ public class InvoiceDetailsTest {
         BigDecimal price = new BigDecimal(12.50);
 
         InvoiceDetails details = new InvoiceDetails();
-        details.setPrice(price);
+//        details.setPrice(price);
 
         Assert.assertEquals(price, details.getPrice());
 
         BigDecimal newPrice = new BigDecimal(99.09);
-        details.setPrice(newPrice);
+//        details.setPrice(newPrice);
 
         Assert.assertEquals(newPrice, details.getPrice());
     }

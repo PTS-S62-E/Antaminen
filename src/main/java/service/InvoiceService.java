@@ -2,16 +2,14 @@ package service;
 
 import communication.RegistrationMovement;
 import dao.InvoiceDao;
-import domain.Invoice;
-import domain.InvoiceDetails;
-import domain.Owner;
-import domain.Ownership;
+import domain.*;
 import dto.AdministrationDto;
 import dto.JourneyDto;
 import dto.TranslocationDto;
 import exceptions.CommunicationException;
 import exceptions.InvoiceException;
 import exceptions.OwnerException;
+import exceptions.TariffCategoryException;
 import interfaces.domain.IInvoice;
 import interfaces.domain.IInvoiceDetail;
 import interfaces.service.IInvoiceService;
@@ -37,6 +35,9 @@ public class InvoiceService implements IInvoiceService {
 
     @EJB
     OwnerService ownerService;
+
+    @EJB
+    TariffCategoryService tariffCategoryService;
 
     Logger logger = Logger.getLogger(getClass().getName());
 
@@ -98,9 +99,12 @@ public class InvoiceService implements IInvoiceService {
                         long vehicleId = ownership.getVehicleId();
                         AdministrationDto administrationDto = RegistrationMovement.getInstance().getTranslocationsForVehicleId(vehicleId, LocalDateUtil.getCurrentDateMinusOneMonth(), LocalDateUtil.getCurrentDate());
 
+                        TariffCategory tariffCategory = tariffCategoryService.getTariffCategoryByVehicleId(vehicleId);
+
                         ArrayList<InvoiceDetails> invoiceDetails = new ArrayList<>();
                         for (JourneyDto journey : administrationDto.getJourneys()) {
-                            InvoiceDetails details = new InvoiceDetails((ArrayList<TranslocationDto>) journey.getTranslocations(), "Complete Journey", new BigDecimal(10.0));
+                            logger.warning("The tarif that we use is: " + tariffCategory.getTariff());
+                            InvoiceDetails details = new InvoiceDetails((ArrayList<TranslocationDto>) journey.getTranslocations(), "Complete Journey", tariffCategory.getTariff());
                             invoiceDetails.add(details);
                         }
 
@@ -112,9 +116,7 @@ public class InvoiceService implements IInvoiceService {
                     }
                 }
             }
-        } catch (OwnerException e) {
-            throw new InvoiceException(e.getMessage());
-        } catch (IOException | CommunicationException e) {
+        } catch (OwnerException | IOException | CommunicationException | TariffCategoryException e) {
             throw new InvoiceException(e.getMessage());
         }
 
