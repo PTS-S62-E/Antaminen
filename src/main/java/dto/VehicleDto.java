@@ -1,5 +1,7 @@
 package dto;
 
+import domain.TariffCategory;
+
 import java.io.Serializable;
 
 public class VehicleDto implements Serializable {
