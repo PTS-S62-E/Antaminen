@@ -2,6 +2,7 @@ package domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import dto.VehicleDto;
 import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
@@ -42,6 +43,9 @@ public class Ownership implements Serializable {
 
     @Transient
     private String readableToDate;
+
+    @Transient
+    private VehicleDto vehicleDto;
 
     public Ownership(Owner owner, long vehicleId, LocalDate fromDate, @Nullable LocalDate toDate) {
         this.owner = owner;
@@ -106,5 +110,13 @@ public class Ownership implements Serializable {
 
     public void setToDate(LocalDate toDate) {
         this.toDate = toDate;
+    }
+
+    public VehicleDto getVehicleDto() {
+        return vehicleDto;
+    }
+
+    public void setVehicleDto(VehicleDto vehicleDto) {
+        this.vehicleDto = vehicleDto;
     }
 }

@@ -48,9 +48,8 @@ public class VehicleApi {
     @GET
     @Path("licensePlate/{licensePlate}/history/ownership")
     @Produces(APPLICATION_JSON)
+    @JWTRequired
     public OwnershipWithVehicleDto getOwnershipWithVehicleDto(@PathParam("licensePlate") String licensePlate) {
-
-    	//TODO: JWT REQUIRED
 
         if(licensePlate == null || licensePlate.equals("")) {
             throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide a valid licensePlate").build());

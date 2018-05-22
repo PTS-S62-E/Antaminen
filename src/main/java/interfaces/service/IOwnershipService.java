@@ -1,5 +1,6 @@
 package interfaces.service;
 
+import domain.Account;
 import domain.Ownership;
 import dto.OwnershipWithVehicleDto;
 import exceptions.CommunicationException;
@@ -12,4 +13,5 @@ public interface IOwnershipService {
 
     OwnershipWithVehicleDto findOwnershipByLicensePlate(String licensePlate) throws OwnershipException, CommunicationException, IOException;
     ArrayList<Ownership> findOwnershipByVehicleId(long vehicleId) throws OwnershipException;
+    ArrayList<Ownership> getFatOwnerships(Account account) throws OwnershipException;
 }
