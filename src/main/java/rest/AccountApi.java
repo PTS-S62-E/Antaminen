@@ -10,6 +10,7 @@ import exceptions.OwnershipException;
 import io.sentry.Sentry;
 import service.AccountService;
 import service.OwnerService;
+import service.OwnershipService;
 import util.HashUtility;
 import util.jwt.JWTUtility;
 
@@ -38,6 +39,9 @@ public class AccountApi {
 
     @EJB
     OwnerService ownerService;
+
+    @EJB
+    OwnershipService ownershipService;
 
     @POST
     @Path("/login")
@@ -116,11 +120,10 @@ public class AccountApi {
         try {
             Account account = service.findByEmailAddress(JWTUtility.getSubject(token));
 
-            return account.getOwner().getOwnership();
-        } catch (AccountException e) {
+            return ownershipService.getFatOwnerships(account);
+        } catch (AccountException | OwnershipException e) {
             throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity(e.getMessage()).build());
         }
-
     }
 
     @POST
