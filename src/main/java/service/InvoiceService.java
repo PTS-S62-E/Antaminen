@@ -14,6 +14,7 @@ import interfaces.domain.IInvoice;
 import interfaces.domain.IInvoiceDetail;
 import interfaces.service.IInvoiceService;
 import io.sentry.Sentry;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import util.LocalDateUtil;
 
 import javax.ejb.EJB;
@@ -120,6 +121,33 @@ public class InvoiceService implements IInvoiceService {
             throw new InvoiceException(e.getMessage());
         }
 
+    }
+
+    /**
+     * Generate the invoices for foreign vehicles that have driven in our country
+     *
+     * This method will fetch all translocations for foreign vehicles from the Registration Movement application.
+     * In order to create an invoice, we need to have an Owner. An special account has been created in the database with the email address:
+     *              -----------------------
+     *              ++                   ++
+     *              ++   gov@finland.fi  ++
+     *              ++                   ++
+     *              -----------------------
+     * This email address has to be used in order to generate the invoices. When we use this email address, we have an overview of all invoices that are sent
+     * to foreign countries
+     * and we can track whether an invoice has been payed or not (on time).
+     *
+     * It is also important to check if the foreign vehicle has driven in our country before. If so, a Ownership entry should've been added in the database
+     * for the special account.
+     * If this is not the case, that a new Ownership entry should be created and stored in the database now.
+     *
+     * After the invoices are created, we have to send them to the corresponding country. This can be done by using the countryCode property that's available
+     * in the invoice object and should be used with the corresponding communication classes.
+     * @throws InvoiceException
+     */
+    @Override
+    public void generateInvoicesForVehiclesOfForeignCountries() throws InvoiceException {
+        throw new NotImplementedException();
     }
 
     private boolean checkIfTranslocationIsProcessed(long translocationId, Invoice invoice) {
