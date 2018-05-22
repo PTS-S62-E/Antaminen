@@ -163,6 +163,28 @@ public class RegistrationMovement {
         return mapper.readValue(response, VehicleDto.class);
     }
 
+    public VehicleDto getVehicleByLicensePlate(String licensePlate) throws CommunicationException, IOException {
+        if(licensePlate == null ||  licensePlate.equals("")) { throw new CommunicationException("Please provide a licenseplate"); }
+
+        String urlPart = properties.getProperty("VEHICLE_BY_LICENSEPLATE");
+        urlPart = urlPart.replace(":licensePlate", licensePlate);
+
+        String url = BASE_URL + urlPart;
+
+        String response = SendRequest.sendGet(url);
+
+        Logger logger = Logger.getLogger(getClass().getName());
+        logger.warning(url);
+
+        if (response.isEmpty()){
+            return null;
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        return mapper.readValue(response, VehicleDto.class);
+    }
+
     public void createCategory(CategoryDto categoryDto) throws CategoryException, IOException, CommunicationException {
         if (categoryDto == null){
             throw new CategoryException("CategoryDto cannot be null");
