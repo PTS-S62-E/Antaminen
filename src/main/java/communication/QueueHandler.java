@@ -49,9 +49,26 @@ public class QueueHandler  {
         connector.readMessage(invoiceBuilder.build(), new IQueueSubscribeCallback() {
             @Override
             public void onMessageReceived(String s) {
+
+                /**
+                 * First we start generating invoices for drivers in finland.
+                 */
+
                 try {
                     invoiceService.generateInvoices();
                 } catch (InvoiceException e) {
+                    Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Error in generating invoices for country: Finland").build());
+                    Sentry.capture(e);
+                }
+
+                /**
+                 * Invoices for drivers in finland are generated now. We can continue with generating invoices for foreign drivers
+                 */
+
+                try {
+                    invoiceService.generateInvoicesForVehiclesOfForeignCountries();
+                } catch (InvoiceException e) {
+                    Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Error in generating invoices for foreign countries").build());
                     Sentry.capture(e);
                 }
             }
