@@ -1,19 +1,21 @@
 package service;
 
+import com.rekeningrijden.europe.dtos.SubInvoiceDto;
+import com.rekeningrijden.europe.interfaces.ISubInvoice;
 import communication.RegistrationMovement;
 import dao.InvoiceDao;
 import domain.*;
 import dto.AdministrationDto;
+import dto.ForeignVehicleDto;
 import dto.JourneyDto;
 import dto.TranslocationDto;
-import exceptions.CommunicationException;
-import exceptions.InvoiceException;
-import exceptions.OwnerException;
-import exceptions.TariffCategoryException;
+import exceptions.*;
 import interfaces.domain.IInvoice;
 import interfaces.domain.IInvoiceDetail;
 import interfaces.service.IInvoiceService;
 import io.sentry.Sentry;
+import io.sentry.event.Breadcrumb;
+import io.sentry.event.BreadcrumbBuilder;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import util.LocalDateUtil;
 
@@ -36,6 +38,9 @@ public class InvoiceService implements IInvoiceService {
 
     @EJB
     OwnerService ownerService;
+
+    @EJB
+    AccountService accountService;
 
     @EJB
     TariffCategoryService tariffCategoryService;
@@ -147,7 +152,117 @@ public class InvoiceService implements IInvoiceService {
      */
     @Override
     public void generateInvoicesForVehiclesOfForeignCountries() throws InvoiceException {
-        throw new NotImplementedException();
+        Account account = null;
+        try {
+            account = accountService.findByEmailAddress("gov@finland.fi");
+        } catch (AccountException e) {
+            Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Couldn't find account required to generate foreign invoices.").build());
+            Sentry.capture(e);
+        }
+
+        try {
+
+            /**
+             * Registration for foreign vehicles with ownership is moved to a separate method to make it easier to read the code
+             */
+
+            ArrayList<ForeignVehicleDto> foreignVehicleDtos = RegistrationMovement.getInstance().getTranslocationsForForeignCars(LocalDateUtil.getCurrentDate(), LocalDateUtil.getCurrentDateMinusOneMonth());
+            this.registerForeignVehiclesWithOwner(account.getOwner(), foreignVehicleDtos);
+
+            /**
+             * At this point, all unregistered foreign vehicles have been added to an owner.
+             * We can proceed with generating the invoices.
+             */
+
+            //TODO: Check if the translocations already belong to an invoice
+
+            ArrayList<Ownership> ownerships = new ArrayList<>(account.getOwner().getOwnership());
+
+            if(!ownerships.isEmpty()) {
+                for (Ownership ownership : ownerships) {
+
+                    TariffCategory tariffCategory = tariffCategoryService.getTariffCategoryByVehicleId(ownership.getVehicleId());
+
+                    ArrayList<InvoiceDetails> invoiceDetails = new ArrayList<>();
+                    for(ForeignVehicleDto dto : foreignVehicleDtos) {
+                        for(JourneyDto journeyDto : dto.getJourneys()) {
+                            InvoiceDetails details = new InvoiceDetails((ArrayList<TranslocationDto>) journeyDto.getTranslocations(), "Complete Journey", tariffCategory.getTariff());
+                            invoiceDetails.add(details);
+
+                            if(invoiceDetails.size() < 1) {
+                                // No translocations to generate invoice...
+                            } else {
+                                // The countryCode param is really important here, without this param, we can't send the invoice to the correct country.
+                                invoiceDao.createInvoice(invoiceDetails, account.getOwner(), ownership.getVehicleId(), dto.getCountryCode());
+                            }
+                        }
+                    }
+
+                    // All foreign invoices have been generated now.
+                    // Last thing we have to do is, send the invoices to the correct countries.
+                }
+            }
+
+            // Trigger a method that will send all unpayed foreign invoices to the correct country in the EU
+            this.sendInvoicesToForeignCountries();
+
+
+        } catch (CommunicationException | IOException | TariffCategoryException e) {
+            Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Error in generating foreign invoices").build());
+            Sentry.capture(e);
+        }
+    }
+
+    /**
+     * Register foreign vehicles with an ownership to the owner gov@finland.fi if the don't belong to the owner yet.
+     * @param owner Owner object for gov@finland.fe
+     * @param foreignVehicleDtos Object containing foreign vehicles that need to be checked
+     */
+    private void registerForeignVehiclesWithOwner(Owner owner, ArrayList<ForeignVehicleDto> foreignVehicleDtos) {
+        ArrayList<Long> registeredVehicleIds = new ArrayList<>();
+
+        for(Ownership ownership : owner.getOwnership()) {
+            registeredVehicleIds.add(ownership.getVehicleId());
+        }
+
+        for(ForeignVehicleDto dto : foreignVehicleDtos) {
+            if(!registeredVehicleIds.contains(dto.getId())) {
+                // The vehicle is not yet registered. Create a new ownership.
+                Ownership newOwnership = new Ownership(owner, dto.getId(), LocalDateUtil.getCurrentLocalDate(), null);
+                try {
+                    ownerService.addOwnership(owner, newOwnership);
+                } catch (OwnerException e) {
+                    Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Error in registering unknown foreign vehicles to owner").build());
+                    Sentry.capture(e);
+                }
+            }
+        }
+
+    }
+
+    private void sendInvoicesToForeignCountries() {
+        try {
+            Owner owner = accountService.findByEmailAddress("gov@finland.fi").getOwner();
+
+            ArrayList<IInvoice> foreignInvoices = invoiceDao.findInvoiceByUser(owner.getId());
+
+            for(IInvoice invoice : foreignInvoices) {
+                if(!invoice.getPaymentStatus()) {
+                    // This invoice is not yet payed
+
+                    SubInvoiceDto subInvoiceDto = new SubInvoiceDto(invoice.getInvoiceNumber(), invoice.getCountry(), String.valueOf(invoice.getPaymentStatus()), invoice.getInvoiceDate(), String.valueOf(invoice.getPrice()));
+
+
+                    //TODO: Create a new SubInvoice object that is required to communicate with the EU
+                    //TODO: Send the SubInvoice to the correct country
+                }
+            }
+        } catch (AccountException e) {
+            Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Unable to retrieve account that's required to send foreign invoices").build());
+            Sentry.capture(e);
+        } catch (InvoiceException e) {
+            Sentry.capture(e);
+        }
     }
 
     private boolean checkIfTranslocationIsProcessed(long translocationId, Invoice invoice) {

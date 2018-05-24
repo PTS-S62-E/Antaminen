@@ -38,6 +38,14 @@ public class LocalDateUtil {
     }
 
     /**
+     * Get the current date as a LocalDate object
+     * @return LocalDate object with current date
+     */
+    public static LocalDate getCurrentLocalDate() {
+        return LocalDate.now();
+    }
+
+    /**
      * Check whether a date String is correctly formatted so it can be parsed to a LocalDate object
      *
      * @param date The string that you want to check

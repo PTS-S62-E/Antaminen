@@ -37,6 +37,8 @@ public interface IInvoice extends ISubInvoice {
 
     void setPaymentStatus(boolean paymentStatus);
 
+    boolean getPaymentStatus();
+
     void setPrice(int price);
 
     void setInvoiceDate(String date);
