@@ -1,5 +1,6 @@
 package rest;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.pts62.common.finland.util.JsonExceptionMapper;
 import domain.Owner;
 import exceptions.AccountException;
 import exceptions.InvoiceException;
@@ -14,6 +15,7 @@ import util.jwt.JWTUtility;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.json.JsonException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
@@ -50,13 +52,13 @@ public class InvoiceApi {
             ArrayList<IInvoice> result = service.findInvoiceByUser(authenticatedOwner.getId());
 
             if(result == null) {
-                throw new WebApplicationException(Response.Status.NO_CONTENT);
+                throw JsonExceptionMapper.mapException(Response.Status.NO_CONTENT, "");
             } else {
                 return result;
             }
         } catch (InvoiceException | AccountException e) {
             Sentry.capture(e);
-            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+            throw JsonExceptionMapper.mapException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -70,18 +72,18 @@ public class InvoiceApi {
     @Produces(APPLICATION_JSON)
     @JWTRequired
     public IInvoice findInvoiceByInvoiceNumber(@PathParam("invoiceNumber") long invoiceNumber) {
-        if(invoiceNumber < 1) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
+        if(invoiceNumber < 1) { throw JsonExceptionMapper.mapException(Response.Status.fromStatusCode(422), "Unporcessable Entity (invalid Invoice number)"); }
 
         try {
             IInvoice result = service.findInvoiceByInvoiceNumber(invoiceNumber);
             if(result == null) {
-                throw new WebApplicationException(Response.Status.NO_CONTENT);
+                throw JsonExceptionMapper.mapException(Response.Status.NO_CONTENT, "");
             }
 
             return result;
         } catch (InvoiceException e) {
             Sentry.capture(e);
-            throw new WebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
+            throw JsonExceptionMapper.mapException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -90,7 +92,7 @@ public class InvoiceApi {
     @Consumes(APPLICATION_JSON)
     @JWTRequired
     public boolean payInvoice(JsonNode data) {
-        if(data.get("invoiceNumber") == null || data.get("invoiceNumber").asText().isEmpty()) { throw new WebApplicationException("Unprocessable Entity", Response.Status.fromStatusCode(422)); }
+        if(data.get("invoiceNumber") == null || data.get("invoiceNumber").asText().isEmpty()) { throw JsonExceptionMapper.mapException(Response.Status.fromStatusCode(422), "Unporcessable Entity (invalid Invoice number)"); }
         try {
             long invoiceNumber = data.get("invoiceNumber").asLong();
             String paymentDetails = "No payment details provided.";
@@ -106,7 +108,7 @@ public class InvoiceApi {
             return service.payInvoice(invoiceNumber, paymentDetails);
         } catch (InvoiceException e) {
             Sentry.capture(e);
-            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+            throw JsonExceptionMapper.mapException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -114,6 +116,6 @@ public class InvoiceApi {
     @Path("/generate")
     @JWTRequired
     public Response generatedInvoices() {
-        throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Generation of invoices using REST api is not allowed. Please use MessageQueue instead.").build());
+        throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "Generation of invoices using REST api is not allowed. Please use MessageQueue instead.");
     }
 }

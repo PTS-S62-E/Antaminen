@@ -1,7 +1,9 @@
 package rest;
 
+import com.pts62.common.finland.util.JsonExceptionMapper;
 import domain.TariffCategory;
 import interfaces.service.ITariffCategoryService;
+import io.sentry.Sentry;
 import service.TariffCategoryService;
 
 import javax.ejb.EJB;
@@ -27,7 +29,8 @@ public class TariffCategoryApi {
 			tariffCategoryService.checkAndCreateTariffCategory(tariffCategory);
 			return Response.ok().build();
 		} catch (Exception e) {
-			throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
+			Sentry.capture(e);
+			throw JsonExceptionMapper.mapException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
 		}
 	}
 
@@ -39,7 +42,8 @@ public class TariffCategoryApi {
 			System.out.println(name);
 			return Response.ok(tariffCategoryService.getTariffCategory(name)).build();
 		} catch (Exception e) {
-			throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity(e.getMessage()).build());
+			Sentry.capture(e);
+			throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, e.getMessage());
 		}
 	}
 
@@ -50,7 +54,8 @@ public class TariffCategoryApi {
 		try {
 			return Response.ok(tariffCategoryService.getTariffCategories()).build();
 		} catch (Exception e) {
-			throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity(e.getMessage()).build());
+			Sentry.capture(e);
+			throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, e.getMessage());
 		}
 	}
 
@@ -61,7 +66,8 @@ public class TariffCategoryApi {
 		try {
 			return Response.ok(tariffCategoryService.getTariffCategoryByVehicleId(id)).build();
 		} catch (Exception e) {
-			throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity(e.getMessage()).build());
+			Sentry.capture(e);
+			throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, e.getMessage());
 		}
 	}
 }

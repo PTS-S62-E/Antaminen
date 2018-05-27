@@ -37,7 +37,7 @@ public class JWTAuthFilter implements ContainerRequestFilter {
         } catch (SignatureException | NullPointerException | IllegalArgumentException e) {
             // Token not valid
             e.printStackTrace();
-            containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build());
+            containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("{\"error\": \"Access token has expired\"}").build());
         }
 
 
