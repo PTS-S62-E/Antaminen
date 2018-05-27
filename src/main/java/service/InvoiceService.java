@@ -2,6 +2,7 @@ package service;
 
 import com.rekeningrijden.europe.dtos.SubInvoiceDto;
 import com.rekeningrijden.europe.interfaces.ISubInvoice;
+import communication.QueueMessageSender;
 import communication.RegistrationMovement;
 import dao.InvoiceDao;
 import domain.*;
@@ -249,12 +250,10 @@ public class InvoiceService implements IInvoiceService {
             for(IInvoice invoice : foreignInvoices) {
                 if(!invoice.getPaymentStatus()) {
                     // This invoice is not yet payed
-
                     SubInvoiceDto subInvoiceDto = new SubInvoiceDto(invoice.getInvoiceNumber(), invoice.getCountry(), String.valueOf(invoice.getPaymentStatus()), invoice.getInvoiceDate(), String.valueOf(invoice.getPrice()));
 
-
-                    //TODO: Create a new SubInvoice object that is required to communicate with the EU
-                    //TODO: Send the SubInvoice to the correct country
+                    // Send the invoice to the correct country
+                    QueueMessageSender.getInstance().sendInvoiceToForeignCountry(subInvoiceDto);
                 }
             }
         } catch (AccountException e) {
