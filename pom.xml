@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.github.PTS-S62-E</groupId>
             <artifactId>Osake</artifactId>
-            <version>3.2.1-RC3</version>
+            <version>3.4.2</version>
         </dependency>
 
         <dependency>
