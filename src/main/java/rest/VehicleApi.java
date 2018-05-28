@@ -1,5 +1,6 @@
 package rest;
 
+import com.pts62.common.finland.util.JsonExceptionMapper;
 import domain.Owner;
 import domain.Ownership;
 import dto.OwnershipWithVehicleDto;
@@ -9,6 +10,7 @@ import service.OwnershipService;
 import util.jwt.JWTRequired;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.json.Json;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -41,7 +43,7 @@ public class VehicleApi {
             return result;
         } catch (OwnershipException e) {
             Sentry.capture(e);
-            throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
+            throw JsonExceptionMapper.mapException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -52,14 +54,14 @@ public class VehicleApi {
     public OwnershipWithVehicleDto getOwnershipWithVehicleDto(@PathParam("licensePlate") String licensePlate) {
 
         if(licensePlate == null || licensePlate.equals("")) {
-            throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide a valid licensePlate").build());
+            throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "Please provide a valid licenseplate");
         }
 
         try {
             return ownershipService.findOwnershipByLicensePlate(licensePlate);
         } catch (Exception e) {
             Sentry.capture(e);
-            throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
+            throw JsonExceptionMapper.mapException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 }

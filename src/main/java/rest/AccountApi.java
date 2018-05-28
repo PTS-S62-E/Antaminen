@@ -1,6 +1,8 @@
 package rest;
 
+import com.fasterxml.jackson.core.io.JsonEOFException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.pts62.common.finland.util.JsonExceptionMapper;
 import domain.Account;
 import domain.Owner;
 import domain.Ownership;
@@ -12,6 +14,7 @@ import service.AccountService;
 import service.OwnerService;
 import service.OwnershipService;
 import util.HashUtility;
+import util.jwt.JWTRequired;
 import util.jwt.JWTUtility;
 
 import javax.ejb.EJB;
@@ -48,9 +51,9 @@ public class AccountApi {
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
     public HashMap<String, Object> login(JsonNode data) {
-        if(data == null) { throw new WebApplicationException(Response.Status.UNAUTHORIZED); }
-        if(data.get("email") == null || data.get("email").asText().isEmpty()) { throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE); }
-        if(data.get("password") == null || data.get("password").asText().isEmpty()) { throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE); }
+        if(data == null) { throw JsonExceptionMapper.mapException(Response.Status.UNAUTHORIZED, ""); }
+        if(data.get("email") == null || data.get("email").asText().isEmpty()) { throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "Please provide an email address"); }
+        if(data.get("password") == null || data.get("password").asText().isEmpty()) { throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "Please provide a password"); }
 
         String email = data.get("email").asText();
         String password = data.get("password").asText();
@@ -70,7 +73,7 @@ public class AccountApi {
 
             return result;
         } catch (AccountException e) {
-            throw new WebApplicationException(e.getMessage(), Response.Status.UNAUTHORIZED);
+            throw JsonExceptionMapper.mapException(Response.Status.UNAUTHORIZED, e.getMessage());
         }
 
     }
@@ -81,13 +84,13 @@ public class AccountApi {
     public boolean createAccount(JsonNode data) {
         HashMap<String, Object> result = new HashMap<String, Object>();
         // Based on the provided JsonNode data, we should be able to create a new Owner and Account instance;
-        if(data == null) { throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE); }
-        if(data.get("email") == null || data.get("email").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide an email address").build()); }
-        if(data.get("password") == null || data.get("password").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide a password").build()); }
-        if(data.get("name") == null || data.get("name").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide a name").build()); }
-        if(data.get("address") == null || data.get("address").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide an address").build()); }
-        if(data.get("city") == null || data.get("city").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide a city").build()); }
-        if(data.get("postalCode") == null || data.get("postalCode").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide a postal code").build()); }
+        if(data == null) { throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "PLease provide some data"); }
+        if(data.get("email") == null || data.get("email").asText().isEmpty()) { throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "Please provide an email address"); }
+        if(data.get("password") == null || data.get("password").asText().isEmpty()) { throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "Please provide a password");}
+        if(data.get("name") == null || data.get("name").asText().isEmpty()) { throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "Please provide a name"); }
+        if(data.get("address") == null || data.get("address").asText().isEmpty()) { throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "Please provide an address"); }
+        if(data.get("city") == null || data.get("city").asText().isEmpty()) { throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "Please provide a city"); }
+        if(data.get("postalCode") == null || data.get("postalCode").asText().isEmpty()) { throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "Please provide a postal code"); }
 
         // Store everything we need in a variable
         String name = data.get("name").asText();
@@ -107,7 +110,7 @@ public class AccountApi {
             return true;
         } catch (AccountException e) {
             Sentry.capture(e);
-            throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
+            throw JsonExceptionMapper.mapException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -115,14 +118,14 @@ public class AccountApi {
     @Path("/cars")
     @Produces(APPLICATION_JSON)
     public List<Ownership> getVehicleOwnerships(@HeaderParam("Authorization") String token) {
-        if(token == null || token.isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED).entity("No token provided").build()); }
+        if(token == null || token.isEmpty()) { throw JsonExceptionMapper.mapException(Response.Status.UNAUTHORIZED, "Please provide an access token."); }
 
         try {
             Account account = service.findByEmailAddress(JWTUtility.getSubject(token));
 
             return ownershipService.getFatOwnerships(account);
         } catch (AccountException | OwnershipException e) {
-            throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity(e.getMessage()).build());
+            throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, e.getMessage());
         }
     }
 
@@ -130,10 +133,10 @@ public class AccountApi {
     @Path("/cars")
     @Produces(APPLICATION_JSON)
     public void addOwnershipToUser(@HeaderParam("Authorization") String token, JsonNode data) {
-        if(token == null || token.isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED).entity("No token provided").build()); }
-        if(data == null) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Nothing to process").build()); }
-        if(data.get("vehicleId") == null || data.get("vehicleId").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide a vehicleId").build()); }
-        if(data.get("fromDate") == null || data.get("fromDate").asText().isEmpty()) { throw new WebApplicationException(Response.status(Response.Status.NOT_ACCEPTABLE).entity("Please provide a fromDate").build()); }
+        if(token == null || token.isEmpty()) { throw JsonExceptionMapper.mapException(Response.Status.UNAUTHORIZED, "Please provide an access token."); }
+        if(data == null) { throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "Nothing to process");}
+        if(data.get("vehicleId") == null || data.get("vehicleId").asText().isEmpty()) { throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "Please provide a vehicleId"); }
+        if(data.get("fromDate") == null || data.get("fromDate").asText().isEmpty()) { throw JsonExceptionMapper.mapException(Response.Status.NOT_ACCEPTABLE, "Please provide a fromDate"); }
         // Didn't check if toDate is provided, because this value may be null
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyy");
@@ -145,7 +148,7 @@ public class AccountApi {
             try {
                 vehicleId = Long.parseLong(data.get("vehicleId").asText());
             } catch(NumberFormatException e) {
-                throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("vehicleId must be a parsable to a number").build());
+                throw JsonExceptionMapper.mapException(Response.Status.INTERNAL_SERVER_ERROR, "vehicleId must be a parsable to a number");
             }
 
             String fromDateString = data.get("fromDate").asText();
@@ -163,10 +166,10 @@ public class AccountApi {
 
 
         } catch (AccountException | OwnerException | NumberFormatException e) {
-            throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
+            throw JsonExceptionMapper.mapException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (Exception e) {
             Sentry.capture(e);
-            throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build());
+            throw JsonExceptionMapper.mapException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
 
