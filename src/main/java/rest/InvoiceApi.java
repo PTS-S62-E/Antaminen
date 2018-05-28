@@ -2,6 +2,7 @@ package rest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.pts62.common.finland.util.JsonExceptionMapper;
 import domain.Owner;
+import dto.ThinInvoiceDto;
 import exceptions.AccountException;
 import exceptions.InvoiceException;
 import interfaces.domain.IInvoice;
@@ -43,13 +44,13 @@ public class InvoiceApi {
     @Path("/")
     @Produces(APPLICATION_JSON)
     @JWTRequired
-    public ArrayList<IInvoice> getAllInvoices(@HeaderParam("Authorization") String token) {
+    public ArrayList<ThinInvoiceDto> getAllInvoices(@HeaderParam("Authorization") String token) {
         try {
 
             String email = JWTUtility.getSubject(token);
             Owner authenticatedOwner = accountService.findByEmailAddress(email).getOwner();
 
-            ArrayList<IInvoice> result = service.findInvoiceByUser(authenticatedOwner.getId());
+            ArrayList<ThinInvoiceDto> result = service.findInvoiceByUser(authenticatedOwner.getId());
 
             if(result == null) {
                 throw JsonExceptionMapper.mapException(Response.Status.NO_CONTENT, "");

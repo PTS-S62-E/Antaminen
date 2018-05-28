@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -122,14 +123,14 @@ public class InvoiceDao implements IInvoiceDao {
     }
 
     @Override
-    public ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException {
+    public List<Object[]> findInvoiceByUser(long userId) throws InvoiceException {
         if(userId < 1) { throw new InvoiceException("Please provide a valid userId"); }
 
-        Query q = em.createNamedQuery("Invoice.findByUserId");
-        q.setParameter("id", userId);
+        Query q = em.createNamedQuery("Invoice.findThinInvoiceByUserId");
+        q.setParameter("userId", userId);
 
         try {
-            return (ArrayList<IInvoice>) q.getResultList();
+            return (List<Object[]>) q.getResultList();
         } catch(NoResultException nre) {
             throw new InvoiceException("Couldn't find invoice(s) for provided user");
         }

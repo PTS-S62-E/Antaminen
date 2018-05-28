@@ -5,6 +5,7 @@ import dao.InvoiceDao;
 import domain.*;
 import dto.AdministrationDto;
 import dto.JourneyDto;
+import dto.ThinInvoiceDto;
 import dto.TranslocationDto;
 import exceptions.CommunicationException;
 import exceptions.InvoiceException;
@@ -24,7 +25,9 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Stateless
 @LocalBean
@@ -57,10 +60,18 @@ public class InvoiceService implements IInvoiceService {
     }
 
     @Override
-    public ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException {
+    public ArrayList<ThinInvoiceDto> findInvoiceByUser(long userId) throws InvoiceException {
         if(userId < 0) { throw new InvoiceException("Please provide a valid userId"); }
 
-        return invoiceDao.findInvoiceByUser(userId);
+        List<Object[]> temp = invoiceDao.findInvoiceByUser(userId);
+
+        ArrayList<ThinInvoiceDto> result = new ArrayList<>();
+
+        for(Object[] o : temp) {
+            result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3]));
+        }
+
+        return result;
     }
 
     @Override
