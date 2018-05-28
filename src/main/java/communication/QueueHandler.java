@@ -54,12 +54,12 @@ public class QueueHandler  {
                  * First we start generating invoices for drivers in finland.
                  */
 
-                try {
-                    invoiceService.generateInvoices();
-                } catch (InvoiceException e) {
-                    Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Error in generating invoices for country: Finland").build());
-                    Sentry.capture(e);
-                }
+//                try {
+//                    invoiceService.generateInvoices();
+//                } catch (InvoiceException e) {
+//                    Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Error in generating invoices for country: Finland").build());
+//                    Sentry.capture(e);
+//                }
 
                 /**
                  * Invoices for drivers in finland are generated now. We can continue with generating invoices for foreign drivers
