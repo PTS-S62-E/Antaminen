@@ -167,7 +167,7 @@ public class InvoiceService implements IInvoiceService {
              * Registration for foreign vehicles with ownership is moved to a separate method to make it easier to read the code
              */
 
-            ArrayList<ForeignVehicleDto> foreignVehicleDtos = RegistrationMovement.getInstance().getTranslocationsForForeignCars(LocalDateUtil.getCurrentDate(), LocalDateUtil.getCurrentDateMinusOneMonth());
+            ArrayList<ForeignVehicleDto> foreignVehicleDtos = RegistrationMovement.getInstance().getTranslocationsForForeignCars(LocalDateUtil.getCurrentDateMinusOneMonth(), LocalDateUtil.getCurrentDate());
             this.registerForeignVehiclesWithOwner(account.getOwner(), foreignVehicleDtos);
 
             /**

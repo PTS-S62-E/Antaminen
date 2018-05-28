@@ -250,12 +250,13 @@ public class RegistrationMovement {
         if(startDate.isEmpty()) { throw new CommunicationException("Please provide a startDate"); }
         if(endDate.isEmpty()) { throw new CommunicationException("Please provide an endDate"); }
 
-        if(!LocalDateUtil.isStringDateValid(startDate)) { throw new CommunicationException("Provided startDate is in an incorrect format."); }
-        if(!LocalDateUtil.isStringDateValid(endDate)) { throw new CommunicationException("Provided endDate is in an incorrect format."); }
+//        if(!LocalDateUtil.isStringDateValid(startDate)) { throw new CommunicationException("Provided startDate is in an incorrect format."); }
+//        if(!LocalDateUtil.isStringDateValid(endDate)) { throw new CommunicationException("Provided endDate is in an incorrect format."); }
 
         String urlPart = properties.getProperty("TRANSLOCATION_FOR_FOREIGN_VEHICLE");
         urlPart = urlPart.replace(":startDate", startDate);
-        urlPart = urlPart.replace("endDate", endDate);
+        urlPart = urlPart.replace(":endDate", endDate);
+        urlPart = urlPart.replace(" ", "%20");
 
         String url = BASE_URL + urlPart;
 
