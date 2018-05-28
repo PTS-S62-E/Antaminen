@@ -26,6 +26,8 @@ public interface IInvoice extends ISubInvoice {
      */
     List<InvoiceDetails> invoiceDetails();
 
+    long getId();
+
     String paymentDetails();
 
     void setInvoiceDetails(ArrayList<InvoiceDetails> invoiceDetails);
