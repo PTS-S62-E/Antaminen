@@ -260,6 +260,8 @@ public class RegistrationMovement {
 
         String url = BASE_URL + urlPart;
 
+        Logger.getLogger(getClass().getName()).warning(url);
+
         String response = SendRequest.sendGet(url);
 
         if(response.isEmpty()) {

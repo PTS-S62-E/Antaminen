@@ -156,6 +156,8 @@ public class InvoiceService implements IInvoiceService {
         Account account = null;
         try {
             account = accountService.findByEmailAddress("gov@finland.fi");
+            Logger logger = Logger.getLogger(getClass().getName());
+            logger.warning("Found account is: " + account.getOwner().getId() + " - " + account.getOwner().getName());
         } catch (AccountException e) {
             Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Couldn't find account required to generate foreign invoices.").build());
             Sentry.capture(e);
@@ -179,6 +181,7 @@ public class InvoiceService implements IInvoiceService {
 
             ArrayList<Ownership> ownerships = new ArrayList<>(account.getOwner().getOwnership());
 
+            logger.warning("Ownership size: " + ownerships.size());
             if(!ownerships.isEmpty()) {
                 for (Ownership ownership : ownerships) {
 
@@ -186,13 +189,17 @@ public class InvoiceService implements IInvoiceService {
 
                     ArrayList<InvoiceDetails> invoiceDetails = new ArrayList<>();
                     for(ForeignVehicleDto dto : foreignVehicleDtos) {
+                        logger.warning("Looping dto's");
                         for(JourneyDto journeyDto : dto.getJourneys()) {
+                            logger.warning("Looping journeys");
                             InvoiceDetails details = new InvoiceDetails((ArrayList<TranslocationDto>) journeyDto.getTranslocations(), "Complete Journey", tariffCategory.getTariff());
                             invoiceDetails.add(details);
 
                             if(invoiceDetails.size() < 1) {
+                                logger.warning("No invoice details");
                                 // No translocations to generate invoice...
                             } else {
+                                logger.warning("Creating invoice");
                                 // The countryCode param is really important here, without this param, we can't send the invoice to the correct country.
                                 invoiceDao.createInvoice(invoiceDetails, account.getOwner(), ownership.getVehicleId(), dto.getCountryCode());
                             }
@@ -224,10 +231,14 @@ public class InvoiceService implements IInvoiceService {
 
         for(Ownership ownership : owner.getOwnership()) {
             registeredVehicleIds.add(ownership.getVehicleId());
+            logger.warning("RegisteredVehicleId: " + ownership.getVehicleId());
         }
+
+        logger.warning("Size of foreignvehicleDto's: " + foreignVehicleDtos.size());
 
         for(ForeignVehicleDto dto : foreignVehicleDtos) {
             if(!registeredVehicleIds.contains(dto.getId())) {
+                logger.warning("No ownership. Add it");
                 // The vehicle is not yet registered. Create a new ownership.
                 Ownership newOwnership = new Ownership(owner, dto.getId(), LocalDateUtil.getCurrentLocalDate(), null);
                 try {
@@ -236,6 +247,8 @@ public class InvoiceService implements IInvoiceService {
                     Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Error in registering unknown foreign vehicles to owner").build());
                     Sentry.capture(e);
                 }
+            } else {
+                logger.warning("Ownership allready added");
             }
         }
 
