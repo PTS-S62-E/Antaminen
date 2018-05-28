@@ -13,6 +13,7 @@ public class VehicleDto implements Serializable {
 	private String type;
 	private String category;
 	private String hardwareSn;
+	private String countryCode;
 
 	public VehicleDto(){}
 
@@ -80,6 +81,14 @@ public class VehicleDto implements Serializable {
 
 	public void setHardwareSn(String hardwareSn) {
 		this.hardwareSn = hardwareSn;
+	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
 	}
 }
 
