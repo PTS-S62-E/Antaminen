@@ -164,8 +164,6 @@ public class RegistrationMovement {
 
         String response = SendRequest.sendGet(url);
 
-        Logger logger = Logger.getLogger(getClass().getName());
-        logger.warning(url);
 
         if (response.isEmpty()){
             return null;
@@ -195,7 +193,6 @@ public class RegistrationMovement {
         String response = SendRequest.sendGet(url);
 
         Logger logger = Logger.getLogger(getClass().getName());
-        logger.warning(url);
 
         if (response.isEmpty()){
             return null;
@@ -259,8 +256,6 @@ public class RegistrationMovement {
         urlPart = urlPart.replace(" ", "%20");
 
         String url = BASE_URL + urlPart;
-
-        Logger.getLogger(getClass().getName()).warning(url);
 
         String response = SendRequest.sendGet(url);
 

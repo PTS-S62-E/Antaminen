@@ -31,10 +31,10 @@ public class Invoice implements IInvoice, Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name= "invoice_details_join",
-                joinColumns = @JoinColumn(name = "invoice_id", referencedColumnName = "id", nullable = false),
-                inverseJoinColumns = @JoinColumn(name = "invoice_detail_id", referencedColumnName = "id", nullable = false))
+                joinColumns = @JoinColumn(name = "invoice_id", referencedColumnName = "id"),
+                inverseJoinColumns = @JoinColumn(name = "invoice_detail_id", referencedColumnName = "id"))
     private List<InvoiceDetails> invoiceDetails;
     private String paymentDetails;
     private String country;

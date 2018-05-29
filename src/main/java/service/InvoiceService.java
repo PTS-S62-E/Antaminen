@@ -6,10 +6,7 @@ import communication.QueueMessageSender;
 import communication.RegistrationMovement;
 import dao.InvoiceDao;
 import domain.*;
-import dto.AdministrationDto;
-import dto.ForeignVehicleDto;
-import dto.JourneyDto;
-import dto.TranslocationDto;
+import dto.*;
 import exceptions.*;
 import interfaces.domain.IInvoice;
 import interfaces.domain.IInvoiceDetail;
@@ -110,7 +107,6 @@ public class InvoiceService implements IInvoiceService {
 
                         ArrayList<InvoiceDetails> invoiceDetails = new ArrayList<>();
                         for (JourneyDto journey : administrationDto.getJourneys()) {
-                            logger.warning("The tarif that we use is: " + tariffCategory.getTariff());
                             InvoiceDetails details = new InvoiceDetails((ArrayList<TranslocationDto>) journey.getTranslocations(), "Complete Journey", tariffCategory.getTariff());
                             invoiceDetails.add(details);
                         }
@@ -118,7 +114,8 @@ public class InvoiceService implements IInvoiceService {
                         if(invoiceDetails.size() < 1) {
                             // No translocations to generate invoice...
                         } else {
-                            invoiceDao.createInvoice(invoiceDetails, owner, vehicleId);
+                            VehicleDto dto = RegistrationMovement.getInstance().getVehicleById(vehicleId);
+                            invoiceDao.createInvoice(invoiceDetails, owner, vehicleId, dto.getCountryCode());
                         }
                     }
                 }
@@ -156,8 +153,6 @@ public class InvoiceService implements IInvoiceService {
         Account account = null;
         try {
             account = accountService.findByEmailAddress("gov@finland.fi");
-            Logger logger = Logger.getLogger(getClass().getName());
-            logger.warning("Found account is: " + account.getOwner().getId() + " - " + account.getOwner().getName());
         } catch (AccountException e) {
             Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Couldn't find account required to generate foreign invoices.").build());
             Sentry.capture(e);
@@ -172,50 +167,11 @@ public class InvoiceService implements IInvoiceService {
             ArrayList<ForeignVehicleDto> foreignVehicleDtos = RegistrationMovement.getInstance().getTranslocationsForForeignCars(LocalDateUtil.getCurrentDateMinusOneMonth(), LocalDateUtil.getCurrentDate());
             this.registerForeignVehiclesWithOwner(account.getOwner(), foreignVehicleDtos);
 
-            /**
-             * At this point, all unregistered foreign vehicles have been added to an owner.
-             * We can proceed with generating the invoices.
-             */
-
-            //TODO: Check if the translocations already belong to an invoice
-
-            ArrayList<Ownership> ownerships = new ArrayList<>(account.getOwner().getOwnership());
-
-            logger.warning("Ownership size: " + ownerships.size());
-            if(!ownerships.isEmpty()) {
-                for (Ownership ownership : ownerships) {
-
-                    TariffCategory tariffCategory = tariffCategoryService.getTariffCategoryByVehicleId(ownership.getVehicleId());
-
-                    ArrayList<InvoiceDetails> invoiceDetails = new ArrayList<>();
-                    for(ForeignVehicleDto dto : foreignVehicleDtos) {
-                        logger.warning("Looping dto's");
-                        for(JourneyDto journeyDto : dto.getJourneys()) {
-                            logger.warning("Looping journeys");
-                            InvoiceDetails details = new InvoiceDetails((ArrayList<TranslocationDto>) journeyDto.getTranslocations(), "Complete Journey", tariffCategory.getTariff());
-                            invoiceDetails.add(details);
-
-                            if(invoiceDetails.size() < 1) {
-                                logger.warning("No invoice details");
-                                // No translocations to generate invoice...
-                            } else {
-                                logger.warning("Creating invoice");
-                                // The countryCode param is really important here, without this param, we can't send the invoice to the correct country.
-                                invoiceDao.createInvoice(invoiceDetails, account.getOwner(), ownership.getVehicleId(), dto.getCountryCode());
-                            }
-                        }
-                    }
-
-                    // All foreign invoices have been generated now.
-                    // Last thing we have to do is, send the invoices to the correct countries.
-                }
-            }
+            this.generateInvoices();
 
             // Trigger a method that will send all unpayed foreign invoices to the correct country in the EU
             this.sendInvoicesToForeignCountries();
-
-
-        } catch (CommunicationException | IOException | TariffCategoryException e) {
+        } catch (CommunicationException | IOException  e) {
             Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Error in generating foreign invoices").build());
             Sentry.capture(e);
         }
@@ -231,14 +187,10 @@ public class InvoiceService implements IInvoiceService {
 
         for(Ownership ownership : owner.getOwnership()) {
             registeredVehicleIds.add(ownership.getVehicleId());
-            logger.warning("RegisteredVehicleId: " + ownership.getVehicleId());
         }
-
-        logger.warning("Size of foreignvehicleDto's: " + foreignVehicleDtos.size());
 
         for(ForeignVehicleDto dto : foreignVehicleDtos) {
             if(!registeredVehicleIds.contains(dto.getId())) {
-                logger.warning("No ownership. Add it");
                 // The vehicle is not yet registered. Create a new ownership.
                 Ownership newOwnership = new Ownership(owner, dto.getId(), LocalDateUtil.getCurrentLocalDate(), null);
                 try {
@@ -248,7 +200,6 @@ public class InvoiceService implements IInvoiceService {
                     Sentry.capture(e);
                 }
             } else {
-                logger.warning("Ownership allready added");
             }
         }
 

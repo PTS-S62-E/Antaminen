@@ -59,12 +59,12 @@ public class InvoiceDao implements IInvoiceDao {
             throw new InvoiceException("No positive price provided in Invoice");
         }
         try {
-            logger.warning("Start persisting invoice");
             for(InvoiceDetails detail : invoice.getInvoiceDetails()) {
                 em.persist(detail);
+                em.flush();
             }
             em.persist(invoice);
-            logger.warning("All done!");
+            em.flush();
         } catch(Exception e) {
             Sentry.capture(e);
             throw new InvoiceException(e.getMessage());
@@ -93,8 +93,6 @@ public class InvoiceDao implements IInvoiceDao {
         LocalDateTime currentDate = LocalDateTime.now();
 
         Invoice invoice = new Invoice(invoiceDetails, countryCode, currentDate.toString(), owner, vehicleId);
-
-        logger.warning("Foreign Invoice created");
 
         this.createInvoice(invoice);
 
