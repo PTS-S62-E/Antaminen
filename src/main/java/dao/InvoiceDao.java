@@ -22,7 +22,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import java.util.List;
+
 
 /**
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,8 +42,6 @@ public class InvoiceDao implements IInvoiceDao {
 
     @PersistenceContext(unitName = "administratieUnit")
     EntityManager em;
-
-    Logger logger = Logger.getLogger(getClass().getName());
 
     private final String countryCode = "FI";
 
@@ -127,16 +126,29 @@ public class InvoiceDao implements IInvoiceDao {
     }
 
     @Override
-    public ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException {
+    public List<Object[]> findInvoiceByUser(long userId) throws InvoiceException {
+        if(userId < 1) { throw new InvoiceException("Please provide a valid userId"); }
+
+        Query q = em.createNamedQuery("Invoice.findThinInvoiceByUserId");
+        q.setParameter("userId", userId);
+
+        try {
+            return (List<Object[]>) q.getResultList();
+        } catch(NoResultException nre) {
+            throw new InvoiceException("Couldn't find invoice(s) for provided user");
+        }
+    }
+
+    public ArrayList<IInvoice> findFullInvoiceByUser(long userId) throws InvoiceException {
         if(userId < 1) { throw new InvoiceException("Please provide a valid userId"); }
 
         Query q = em.createNamedQuery("Invoice.findByUserId");
-        q.setParameter("id", userId);
+        q.setParameter("userId", userId);
 
         try {
             return (ArrayList<IInvoice>) q.getResultList();
         } catch(NoResultException nre) {
-            throw new InvoiceException("Couldn't find invoice(s) for provided user");
+            throw new InvoiceException("Couldn\t find invoice(s) for provided user");
         }
     }
 

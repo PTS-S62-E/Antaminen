@@ -22,8 +22,9 @@ import java.util.List;
 @Table(name = "Invoice")
 @NamedQueries({
         @NamedQuery(name = "Invoice.findByInvoiceNumber", query = "SELECT i FROM Invoice i WHERE i.id = :id"),
-        @NamedQuery(name = "Invoice.findByUserId", query = "SELECT i FROM Invoice i WHERE i.owner.id = :id"),
-        @NamedQuery(name = "Invoice.findInvoiceByUserIdAndVehicleId", query = "SELECT i FROM Invoice i WHERE i.owner.id = :userId AND i.vehicleId = :vehicleId")
+        @NamedQuery(name = "Invoice.findByUserId", query = "SELECT i FROM Invoice i WHERE i.owner.id = :userId"),
+        @NamedQuery(name = "Invoice.findInvoiceByUserIdAndVehicleId", query = "SELECT i FROM Invoice i WHERE i.owner.id = :userId AND i.vehicleId = :vehicleId"),
+        @NamedQuery(name = "Invoice.findThinInvoiceByUserId", query = "SELECT i.id as id, i.invoiceDate as invoicedate, i.price as price, i.paymentStatus as paymentstatus FROM Invoice i WHERE i.owner.id = :userId")
 })
 public class Invoice implements IInvoice, Serializable {
 
@@ -66,6 +67,7 @@ public class Invoice implements IInvoice, Serializable {
         }
     }
 
+    @Override
     public long getId() {
         return id;
     }

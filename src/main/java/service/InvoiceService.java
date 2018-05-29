@@ -20,11 +20,9 @@ import util.LocalDateUtil;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.faces.bean.SessionScoped;
-import javax.inject.Inject;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Stateless
@@ -61,10 +59,18 @@ public class InvoiceService implements IInvoiceService {
     }
 
     @Override
-    public ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException {
+    public ArrayList<ThinInvoiceDto> findInvoiceByUser(long userId) throws InvoiceException {
         if(userId < 0) { throw new InvoiceException("Please provide a valid userId"); }
 
-        return invoiceDao.findInvoiceByUser(userId);
+        List<Object[]> temp = invoiceDao.findInvoiceByUser(userId);
+
+        ArrayList<ThinInvoiceDto> result = new ArrayList<>();
+
+        for(Object[] o : temp) {
+            result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3]));
+        }
+
+        return result;
     }
 
     @Override
@@ -209,7 +215,15 @@ public class InvoiceService implements IInvoiceService {
         try {
             Owner owner = accountService.findByEmailAddress("gov@finland.fi").getOwner();
 
-            ArrayList<IInvoice> foreignInvoices = invoiceDao.findInvoiceByUser(owner.getId());
+            List<Object[]> temp = invoiceDao.findInvoiceByUser(owner.getId());
+
+            ArrayList<ThinInvoiceDto> result = new ArrayList<>();
+
+            for(Object[] o : temp) {
+                result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3]));
+            }
+
+            ArrayList<IInvoice> foreignInvoices = invoiceDao.findFullInvoiceByUser(owner.getId());
 
             for(IInvoice invoice : foreignInvoices) {
                 if(!invoice.getPaymentStatus()) {

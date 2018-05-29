@@ -1,5 +1,6 @@
 package interfaces.service;
 
+import dto.ThinInvoiceDto;
 import exceptions.InvoiceException;
 import interfaces.domain.IInvoice;
 
@@ -12,7 +13,7 @@ public interface IInvoiceService {
 
     IInvoice findInvoiceByInvoiceNumber(long invoiceNumber) throws InvoiceException;
 
-    ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException;
+    ArrayList<ThinInvoiceDto> findInvoiceByUser(long userId) throws InvoiceException;
 
     boolean payInvoice(long invoiceNumber, String paymentDetails) throws InvoiceException;
 

@@ -12,6 +12,7 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,7 +52,7 @@ public interface IInvoiceDao {
      */
     IInvoice findInvoiceByInvoiceNumer(long invoiceNumber) throws InvoiceException;
 
-    ArrayList<IInvoice> findInvoiceByUser(long userId) throws InvoiceException;
+    List<Object[]> findInvoiceByUser(long userId) throws InvoiceException;
 
     ArrayList<IInvoice> findInvoicesByUserAndVehicleId(long userId, long vehicleId) throws InvoiceException;
 
