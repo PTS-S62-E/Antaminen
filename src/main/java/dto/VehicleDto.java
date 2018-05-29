@@ -1,23 +1,22 @@
 package dto;
 
-import domain.TariffCategory;
-
 import java.io.Serializable;
 
 public class VehicleDto implements Serializable {
 
 	private long id;
+	private String countryCode;
 	private String licensePlate;
 	private String brand;
 	private String type;
 	private String category;
 	private String hardwareSn;
-	private String countryCode;
 
 	public VehicleDto(){}
 
-	public VehicleDto(long id, String licensePlate, String brand, String type, String category, String hardwareSn) {
+	public VehicleDto(long id, String countryCode, String licensePlate, String brand, String type, String category, String hardwareSn) {
 		this.id = id;
+		this.countryCode = countryCode;
 		this.licensePlate = licensePlate;
 		this.brand = brand;
 		this.type = type;
@@ -31,6 +30,14 @@ public class VehicleDto implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
 	}
 
 	public String getLicensePlate() {
@@ -71,14 +78,6 @@ public class VehicleDto implements Serializable {
 
 	public void setHardwareSn(String hardwareSn) {
 		this.hardwareSn = hardwareSn;
-	}
-
-	public String getCountryCode() {
-		return countryCode;
-	}
-
-	public void setCountryCode(String countryCode) {
-		this.countryCode = countryCode;
 	}
 }
 

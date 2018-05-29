@@ -64,7 +64,8 @@ public class SendRequest {
             Sentry.getContext().recordBreadcrumb(
                     new BreadcrumbBuilder()
                             .setMessage("Status Code: " + response.getStatusLine().getStatusCode()
-                                    + "\n ReasonPhrase: " + response.getStatusLine().getReasonPhrase()).build());
+                                    + "\n ReasonPhrase: " + response.getStatusLine().getReasonPhrase()
+                                    + "\n" + EntityUtils.toString(response.getEntity())).build());
             Sentry.capture(response.getStatusLine().toString());
             throw new CommunicationException("Received unexpected status code from external API");
         } else {

@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * | Created by juleskreutzer
@@ -59,8 +60,10 @@ public class InvoiceDao implements IInvoiceDao {
         try {
             for(InvoiceDetails detail : invoice.getInvoiceDetails()) {
                 em.persist(detail);
+                em.flush();
             }
             em.persist(invoice);
+            em.flush();
         } catch(Exception e) {
             Sentry.capture(e);
             throw new InvoiceException(e.getMessage());
@@ -133,6 +136,19 @@ public class InvoiceDao implements IInvoiceDao {
             return (List<Object[]>) q.getResultList();
         } catch(NoResultException nre) {
             throw new InvoiceException("Couldn't find invoice(s) for provided user");
+        }
+    }
+
+    public ArrayList<IInvoice> findFullInvoiceByUser(long userId) throws InvoiceException {
+        if(userId < 1) { throw new InvoiceException("Please provide a valid userId"); }
+
+        Query q = em.createNamedQuery("Invoice.findByUserId");
+        q.setParameter("userId", userId);
+
+        try {
+            return (ArrayList<IInvoice>) q.getResultList();
+        } catch(NoResultException nre) {
+            throw new InvoiceException("Couldn\t find invoice(s) for provided user");
         }
     }
 

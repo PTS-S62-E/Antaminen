@@ -1,18 +1,16 @@
 package communication;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dto.AdministrationDto;
-import dto.CategoryDto;
-import dto.TranslocationDto;
-import dto.VehicleDto;
+import dto.*;
 import exceptions.CategoryException;
 import exceptions.CommunicationException;
 import io.sentry.Sentry;
-import jdk.nashorn.internal.objects.NativeJSON;
+import util.LocalDateUtil;
 
 import javax.ejb.Singleton;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -120,6 +118,14 @@ public class RegistrationMovement {
         return mapper.readValue(response, TranslocationDto.class);
     }
 
+    /**
+     * Get a category by name from the registration movement application
+     * @param name Name of the category
+     * @return Returns a DTO object containing the Category information
+     * @throws CategoryException Thrown if the {@param name} is not provided or empty
+     * @throws IOException Thrown when there's an exception in reading the response for the HTTP request
+     * @throws CommunicationException Thrown when an unexpected response code is returned form the Registration Movement application
+     */
     public CategoryDto getCategory(String name) throws CategoryException, IOException, CommunicationException {
         if (name.isEmpty()){
             throw new CategoryException("name cannot be empty");
@@ -141,6 +147,13 @@ public class RegistrationMovement {
         return mapper.readValue(response, CategoryDto.class);
     }
 
+    /**
+     * Get information about a vehicle from the Registration Movement application using the vehicleID
+     * @param vehicleId ID of the vehicle you want to request information from
+     * @return Returns a VehicleDTO containing information about the vehicle
+     * @throws CommunicationException Thrown when an unexpected response code is returned from the Registration Movement application
+     * @throws IOException Thrown when there's an exception in reading the response for the HTTP request
+     */
     public VehicleDto getVehicleById(long vehicleId) throws CommunicationException, IOException {
         if(vehicleId < 1) { throw new CommunicationException("Please provide a valid vehicleId"); }
 
@@ -151,8 +164,6 @@ public class RegistrationMovement {
 
         String response = SendRequest.sendGet(url);
 
-        Logger logger = Logger.getLogger(getClass().getName());
-        logger.warning(url);
 
         if (response.isEmpty()){
             return null;
@@ -163,6 +174,14 @@ public class RegistrationMovement {
         return mapper.readValue(response, VehicleDto.class);
     }
 
+    /**
+     * Get information about a vehicle from the Registration Mevement application using the license plate of the vehicle.
+     * This only difference between this method and {@link RegistrationMovement#getVehicleById(long)} is the use of the licensePlate property instead of the vehicleId property
+     * @param licensePlate Licenseplate of the vehicle
+     * @return Returns a DTO object containing information about the vehicle
+     * @throws CommunicationException Thrown when an unexpected response code is returned from the Registration Movement application
+     * @throws IOException Thrown when there's an exception in reading the response for the HTTP request
+     */
     public VehicleDto getVehicleByLicensePlate(String licensePlate) throws CommunicationException, IOException {
         if(licensePlate == null ||  licensePlate.equals("")) { throw new CommunicationException("Please provide a licenseplate"); }
 
@@ -174,7 +193,6 @@ public class RegistrationMovement {
         String response = SendRequest.sendGet(url);
 
         Logger logger = Logger.getLogger(getClass().getName());
-        logger.warning(url);
 
         if (response.isEmpty()){
             return null;
@@ -185,6 +203,17 @@ public class RegistrationMovement {
         return mapper.readValue(response, VehicleDto.class);
     }
 
+    /**
+     * Create a new category in the Registration Movement application
+     * Please make sure that the category is created in the Registration Movement application
+     * before storing the same category in the database that's been used by this application
+     *
+     * To check whether the category was created on the Registration Movement application, you can use {@link RegistrationMovement#getCategory(String)}
+     * @param categoryDto DTO object containing the information about the category that needs to be created
+     * @throws CategoryException Thrown when {@param categoryDto} is null or doesn't have a name
+     * @throws IOException Thrown when there's an exception in reading the response for the HTTP request
+     * @throws CommunicationException Thrown when an unexpected response code is returned from the Registration Movement application
+     */
     public void createCategory(CategoryDto categoryDto) throws CategoryException, IOException, CommunicationException {
         if (categoryDto == null){
             throw new CategoryException("CategoryDto cannot be null");
@@ -201,5 +230,41 @@ public class RegistrationMovement {
         String categoryDtoAsJson = mapper.writeValueAsString(categoryDto);
 
         SendRequest.sendPost(url, categoryDtoAsJson);
+    }
+
+    /**
+     * Get all translocations from vehicles that are not registered in Finland. These vehicles are foreign vehicles.
+     *
+     * The params {@param startDate} and {@param endDate} are a string representation of dates that need to be
+     * formatted as yyyy-MM-dd HH:mm
+     * @param startDate The date you want to start searching for translocations from foreign vehicles
+     * @param endDate The date you want to stop searching for translocations from foreign vehicles
+     * @return Returns an arraylist of {@link ForeignVehicleDto ForeignVehicleDto objects}
+     * @throws CommunicationException Thrown when an unexpected response code is returned from the Registration Movement application
+     * @throws IOException Thrown when there's an exception in reading the response for the HTTP request
+     */
+    public ArrayList<ForeignVehicleDto> getTranslocationsForForeignCars(String startDate, String endDate) throws CommunicationException, IOException {
+        if(startDate.isEmpty()) { throw new CommunicationException("Please provide a startDate"); }
+        if(endDate.isEmpty()) { throw new CommunicationException("Please provide an endDate"); }
+
+//        if(!LocalDateUtil.isStringDateValid(startDate)) { throw new CommunicationException("Provided startDate is in an incorrect format."); }
+//        if(!LocalDateUtil.isStringDateValid(endDate)) { throw new CommunicationException("Provided endDate is in an incorrect format."); }
+
+        String urlPart = properties.getProperty("TRANSLOCATION_FOR_FOREIGN_VEHICLE");
+        urlPart = urlPart.replace(":startDate", startDate);
+        urlPart = urlPart.replace(":endDate", endDate);
+        urlPart = urlPart.replace(" ", "%20");
+
+        String url = BASE_URL + urlPart;
+
+        String response = SendRequest.sendGet(url);
+
+        if(response.isEmpty()) {
+            return null;
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        return mapper.readValue(response, new TypeReference<ArrayList<ForeignVehicleDto>>(){});
     }
 }

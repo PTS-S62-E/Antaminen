@@ -18,4 +18,6 @@ public interface IInvoiceService {
     boolean payInvoice(long invoiceNumber, String paymentDetails) throws InvoiceException;
 
     void generateInvoices() throws InvoiceException;
+
+    void generateInvoicesForVehiclesOfForeignCountries() throws InvoiceException;
 }
