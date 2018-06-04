@@ -10,7 +10,7 @@ public class VehicleDto implements Serializable {
 	private String brand;
 	private String type;
 	private String category;
-	private String hardwareSn;
+	private String serialNumber;
 
 	public VehicleDto(){}
 
@@ -21,7 +21,7 @@ public class VehicleDto implements Serializable {
 		this.brand = brand;
 		this.type = type;
 		this.category = category;
-		this.hardwareSn = hardwareSn;
+		this.serialNumber = hardwareSn;
 	}
 
 	public long getId() {
@@ -73,11 +73,11 @@ public class VehicleDto implements Serializable {
 	}
 
 	public String getHardwareSn() {
-		return hardwareSn;
+		return serialNumber;
 	}
 
 	public void setHardwareSn(String hardwareSn) {
-		this.hardwareSn = hardwareSn;
+		this.serialNumber = hardwareSn;
 	}
 }
 
