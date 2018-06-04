@@ -79,5 +79,13 @@ public class VehicleDto implements Serializable {
 	public void setHardwareSn(String hardwareSn) {
 		this.serialNumber = hardwareSn;
 	}
+
+	public String getSerialNumber() {
+		return serialNumber;
+	}
+
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
 }
 
