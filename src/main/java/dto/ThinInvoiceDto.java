@@ -1,5 +1,7 @@
 package dto;
 
+import domain.Owner;
+
 import java.io.Serializable;
 
 public class ThinInvoiceDto implements Serializable {
@@ -7,8 +9,17 @@ public class ThinInvoiceDto implements Serializable {
     private String invoiceDate;
     private int price;
     private boolean paymentStatus;
+    private String ownerName;
 
     public ThinInvoiceDto() { }
+
+    public ThinInvoiceDto(long id, String invoiceDate, int price, boolean paymentStatus, String ownerName) {
+        this.id = id;
+        this.invoiceDate = invoiceDate;
+        this.price = price;
+        this.paymentStatus = paymentStatus;
+        this.ownerName = ownerName;
+    }
 
     public ThinInvoiceDto(long id, String invoiceDate, int price, boolean paymentStatus) {
         this.id = id;
@@ -47,5 +58,13 @@ public class ThinInvoiceDto implements Serializable {
 
     public void setPaymentStatus(boolean paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 }
