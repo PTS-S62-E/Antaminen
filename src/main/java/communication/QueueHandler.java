@@ -5,7 +5,6 @@ package communication;
 import com.pts62.common.finland.communication.CommunicationBuilder;
 import com.pts62.common.finland.communication.IQueueSubscribeCallback;
 import com.pts62.common.finland.communication.QueueConnector;
-import com.pts62.common.finland.communication.QueueConstants;
 import exceptions.InvoiceException;
 import io.sentry.Sentry;
 import io.sentry.event.Breadcrumb;
