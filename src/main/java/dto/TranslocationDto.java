@@ -10,6 +10,7 @@ public class TranslocationDto implements Serializable {
     private double longitude;
     private String timestamp;
     private String countryCode;
+    private String serialNumber;
 
     public TranslocationDto() { }
 
@@ -19,6 +20,7 @@ public class TranslocationDto implements Serializable {
         this.longitude = translocation.getLon();
         this.timestamp = translocation.getDateTime();
         this.countryCode = translocation.getCountryCode();
+        this.serialNumber = translocation.getSerialNumber();
     }
 
     public double getLatitude() {
@@ -58,6 +60,22 @@ public class TranslocationDto implements Serializable {
     }
 
     public void setTranslocationId(long id) {
+        this.id = id;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
         this.id = id;
     }
 }

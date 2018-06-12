@@ -59,15 +59,15 @@ public class InvoiceService implements IInvoiceService {
     }
 
     @Override
-    public ArrayList<ThinInvoiceDto> findInvoiceByUser(long userId) throws InvoiceException {
-        if(userId < 0) { throw new InvoiceException("Please provide a valid userId"); }
+    public ArrayList<ThinInvoiceDto> findInvoiceByUser(Owner owner) throws InvoiceException {
+        if(owner == null) { throw new InvoiceException("Please provide a valid user"); }
 
-        List<Object[]> temp = invoiceDao.findInvoiceByUser(userId);
+        List<Object[]> temp = invoiceDao.findInvoiceByUser(owner.getId());
 
         ArrayList<ThinInvoiceDto> result = new ArrayList<>();
 
         for(Object[] o : temp) {
-            result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3]));
+            result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3], owner.getName()));
         }
 
         return result;

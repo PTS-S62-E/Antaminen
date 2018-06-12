@@ -1,5 +1,6 @@
 package interfaces.service;
 
+import domain.Owner;
 import dto.ThinInvoiceDto;
 import exceptions.InvoiceException;
 import interfaces.domain.IInvoice;
@@ -13,7 +14,7 @@ public interface IInvoiceService {
 
     IInvoice findInvoiceByInvoiceNumber(long invoiceNumber) throws InvoiceException;
 
-    ArrayList<ThinInvoiceDto> findInvoiceByUser(long userId) throws InvoiceException;
+    ArrayList<ThinInvoiceDto> findInvoiceByUser(Owner owner) throws InvoiceException;
 
     ArrayList<ThinInvoiceDto> findInvoicesByLicensePlate(String licensePlate) throws InvoiceException;
 

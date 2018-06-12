@@ -50,7 +50,7 @@ public class InvoiceApi {
             String email = JWTUtility.getSubject(token);
             Owner authenticatedOwner = accountService.findByEmailAddress(email).getOwner();
 
-            ArrayList<ThinInvoiceDto> result = service.findInvoiceByUser(authenticatedOwner.getId());
+            ArrayList<ThinInvoiceDto> result = service.findInvoiceByUser(authenticatedOwner);
 
             if(result == null) {
                 throw JsonExceptionMapper.mapException(Response.Status.NO_CONTENT, "");
