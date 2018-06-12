@@ -54,7 +54,6 @@ public class RegistrationMovement {
                     input.close();
                 } catch (IOException e) {
                     Sentry.capture(e);
-                    e.printStackTrace();
                 }
             }
         }

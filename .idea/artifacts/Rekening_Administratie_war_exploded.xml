@@ -7,7 +7,7 @@
           <element id="module-output" name="Rekening-Administratie" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Maven: com.github.PTS-S62-E:Osake:3.4.2" />
+          <element id="library" level="project" name="Maven: com.github.PTS-S62-E:Osake:4.4.0" />
           <element id="library" level="project" name="Maven: com.github.luudvkeulen:EuropaInterfaces:1.1.0" />
           <element id="library" level="project" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:1.2.41" />
           <element id="library" level="project" name="Maven: org.jetbrains:annotations:13.0" />

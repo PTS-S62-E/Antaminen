@@ -3,9 +3,16 @@ package communication;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pts62.common.finland.communication.CommunicationBuilder;
+import com.pts62.common.finland.communication.QueueConfig;
 import com.pts62.common.finland.communication.QueueConnector;
 import com.rekeningrijden.europe.dtos.SubInvoiceDto;
 import io.sentry.Sentry;
+import io.sentry.event.BreadcrumbBuilder;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.Properties;
 
 public class QueueMessageSender {
 
@@ -13,11 +20,31 @@ public class QueueMessageSender {
     private QueueConnector connector;
     private CommunicationBuilder builder;
 
+    private Properties properties;
+
     private QueueMessageSender() {
         _instance = this;
 
-        this.connector = new QueueConnector();
         this.builder = new CommunicationBuilder();
+
+        InputStream input = null;
+        properties = new Properties();
+
+        try {
+            input = getClass().getClassLoader().getResourceAsStream("countries.properties");
+            properties.load(input);
+        } catch (IOException e) {
+            Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Unable to load property file for countries to retrieve IP addresses.").build());
+            Sentry.capture(e);
+        } finally {
+            if(input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    Sentry.capture(e);
+                }
+            }
+        }
     }
 
     public static QueueMessageSender getInstance() {
@@ -35,16 +62,16 @@ public class QueueMessageSender {
      */
     public void sendInvoiceToForeignCountry(SubInvoiceDto invoice) {
 
-        //TODO: Setup the message queue correctly so that the actual invoice will be sent
+        String countryIp = properties.getProperty(invoice.getCountry());
 
-        this.builder.setCountry(invoice.getCountry());
-        this.builder.setApplication("PLEASE_REPLACE_THIS");
-        this.builder.setMessage("PLEASE_REPLACE_THIS");
+        this.connector = new QueueConnector(new QueueConfig(countryIp, "", Charset.defaultCharset()));
+        this.builder.setApplication("rekeningrijden");
+        this.builder.setMessage("invoices");
 
         ObjectMapper mapper = new ObjectMapper();
         try {
             String invoiceAsJsonString = mapper.writeValueAsString(invoice);
-//            this.connector.publishMessage(this.builder.build(), invoiceAsJsonString);
+            this.connector.publishMessage(this.builder.build(), invoiceAsJsonString);
         } catch (JsonProcessingException e) {
             Sentry.capture(e);
         }
