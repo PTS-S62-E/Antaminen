@@ -74,6 +74,27 @@ public class InvoiceService implements IInvoiceService {
     }
 
     @Override
+    public ArrayList<ThinInvoiceDto> findInvoicesByLicensePlate(String licensePlate) throws InvoiceException {
+        if(licensePlate.isEmpty()) { throw new InvoiceException("Please provide a license plate"); }
+
+        try {
+            VehicleDto vehicleDto = RegistrationMovement.getInstance().getVehicleByLicensePlate(licensePlate);
+
+            List<Object[]> temp = invoiceDao.findInvoicesByVehicleId(vehicleDto.getId());
+
+            ArrayList<ThinInvoiceDto> result = new ArrayList<>();
+
+            for(Object[] o : temp) {
+                result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3]));
+            }
+
+            return result;
+        } catch (CommunicationException | IOException e) {
+            throw new InvoiceException(e.getMessage());
+        }
+    }
+
+    @Override
     public boolean payInvoice(long invoiceNumber, String paymentDetails) throws InvoiceException {
         if(invoiceNumber < 1) { throw new InvoiceException("Please provide an invoice number"); }
         if(paymentDetails.isEmpty()) { throw new InvoiceException("Please provide payment details"); }

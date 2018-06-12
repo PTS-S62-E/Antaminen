@@ -54,6 +54,8 @@ public interface IInvoiceDao {
 
     List<Object[]> findInvoiceByUser(long userId) throws InvoiceException;
 
+    List<Object[]> findInvoicesByVehicleId(long vehicleId) throws InvoiceException;
+
     ArrayList<IInvoice> findInvoicesByUserAndVehicleId(long userId, long vehicleId) throws InvoiceException;
 
     boolean payInvoice(long invoiceNumber, String paymentDetails) throws InvoiceException;

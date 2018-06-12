@@ -15,6 +15,8 @@ public interface IInvoiceService {
 
     ArrayList<ThinInvoiceDto> findInvoiceByUser(long userId) throws InvoiceException;
 
+    ArrayList<ThinInvoiceDto> findInvoicesByLicensePlate(String licensePlate) throws InvoiceException;
+
     boolean payInvoice(long invoiceNumber, String paymentDetails) throws InvoiceException;
 
     void generateInvoices() throws InvoiceException;
