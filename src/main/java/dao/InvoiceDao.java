@@ -139,6 +139,20 @@ public class InvoiceDao implements IInvoiceDao {
         }
     }
 
+    @Override
+    public List<Object[]> findInvoicesByVehicleId(long vehicleId) throws InvoiceException {
+        if(vehicleId < 1) { throw new InvoiceException("Please provie a valid vehicleId"); }
+
+        Query q = em.createNamedQuery("Invoice.findThinInvoiceByVehicleId");
+        q.setParameter("vehicleId", vehicleId);
+
+        try {
+            return (List<Object[]>) q.getResultList();
+        } catch (NoResultException nre) {
+            throw new InvoiceException("Couldn't find invoice(s) for provided vehicleId");
+        }
+    }
+
     public ArrayList<IInvoice> findFullInvoiceByUser(long userId) throws InvoiceException {
         if(userId < 1) { throw new InvoiceException("Please provide a valid userId"); }
 

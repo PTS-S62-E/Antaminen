@@ -73,7 +73,7 @@ public class InvoiceApi {
     @Produces(APPLICATION_JSON)
     @JWTRequired
     public IInvoice findInvoiceByInvoiceNumber(@PathParam("invoiceNumber") long invoiceNumber) {
-        if(invoiceNumber < 1) { throw JsonExceptionMapper.mapException(Response.Status.fromStatusCode(422), "Unporcessable Entity (invalid Invoice number)"); }
+        if(invoiceNumber < 1) { throw JsonExceptionMapper.mapException(Response.Status.fromStatusCode(422), "Unprocessable Entity (invalid Invoice number)"); }
 
         try {
             IInvoice result = service.findInvoiceByInvoiceNumber(invoiceNumber);
@@ -86,6 +86,25 @@ public class InvoiceApi {
             Sentry.capture(e);
             throw JsonExceptionMapper.mapException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+    }
+
+    @Path("/vehicles/{licensePlate}")
+    @GET
+    @Produces(APPLICATION_JSON)
+    @JWTRequired
+    public ArrayList<ThinInvoiceDto> getInvoicesByLicensePlate(@HeaderParam("Authorization") String token, @PathParam("licensePlate") String licensePlate) {
+        if(token.isEmpty() || token.trim().length() == 0) { throw new WebApplicationException(Response.Status.UNAUTHORIZED); }
+        else if(!JWTUtility.getSubject(token).equals("gov@finland.fi")) { throw JsonExceptionMapper.mapException(Response.Status.UNAUTHORIZED, "User is not authorized to make a request to this endpoint."); }
+        else if (licensePlate.isEmpty() || licensePlate.trim().length() == 0) { throw JsonExceptionMapper.mapException(Response.Status.fromStatusCode(422), "Unprocessable Entity (No licenseplate provided"); }
+        else {
+            try {
+                return service.findInvoicesByLicensePlate(licensePlate);
+            } catch (InvoiceException e) {
+                Sentry.capture(e);
+                throw JsonExceptionMapper.mapException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+        }
+
     }
 
     @POST
