@@ -85,7 +85,7 @@ public class InvoiceService implements IInvoiceService {
             ArrayList<ThinInvoiceDto> result = new ArrayList<>();
 
             for(Object[] o : temp) {
-                result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3]));
+                result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3], (String) o[4]));
             }
 
             return result;
