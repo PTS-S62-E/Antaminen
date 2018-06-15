@@ -70,7 +70,7 @@ public class ThinInvoiceDto implements Serializable {
         this.ownerName = ownerName;
     }
 
-    public String getCountryCode() {s
+    public String getCountryCode() {
         return countryCode;
     }
 
