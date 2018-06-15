@@ -1,9 +1,7 @@
 package interfaces.domain;
 
-import com.rekeningrijden.europe.interfaces.ITransLocation;
 import dto.TranslocationDto;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**

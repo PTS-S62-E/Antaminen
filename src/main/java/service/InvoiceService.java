@@ -23,6 +23,7 @@ import javax.ejb.Stateless;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @Stateless
@@ -67,7 +68,7 @@ public class InvoiceService implements IInvoiceService {
         ArrayList<ThinInvoiceDto> result = new ArrayList<>();
 
         for(Object[] o : temp) {
-            result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3], owner.getName()));
+            result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3], owner.getName(), (String) o[4]));
         }
 
         return result;
@@ -85,7 +86,7 @@ public class InvoiceService implements IInvoiceService {
             ArrayList<ThinInvoiceDto> result = new ArrayList<>();
 
             for(Object[] o : temp) {
-                result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3]));
+                result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3], (String) o[4], (String) o[5]));
             }
 
             return result;
@@ -204,6 +205,13 @@ public class InvoiceService implements IInvoiceService {
         }
     }
 
+    @Override
+    public void publishExternalInvoice(SubInvoiceDto subInvoiceDto) throws InvoiceException {
+        if(subInvoiceDto == null) { throw new InvoiceException("Please provide an external invoice"); }
+
+        this.invoiceDao.createExternalInvoice(subInvoiceDto);
+    }
+
     /**
      * Register foreign vehicles with an ownership to the owner gov@finland.fi if the don't belong to the owner yet.
      * @param owner Owner object for gov@finland.fe
@@ -241,7 +249,7 @@ public class InvoiceService implements IInvoiceService {
             ArrayList<ThinInvoiceDto> result = new ArrayList<>();
 
             for(Object[] o : temp) {
-                result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3]));
+                result.add(new ThinInvoiceDto((long) o[0], (String) o[1], (int) o[2], (boolean) o[3], (String) o[4], (String) o[5]));
             }
 
             ArrayList<IInvoice> foreignInvoices = invoiceDao.findFullInvoiceByUser(owner.getId());
@@ -249,8 +257,9 @@ public class InvoiceService implements IInvoiceService {
             for(IInvoice invoice : foreignInvoices) {
                 if(!invoice.getPaymentStatus()) {
                     // This invoice is not yet payed
-                    SubInvoiceDto subInvoiceDto = new SubInvoiceDto(invoice.getInvoiceNumber(), invoice.getCountry(), String.valueOf(invoice.getPaymentStatus()), invoice.getInvoiceDate(), String.valueOf(invoice.getPrice()));
-
+                    long vehicleId = invoice.getVehicleId();
+                    VehicleDto vehicleDto = RegistrationMovement.getInstance().getVehicleById(vehicleId);
+                    SubInvoiceDto subInvoiceDto = new SubInvoiceDto(UUID.fromString(invoice.getInvoiceNumber()), invoice.getCountry(), String.valueOf(invoice.getPaymentStatus()), invoice.getInvoiceDate(), Integer.valueOf(String.valueOf(invoice.getPrice())), vehicleDto.getSerialNumber());
                     // Send the invoice to the correct country
                     QueueMessageSender.getInstance().sendInvoiceToForeignCountry(subInvoiceDto);
                 }
@@ -259,6 +268,9 @@ public class InvoiceService implements IInvoiceService {
             Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Unable to retrieve account that's required to send foreign invoices").build());
             Sentry.capture(e);
         } catch (InvoiceException e) {
+            Sentry.capture(e);
+        } catch (IOException | CommunicationException e) {
+            Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Unable to retrieve vehicle from external API. Please see exception for more info").build());
             Sentry.capture(e);
         }
     }

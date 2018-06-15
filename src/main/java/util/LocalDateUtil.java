@@ -13,7 +13,7 @@ public class LocalDateUtil {
      */
     public static String getCurrentDate() {
         LocalDate now = LocalDate.now();
-        return now.format(formatter) + " 23:59";
+        return now.format(formatter) + "T23:59:00.000Z";
     }
 
     /**
@@ -23,7 +23,7 @@ public class LocalDateUtil {
     public static String getCurrentDateMinusOneMonth() {
         LocalDate now = LocalDate.now();
         LocalDate history = now.minusMonths(1);
-        return history.format(formatter) + " 23:59";
+        return history.format(formatter) + "T23:59:00.000Z";
     }
 
     /**
@@ -34,7 +34,7 @@ public class LocalDateUtil {
     public static String getCurrentDateMinusXMonths(long months) {
         LocalDate now = LocalDate.now();
         LocalDate history = now.minusMonths(months);
-        return history.format(formatter) + " 23:59";
+        return history.format(formatter) + "T23:59:00.000Z";
     }
 
     /**

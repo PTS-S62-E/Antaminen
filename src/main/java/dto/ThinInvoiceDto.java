@@ -10,15 +10,17 @@ public class ThinInvoiceDto implements Serializable {
     private int price;
     private boolean paymentStatus;
     private String ownerName;
+    private String countryCode;
 
     public ThinInvoiceDto() { }
 
-    public ThinInvoiceDto(long id, String invoiceDate, int price, boolean paymentStatus, String ownerName) {
+    public ThinInvoiceDto(long id, String invoiceDate, int price, boolean paymentStatus, String ownerName, String countryCode) {
         this.id = id;
         this.invoiceDate = invoiceDate;
         this.price = price;
         this.paymentStatus = paymentStatus;
         this.ownerName = ownerName;
+        this.countryCode = countryCode;
     }
 
     public ThinInvoiceDto(long id, String invoiceDate, int price, boolean paymentStatus) {
@@ -66,5 +68,13 @@ public class ThinInvoiceDto implements Serializable {
 
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 }
