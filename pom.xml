@@ -39,6 +39,14 @@
             <version>4.4.0</version>
         </dependency>
 
+        <!-- cdi injection for rabbit -->
+        <!-- https://mvnrepository.com/artifact/net.reini/rabbitmq-cdi/0.9.6 -->
+        <dependency>
+            <groupId>net.reini</groupId>
+            <artifactId>rabbitmq-cdi</artifactId>
+            <version>0.9.6</version>
+        </dependency>
+
         <dependency>
             <groupId>io.sentry</groupId>
             <artifactId>sentry</artifactId>

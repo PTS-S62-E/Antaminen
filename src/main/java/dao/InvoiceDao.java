@@ -1,5 +1,6 @@
 package dao;
 
+import com.rekeningrijden.europe.dtos.SubInvoiceDto;
 import domain.Invoice;
 import domain.InvoiceDetails;
 import domain.Owner;
@@ -109,6 +110,13 @@ public class InvoiceDao implements IInvoiceDao {
         this.createInvoice(invoice);
 
         return true;
+    }
+
+    @Override
+    public boolean createInvoice(SubInvoiceDto subInvoiceDto) throws InvoiceException {
+        if(subInvoiceDto == null) { throw new InvoiceException("No subInvoice provided"); }
+
+        Invoice invoice = new Invoice(null, subInvoiceDto.getCountry(), subInvoiceDto.getInvoiceDate(),)
     }
 
     @Override
