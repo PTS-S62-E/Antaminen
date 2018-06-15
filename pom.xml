@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.github.PTS-S62-E</groupId>
             <artifactId>Osake</artifactId>
-            <version>4.4.0</version>
+            <version>5.2.0</version>
         </dependency>
 
         <!-- cdi injection for rabbit -->

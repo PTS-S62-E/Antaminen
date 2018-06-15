@@ -1,24 +1,33 @@
 package dao;
 
 import com.rekeningrijden.europe.dtos.SubInvoiceDto;
+import communication.RegistrationMovement;
 import domain.Invoice;
 import domain.InvoiceDetails;
 import domain.Owner;
+import dto.VehicleDto;
+import exceptions.CommunicationException;
 import exceptions.InvoiceException;
+import exceptions.OwnershipException;
 import interfaces.domain.IInvoice;
 import interfaces.dao.IInvoiceDao;
 import interfaces.domain.IInvoiceDetail;
 import io.sentry.Sentry;
+import service.OwnerService;
+import service.OwnershipService;
 import util.LocalDateUtil;
 
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -47,6 +56,9 @@ public class InvoiceDao implements IInvoiceDao {
     private final String countryCode = "FI";
 
     public InvoiceDao() { }
+
+    @EJB
+    private OwnershipService ownershipService;
 
 
     @Override
@@ -113,10 +125,26 @@ public class InvoiceDao implements IInvoiceDao {
     }
 
     @Override
-    public boolean createInvoice(SubInvoiceDto subInvoiceDto) throws InvoiceException {
-        if(subInvoiceDto == null) { throw new InvoiceException("No subInvoice provided"); }
+    public boolean createExternalInvoice(SubInvoiceDto subInvoiceDto) throws InvoiceException {
+        if(subInvoiceDto == null) { throw new InvoiceException("Please provide an external Invoice object"); }
 
-        Invoice invoice = new Invoice(null, subInvoiceDto.getCountry(), subInvoiceDto.getInvoiceDate(),)
+        try {
+            VehicleDto vehicleDto = RegistrationMovement.getInstance().getVehicleBySerialNumber(subInvoiceDto.getCarTrackerId());
+
+            Owner owner;
+            try {
+                owner = ownershipService.findOwnershipByVehicleId(vehicleDto.getId()).get(0).getOwner();
+            } catch (OwnershipException e) {
+                throw new InvoiceException(e.getMessage());
+            }
+
+            Invoice invoice = new Invoice(subInvoiceDto.getCountry(), subInvoiceDto.getInvoiceDate(), owner, vehicleDto.getId(), subInvoiceDto.getPrice());
+
+
+            return this.createInvoice(invoice);
+        } catch (CommunicationException | IOException e) {
+            throw new InvoiceException(e.getMessage());
+        }
     }
 
     @Override

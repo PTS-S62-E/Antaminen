@@ -1,5 +1,6 @@
 package interfaces.service;
 
+import com.rekeningrijden.europe.dtos.SubInvoiceDto;
 import domain.Owner;
 import dto.ThinInvoiceDto;
 import exceptions.InvoiceException;
@@ -23,4 +24,6 @@ public interface IInvoiceService {
     void generateInvoices() throws InvoiceException;
 
     void generateInvoicesForVehiclesOfForeignCountries() throws InvoiceException;
+
+    void publishExternalInvoice(SubInvoiceDto subInvoiceDto) throws InvoiceException;
 }

@@ -24,8 +24,8 @@ import java.util.List;
         @NamedQuery(name = "Invoice.findByInvoiceNumber", query = "SELECT i FROM Invoice i WHERE i.id = :id"),
         @NamedQuery(name = "Invoice.findByUserId", query = "SELECT i FROM Invoice i WHERE i.owner.id = :userId"),
         @NamedQuery(name = "Invoice.findInvoiceByUserIdAndVehicleId", query = "SELECT i FROM Invoice i WHERE i.owner.id = :userId AND i.vehicleId = :vehicleId"),
-        @NamedQuery(name = "Invoice.findThinInvoiceByUserId", query = "SELECT i.id as id, i.invoiceDate as invoicedate, i.price as price, i.paymentStatus as paymentstatus FROM Invoice i WHERE i.owner.id = :userId"),
-        @NamedQuery(name = "Invoice.findThinInvoiceByVehicleId", query = "SELECT i.id as id, i.invoiceDate as invoicedate, i.price as price, i.paymentStatus as paymentstatus, i.owner.name as ownername FROM Invoice i WHERE i.vehicleId = :vehicleId")
+        @NamedQuery(name = "Invoice.findThinInvoiceByUserId", query = "SELECT i.id as id, i.invoiceDate as invoicedate, i.price as price, i.paymentStatus as paymentstatus, i.country as country FROM Invoice i WHERE i.owner.id = :userId"),
+        @NamedQuery(name = "Invoice.findThinInvoiceByVehicleId", query = "SELECT i.id as id, i.invoiceDate as invoicedate, i.price as price, i.paymentStatus as paymentstatus, i.owner.name as ownername, i.country as country FROM Invoice i WHERE i.vehicleId = :vehicleId")
 })
 public class Invoice implements IInvoice, Serializable {
 
@@ -53,6 +53,15 @@ public class Invoice implements IInvoice, Serializable {
     private long vehicleId;
 
     public Invoice() { }
+
+    public Invoice(String country, String invoiceDate, Owner owner, long vehicleId, int price) {
+        this.country = country;
+        this.invoiceDate = invoiceDate;
+        this.owner = owner;
+        this.vehicleId = vehicleId;
+        this.price = price;
+        this.totalDistance = 0;
+    }
 
     public Invoice(ArrayList<InvoiceDetails> invoiceDetails, String country, String invoiceDate, Owner owner, long vehicleId) {
         this.invoiceDetails = new ArrayList<>();
@@ -100,6 +109,11 @@ public class Invoice implements IInvoice, Serializable {
     @Override
     public double getPrice() {
         return (double) this.price;
+    }
+
+    @Override
+    public String getCarTrackerId() {
+        return null;
     }
 
     @Override
@@ -170,5 +184,13 @@ public class Invoice implements IInvoice, Serializable {
 
     public void setOwner(Owner owner) {
         this.owner = owner;
+    }
+
+    public long getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(long vehicleId) {
+        this.vehicleId = vehicleId;
     }
 }

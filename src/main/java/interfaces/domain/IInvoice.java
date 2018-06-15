@@ -53,4 +53,6 @@ public interface IInvoice extends ISubInvoice {
 
     void setTotalDistance(long totalDistance);
 
+    long getVehicleId();
+
 }

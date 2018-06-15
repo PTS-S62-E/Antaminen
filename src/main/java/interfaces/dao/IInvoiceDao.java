@@ -46,7 +46,13 @@ public interface IInvoiceDao {
 
     boolean createInvoice(ArrayList<InvoiceDetails> invoiceDetails, Owner owner, long vehicleId, String countryCode, LocalDateTime invoiceDate) throws InvoiceException;
 
-    boolean createInvoice(SubInvoiceDto subInvoiceDto) throws InvoiceException;
+    /**
+     * Create a new invoice based on the SubInvoiceDto received from an external country
+     * @param subInvoiceDto Instance of the invoice received by external country
+     * @return true if invoice created, false if not (probably an exception)
+     * @throws InvoiceException Thrown when an error occurs in saving the new invoice
+     */
+    boolean createExternalInvoice(SubInvoiceDto subInvoiceDto) throws InvoiceException;
 
     /**
      * Find an invoice based on the invoice number

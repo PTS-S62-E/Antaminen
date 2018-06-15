@@ -267,4 +267,28 @@ public class RegistrationMovement {
 
         return mapper.readValue(response, new TypeReference<ArrayList<ForeignVehicleDto>>(){});
     }
+
+    /**
+     * Get a VehicleDto object based on the serial number of the tracker inside a vehicle
+     * @param serialNumber The serial number of the tracker
+     * @return A vehicleDto object containing information about the vehicle
+     * @throws CommunicationException Thrown when an unexpected response code is returned from the Registration Movement application
+     * @throws IOException Thrown when there's an exception in reading the response for the HTTP request
+     */
+    public VehicleDto getVehicleBySerialNumber(String serialNumber) throws CommunicationException, IOException {
+        if(serialNumber.equals("") || serialNumber.trim().length() < 1) { throw new CommunicationException("Please provide a valid serial number"); }
+
+        String urlPart = properties.getProperty("VEHICLE_BY_SERIAL_NUMBER");
+        urlPart = urlPart.replace(":serialNumber", serialNumber);
+
+        String url = BASE_URL + urlPart;
+
+        String response = SendRequest.sendGet(url);
+
+        if(response.isEmpty()) { return null; }
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        return mapper.readValue(response, VehicleDto.class);
+    }
 }
