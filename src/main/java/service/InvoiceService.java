@@ -154,6 +154,59 @@ public class InvoiceService implements IInvoiceService {
 
     }
 
+    public void generateSingleInvoice(AdministrationDto dto) throws InvoiceException {
+        try {
+            String serialNumber = dto.getJourneys().get(0).getTranslocations().get(0).getSerialNumber();
+            VehicleDto vehicleDto = RegistrationMovement.getInstance().getVehicleBySerialNumber(serialNumber);
+
+            for(Owner owner : ownerService.getAllOwners()) {
+                for(Ownership ownership : owner.getOwnership()) {
+                    if(ownership.getVehicleId() == vehicleDto.getId()) {
+                        TariffCategory tariffCategory = tariffCategoryService.getTariffCategoryByVehicleId(vehicleDto.getId());
+
+                        ArrayList<InvoiceDetails> invoiceDetails = new ArrayList<>();
+                        for(JourneyDto journey : dto.getJourneys()) {
+                            InvoiceDetails details = new InvoiceDetails((ArrayList<TranslocationDto>) journey.getTranslocations(), "Complete Journey", tariffCategory.getTariff());
+                            invoiceDetails.add(details);
+                        }
+
+                        if(invoiceDetails.size() < 1) {
+                            // No translocations to generate invoice
+                        } else {
+                            invoiceDao.createInvoice(invoiceDetails, owner, vehicleDto.getId());
+                        }
+                    }
+                }
+            }
+        } catch (IOException | CommunicationException | TariffCategoryException | OwnerException e) {
+            Sentry.capture(e);
+        }
+    }
+
+    public void generateSingleForeignInvoice(ForeignVehicleDto dto) {
+        try {
+            Owner owner = accountService.findByEmailAddress("gov@finland.fo").getOwner();
+            TariffCategory tariffCategory = tariffCategoryService.getTariffCategoryByVehicleId(dto.getId());
+
+            ArrayList<InvoiceDetails> invoiceDetails = new ArrayList<>();
+            for(JourneyDto journey : dto.getJourneys()) {
+                InvoiceDetails details = new InvoiceDetails((ArrayList<TranslocationDto>) journey.getTranslocations(), "Complete Journey", tariffCategory.getTariff());
+                invoiceDetails.add(details);
+            }
+
+            if(invoiceDetails.size() < 1) {
+                // No translocations to generate invoice
+            } else {
+                invoiceDao.createInvoice(invoiceDetails, owner, dto.getId(), dto.getCountryCode());
+            }
+        } catch (AccountException e) {
+            Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage("Unable to find default account to generate foreign invoices.").build());
+            Sentry.capture(e);
+        } catch (CommunicationException | IOException | InvoiceException | TariffCategoryException e) {
+            Sentry.capture(e);
+        }
+    }
+
     /**
      * Generate the invoices for foreign vehicles that have driven in our country
      *

@@ -10,7 +10,11 @@ import util.LocalDateUtil;
 
 import javax.ejb.Singleton;
 import java.io.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -246,26 +250,33 @@ public class RegistrationMovement {
         if(startDate.isEmpty()) { throw new CommunicationException("Please provide a startDate"); }
         if(endDate.isEmpty()) { throw new CommunicationException("Please provide an endDate"); }
 
-//        if(!LocalDateUtil.isStringDateValid(startDate)) { throw new CommunicationException("Provided startDate is in an incorrect format."); }
-//        if(!LocalDateUtil.isStringDateValid(endDate)) { throw new CommunicationException("Provided endDate is in an incorrect format."); }
+        ArrayList<ForeignVehicleDto> result = new ArrayList<>();
 
-        String urlPart = properties.getProperty("TRANSLOCATION_FOR_FOREIGN_VEHICLE");
-        urlPart = urlPart.replace(":startDate", startDate);
-        urlPart = urlPart.replace(":endDate", endDate);
-        urlPart = urlPart.replace(" ", "%20");
+        Date start = LocalDateUtil.convertStringToDate(startDate);
+        Date end = LocalDateUtil.convertStringToDate(endDate);
 
-        String url = BASE_URL + urlPart;
+        LocalDate startLocalDate = start.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate endLocalDate = end.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        Logger.getLogger(getClass().getName()).warning(url);
-        String response = SendRequest.sendGet(url);
+        for(LocalDate date = startLocalDate; date.isBefore(endLocalDate); date = date.plusDays(1)) {
+            LocalDate tempDate = date.plusDays(1);
+            String urlPart = properties.getProperty("TRANSLOCATION_FOR_FOREIGN_VEHICLE");
+            urlPart = urlPart.replace(":startDate", LocalDateUtil.convertLocalDateToString(date));
+            urlPart = urlPart.replace(":endDate", LocalDateUtil.convertLocalDateToString(tempDate));
+            urlPart = urlPart.replace(" ", "%20");
 
-        if(response.isEmpty()) {
-            return null;
+            String url = BASE_URL + urlPart;
+
+            Logger.getLogger(getClass().getName()).warning(url);
+
+            String response = SendRequest.sendGet(url);
+            ObjectMapper mapper = new ObjectMapper();
+
+            result.addAll(mapper.readValue(response, new TypeReference<ArrayList<ForeignVehicleDto>>() { }));
+            Logger.getLogger(getClass().getName()).warning("Translocations received");
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-
-        return mapper.readValue(response, new TypeReference<ArrayList<ForeignVehicleDto>>(){});
+        return result;
     }
 
     /**
@@ -290,5 +301,11 @@ public class RegistrationMovement {
         ObjectMapper mapper = new ObjectMapper();
 
         return mapper.readValue(response, VehicleDto.class);
+    }
+
+    private <T> ArrayList<T> getTranslocationsPerDay(String url, Class<T> className) throws CommunicationException, IOException {
+        if(url.isEmpty()) { throw new CommunicationException("Please provide a request URL"); }
+
+        return null;
     }
 }

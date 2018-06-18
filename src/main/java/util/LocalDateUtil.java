@@ -1,11 +1,15 @@
 package util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 
 public class LocalDateUtil {
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
 
     /**
      * Get the current date in string with the format yyyy-MM-dd HH:mm
@@ -14,6 +18,10 @@ public class LocalDateUtil {
     public static String getCurrentDate() {
         LocalDate now = LocalDate.now();
         return now.format(formatter) + "T23:59:00.000Z";
+    }
+
+    public static String convertLocalDateToString(LocalDate date) {
+        return date.format(formatter) + "T23:59:00.000Z";
     }
 
     /**
@@ -43,6 +51,25 @@ public class LocalDateUtil {
      */
     public static LocalDate getCurrentLocalDate() {
         return LocalDate.now();
+    }
+
+    public static Date convertStringToDate(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+        try {
+            Date d = sdf.parse(date);
+
+            return d;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static String convertDatetoString(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        return sdf.format(date);
     }
 
     /**
